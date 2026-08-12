@@ -1,11 +1,16 @@
 {
-    "buildCommand": "",
-    "framework": "static",
+    "version": 2,
     "cleanUrls": true,
     "trailingSlash": false,
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/frontend/$1"
+        }
+    ],
     "headers": [
         {
-            "source": "/assets/(.*)",
+            "source": "/frontend/assets/(.*)",
             "headers": [
                 {
                     "key": "Cache-Control",
@@ -14,7 +19,7 @@
             ]
         },
         {
-            "source": "/images/(.*)",
+            "source": "/frontend/images/(.*)",
             "headers": [
                 {
                     "key": "Cache-Control",
@@ -23,7 +28,7 @@
             ]
         },
         {
-            "source": "/css/(.*)",
+            "source": "/frontend/css/(.*)",
             "headers": [
                 {
                     "key": "Cache-Control",
@@ -32,7 +37,7 @@
             ]
         },
         {
-            "source": "/js/(.*)",
+            "source": "/frontend/js/(.*)",
             "headers": [
                 {
                     "key": "Cache-Control",
