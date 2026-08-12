@@ -1,10 +1,10 @@
-# Deploy no Vercel - Guia Rápido
+﻿# Deploy no Vercel - Guia RÃ¡pido
 
-## 📋 Requisitos
+## ðŸ“‹ Requisitos
 - Conta no [Vercel](https://vercel.com)
-- Repositório GitHub do projeto (já configurado)
+- RepositÃ³rio GitHub do projeto (jÃ¡ configurado)
 
-## 🚀 Opção 1: Deploy via Dashboard Vercel (Recomendado)
+## ðŸš€ OpÃ§Ã£o 1: Deploy via Dashboard Vercel (Recomendado)
 
 ### Passo 1: Conectar ao Vercel
 1. Acesse [https://vercel.com](https://vercel.com)
@@ -16,20 +16,20 @@
 
 ### Passo 2: Configurar Projeto
 - **Project Name**: `aprova-passo-passo` (ou o que preferir)
-- **Framework Preset**: `Other` (é um projeto estático)
-- **Root Directory**: deixe em branco (padrão é raiz)
+- **Framework Preset**: `Other` (Ã© um projeto estÃ¡tico)
+- **Root Directory**: deixe em branco (padrÃ£o Ã© raiz)
 - **Build Command**: deixe vazio
 - **Output Directory**: `frontend`
-- **Environment Variables**: nenhuma necessária
+- **Environment Variables**: nenhuma necessÃ¡ria
 
 ### Passo 3: Deploy
 - Clique em **"Deploy"**
 - Aguarde 1-2 minutos
-- Seu site estará disponível em `https://[seu-projeto].vercel.app`
+- Seu site estarÃ¡ disponÃ­vel em `https://[seu-projeto].vercel.app`
 
 ---
 
-## 🚀 Opção 2: Deploy via CLI (Terminal)
+## ðŸš€ OpÃ§Ã£o 2: Deploy via CLI (Terminal)
 
 ### Passo 1: Instalar Vercel CLI
 ```bash
@@ -40,7 +40,7 @@ npm install -g vercel
 ```bash
 vercel login
 ```
-Siga as instruções no navegador para autenticar.
+Siga as instruÃ§Ãµes no navegador para autenticar.
 
 ### Passo 3: Fazer Deploy
 ```bash
@@ -48,39 +48,39 @@ cd "C:\Users\felli\Downloads\APPBANCOS"
 vercel --prod
 ```
 
-Responda às perguntas:
-- **Project name?** → `aprova-passo-passo` (ou seu nome preferido)
-- **Which scope?** → Escolha sua conta
-- **Linked to existing project?** → `N` (primeira vez)
-- **Directory?** → `./frontend`
+Responda Ã s perguntas:
+- **Project name?** â†’ `aprova-passo-passo` (ou seu nome preferido)
+- **Which scope?** â†’ Escolha sua conta
+- **Linked to existing project?** â†’ `N` (primeira vez)
+- **Directory?** â†’ `./frontend`
 
-O projeto será deployado em produção automaticamente.
-
----
-
-## 📁 Estrutura de Arquivos
-O `vercel.json` já está configurado para:
-- ✅ Servir arquivos estáticos da pasta `frontend/`
-- ✅ Limpar URLs (sem `.html` na URL)
-- ✅ Cache de assets (imagens, CSS, JS)
-- ✅ Redirecionamentos automáticos para páginas HTML
+O projeto serÃ¡ deployado em produÃ§Ã£o automaticamente.
 
 ---
 
-## 🔗 URLs Depois do Deploy
+## ðŸ“ Estrutura de Arquivos
+O `vercel.json` jÃ¡ estÃ¡ configurado para:
+- âœ… Servir arquivos estÃ¡ticos da pasta `frontend/`
+- âœ… Limpar URLs (sem `.html` na URL)
+- âœ… Cache de assets (imagens, CSS, JS)
+- âœ… Redirecionamentos automÃ¡ticos para pÃ¡ginas HTML
 
-Após o deploy, suas páginas estarão disponíveis em:
+---
 
-| Página | URL |
+## ðŸ”— URLs Depois do Deploy
+
+ApÃ³s o deploy, suas pÃ¡ginas estarÃ£o disponÃ­veis em:
+
+| PÃ¡gina | URL |
 |--------|-----|
 | Landing | `https://[projeto].vercel.app/` |
-| Bancos | `https://[projeto].vercel.app/html/bancos` |
-| Cursos | `https://[projeto].vercel.app/html/cursos` |
-| Perfil | `https://[projeto].vercel.app/html/perfil` |
+| Bancos | `https://[projeto].vercel.app/bancos` |
+| Cursos | `https://[projeto].vercel.app/cursos` |
+| Perfil | `https://[projeto].vercel.app/perfil` |
 
 ---
 
-## ✅ Verificar Deploy
+## âœ… Verificar Deploy
 
 1. Acesse o dashboard do Vercel: [https://vercel.com/dashboard](https://vercel.com/dashboard)
 2. Clique no seu projeto
@@ -89,42 +89,42 @@ Após o deploy, suas páginas estarão disponíveis em:
 
 ---
 
-## 🔄 Deploy Automático
+## ðŸ”„ Deploy AutomÃ¡tico
 
-Toda vez que você fazer `git push` para o repositório GitHub:
+Toda vez que vocÃª fazer `git push` para o repositÃ³rio GitHub:
 - Vercel detecta automaticamente
 - Faz novo build e deploy
 - Seu site atualiza em ~1 minuto
 
 ---
 
-## 📝 Notas Importantes
+## ðŸ“ Notas Importantes
 
-- ✅ Favicon funciona automaticamente
-- ✅ Imagens de fundo com `background-attachment: fixed` funcionam
-- ✅ Todos os links relativos funcionam
-- ✅ WhatsApp links funcionam (href com `wa.me/`)
+- âœ… Favicon funciona automaticamente
+- âœ… Imagens de fundo com `background-attachment: fixed` funcionam
+- âœ… Todos os links relativos funcionam
+- âœ… WhatsApp links funcionam (href com `wa.me/`)
 
 ---
 
-## ❓ Problemas Comuns
+## â“ Problemas Comuns
 
 ### "Domain already taken"
 Use um nome diferente para o projeto
 
 ### "Build failed"
-O `vercel.json` está configurado para não fazer build (é estático)
+O `vercel.json` estÃ¡ configurado para nÃ£o fazer build (Ã© estÃ¡tico)
 
-### "Pages não carregam"
+### "Pages nÃ£o carregam"
 Verifique se todos os arquivos foram commitados no Git e fizeram push
 
 ---
 
-## 📞 Próximos Passos
+## ðŸ“ž PrÃ³ximos Passos
 
-1. Escolha Opção 1 ou 2 acima
+1. Escolha OpÃ§Ã£o 1 ou 2 acima
 2. Complete o deploy
 3. Teste no navegador
-4. Compartilhe a URL do Vercel com seu público!
+4. Compartilhe a URL do Vercel com seu pÃºblico!
 
-🎉 Seu site estará online e acessível globalmente!
+ðŸŽ‰ Seu site estarÃ¡ online e acessÃ­vel globalmente!

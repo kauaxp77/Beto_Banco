@@ -32,8 +32,8 @@
       const buyButton = fragment.querySelector('.bank-card__buy-button');
       const cartButton = fragment.querySelector('.bank-card__cart-button');
 
-      const localArtwork = `../images/bancos/${bank.imageKey}.png`;
-      const svgFallback = `../images/bancos/${bank.imageKey}.svg`;
+      const localArtwork = `images/bancos/${bank.imageKey}.png`;
+      const svgFallback = `images/bancos/${bank.imageKey}.svg`;
       const fallbackArtwork = window.BankPlatform.createBankArtwork(bank.name, bank.artworkLabel || bank.sigla, bank.colors);
       image.src = localArtwork;
       image.alt = `${bank.name} - ${bank.sigla}`;

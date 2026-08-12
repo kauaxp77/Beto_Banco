@@ -1,61 +1,61 @@
-# Aprovação Passo a Passo
+﻿# AprovaÃ§Ã£o Passo a Passo
 
-Plataforma visual para venda de cursos preparatórios de concursos bancários. O projeto apresenta um catálogo premium de bancos, cards de compra, identidade neon/cyberpunk e uma estrutura inicial para integração futura com backend Java e banco de dados.
+Plataforma visual para venda de cursos preparatÃ³rios de concursos bancÃ¡rios. O projeto apresenta um catÃ¡logo premium de bancos, cards de compra, identidade neon/cyberpunk e uma estrutura inicial para integraÃ§Ã£o futura com backend Java e banco de dados.
 
-> Estado atual: o frontend estático e a página de catálogo estão funcionais. O backend e os scripts SQL existem como base de evolução, mas ainda não estão conectados à interface.
+> Estado atual: o frontend estÃ¡tico e a pÃ¡gina de catÃ¡logo estÃ£o funcionais. O backend e os scripts SQL existem como base de evoluÃ§Ã£o, mas ainda nÃ£o estÃ£o conectados Ã  interface.
 
-## Sumário
+## SumÃ¡rio
 
-- [Visão geral](#visão-geral)
+- [VisÃ£o geral](#visÃ£o-geral)
 - [Tecnologias e estado do projeto](#tecnologias-e-estado-do-projeto)
 - [Como executar](#como-executar)
-- [Estrutura de diretórios](#estrutura-de-diretórios)
+- [Estrutura de diretÃ³rios](#estrutura-de-diretÃ³rios)
 - [Frontend](#frontend)
-- [Catálogo de bancos](#catálogo-de-bancos)
+- [CatÃ¡logo de bancos](#catÃ¡logo-de-bancos)
 - [Assets e identidade visual](#assets-e-identidade-visual)
 - [Banco de dados](#banco-de-dados)
 - [Backend](#backend)
-- [Customização e manutenção](#customização-e-manutenção)
-- [Limitações atuais](#limitações-atuais)
+- [CustomizaÃ§Ã£o e manutenÃ§Ã£o](#customizaÃ§Ã£o-e-manutenÃ§Ã£o)
+- [LimitaÃ§Ãµes atuais](#limitaÃ§Ãµes-atuais)
 
-## Visão geral
+## VisÃ£o geral
 
 ```mermaid
 flowchart LR
 	Browser[Navegador] --> Pages[HTML em frontend/html]
 	Pages --> Scripts[JavaScript em frontend/js]
 	Pages --> Styles[CSS em frontend/css]
-	Scripts --> Catalog[Catálogo local de bancos]
+	Scripts --> Catalog[CatÃ¡logo local de bancos]
 	Catalog --> Images[Imagens e SVGs em frontend/images]
 	Database[database/schema.sql e inserts.sql] -. futuro consumo .-> Backend[backend Java]
 	Backend -. futura API .-> Scripts
 ```
 
-A entrada principal é a landing page em `frontend/html/index.html`. Ela apresenta a proposta da plataforma, o responsável pelo projeto e a transição para o catálogo bancário em `frontend/html/bancos.html`, onde ficam os cursos por instituição.
+A entrada principal Ã© a landing page em `frontend/index.html`. Ela apresenta a proposta da plataforma, o responsÃ¡vel pelo projeto e a transiÃ§Ã£o para o catÃ¡logo bancÃ¡rio em `frontend/bancos.html`, onde ficam os cursos por instituiÃ§Ã£o.
 
 ## Tecnologias e estado do projeto
 
 | Camada | Tecnologia atual | Estado |
 | --- | --- | --- |
-| Frontend | HTML5, CSS3 e JavaScript puro | Implementado e executável sem build |
+| Frontend | HTML5, CSS3 e JavaScript puro | Implementado e executÃ¡vel sem build |
 | Design | SVG, PNG, Google Fonts, layout responsivo | Implementado |
-| Catálogo | Array local em `frontend/js/bancos.js` | Implementado |
-| Banco de dados | Scripts SQL para tabela `banks` | Estrutura pronta, não integrada |
-| Backend | Estrutura de diretórios Java e `application.properties` | Scaffold inicial, sem código Java ou build configurado |
+| CatÃ¡logo | Array local em `frontend/js/bancos.js` | Implementado |
+| Banco de dados | Scripts SQL para tabela `banks` | Estrutura pronta, nÃ£o integrada |
+| Backend | Estrutura de diretÃ³rios Java e `application.properties` | Scaffold inicial, sem cÃ³digo Java ou build configurado |
 
-Não há `package.json`, `pom.xml`, `build.gradle`, dependências npm, wrapper Maven ou Gradle no repositório atual. Portanto, não é necessário instalar pacotes para visualizar o frontend.
+NÃ£o hÃ¡ `package.json`, `pom.xml`, `build.gradle`, dependÃªncias npm, wrapper Maven ou Gradle no repositÃ³rio atual. Portanto, nÃ£o Ã© necessÃ¡rio instalar pacotes para visualizar o frontend.
 
 ## Como executar
 
-### Opção 1: abrir diretamente
+### OpÃ§Ã£o 1: abrir diretamente
 
-Abra `frontend/html/index.html` no navegador. A página foi validada usando a URL local do arquivo e não exige servidor para renderizar a landing ou o catálogo.
+Abra `frontend/index.html` no navegador. A pÃ¡gina foi validada usando a URL local do arquivo e nÃ£o exige servidor para renderizar a landing ou o catÃ¡logo.
 
-Use os CTAs **Explorar bancos** ou **Ver todos os bancos** para acessar o catálogo. Também é possível abrir `frontend/html/bancos.html` diretamente.
+Use os CTAs **Explorar bancos** ou **Ver todos os bancos** para acessar o catÃ¡logo. TambÃ©m Ã© possÃ­vel abrir `frontend/bancos.html` diretamente.
 
-### Opção 2: servir por HTTP local
+### OpÃ§Ã£o 2: servir por HTTP local
 
-Recomendado para testar como a aplicação se comportará em hospedagem estática:
+Recomendado para testar como a aplicaÃ§Ã£o se comportarÃ¡ em hospedagem estÃ¡tica:
 
 ```powershell
 Set-Location frontend
@@ -65,24 +65,24 @@ python -m http.server 5500
 Depois, abra:
 
 ```text
-http://localhost:5500/html/index.html
+http://localhost:5500/index.html
 ```
 
-Também é possível usar qualquer extensão de servidor estático do VS Code.
+TambÃ©m Ã© possÃ­vel usar qualquer extensÃ£o de servidor estÃ¡tico do VS Code.
 
-## Estrutura de diretórios
+## Estrutura de diretÃ³rios
 
 ```text
 APPBANCOS/
 |-- README.md
 |-- frontend/
 |   |-- assets/
-|   |   |-- neon-cyber-bg.svg          # Fundo neon ativo do catálogo
-|   |   `-- neon-corporate-bg.svg      # Variação alternativa de fundo
+|   |   |-- neon-cyber-bg.svg          # Fundo neon ativo do catÃ¡logo
+|   |   `-- neon-corporate-bg.svg      # VariaÃ§Ã£o alternativa de fundo
 |   |-- css/
 |   |   |-- style.css                  # Estilos globais
-|   |   |-- landing.css                # Landing page de apresentação
-|   |   |-- bancos.css                 # Catálogo bancário e cards
+|   |   |-- landing.css                # Landing page de apresentaÃ§Ã£o
+|   |   |-- bancos.css                 # CatÃ¡logo bancÃ¡rio e cards
 |   |   |-- responsive.css             # Breakpoints
 |   |   |-- cards.css
 |   |   |-- cursos.css
@@ -91,7 +91,7 @@ APPBANCOS/
 |   |   `-- outros-bancos.css
 |   |-- html/
 |   |   |-- index.html                 # Landing page e entrada principal
-|   |   |-- bancos.html                # Catálogo de cursos por banco
+|   |   |-- bancos.html                # CatÃ¡logo de cursos por banco
 |   |   |-- curso.html
 |   |   |-- cursos.html
 |   |   |-- dashboard.html
@@ -106,8 +106,8 @@ APPBANCOS/
 |   |   |-- icones/
 |   |   `-- icons/
 |   `-- js/
-|       |-- landing.js                 # Revelação e movimento sutil da landing
-|       |-- bancos.js                  # Renderização do catálogo
+|       |-- landing.js                 # RevelaÃ§Ã£o e movimento sutil da landing
+|       |-- bancos.js                  # RenderizaÃ§Ã£o do catÃ¡logo
 |       |-- main.js                    # Tema e fallback de arte
 |       |-- cursos.js
 |       |-- dashboard.js
@@ -133,32 +133,32 @@ APPBANCOS/
 
 ### Landing page
 
-Arquivo: `frontend/html/index.html`
+Arquivo: `frontend/index.html`
 
-A landing reúne quatro áreas:
+A landing reÃºne quatro Ã¡reas:
 
-- hero com o posicionamento da plataforma e CTA para a seleção de bancos;
-- apresentação do Prof. Betão e do propósito do projeto;
-- convite final para explorar as instituições bancárias disponíveis.
-- rodapé temático com contatos, mensagem, suporte e CTA para o WhatsApp informado.
+- hero com o posicionamento da plataforma e CTA para a seleÃ§Ã£o de bancos;
+- apresentaÃ§Ã£o do Prof. BetÃ£o e do propÃ³sito do projeto;
+- convite final para explorar as instituiÃ§Ãµes bancÃ¡rias disponÃ­veis.
+- rodapÃ© temÃ¡tico com contatos, mensagem, suporte e CTA para o WhatsApp informado.
 
-Os estilos específicos ficam em `frontend/css/landing.css`, isolados das regras de `bancos.css`. O arquivo `frontend/js/landing.js` revela seções ao entrar na viewport, aplica parallax discreto para ponteiros precisos e respeita `prefers-reduced-motion`.
+Os estilos especÃ­ficos ficam em `frontend/css/landing.css`, isolados das regras de `bancos.css`. O arquivo `frontend/js/landing.js` revela seÃ§Ãµes ao entrar na viewport, aplica parallax discreto para ponteiros precisos e respeita `prefers-reduced-motion`.
 
-### Catálogo bancário
+### CatÃ¡logo bancÃ¡rio
 
-Arquivo: `frontend/html/bancos.html`
+Arquivo: `frontend/bancos.html`
 
 Responsabilidades principais:
 
-- Exibe a marca `Aprovação Passo a Passo`.
+- Exibe a marca `AprovaÃ§Ã£o Passo a Passo`.
 - Renderiza os cards dentro de `#banksGrid` a partir de um template HTML.
 - Usa o background responsivo `frontend/assets/neon-cyber-bg.svg` em tela cheia.
 - Mostra menu contextual por card, fechado ao clicar fora ou pressionar `Esc`.
-- Mantém o CTA de compra e o botão de carrinho para cursos publicados.
+- MantÃ©m o CTA de compra e o botÃ£o de carrinho para cursos publicados.
 
 ### Layout responsivo
 
-O catálogo usa a seguinte grade no estado atual:
+O catÃ¡logo usa a seguinte grade no estado atual:
 
 | Largura | Colunas |
 | --- | --- |
@@ -179,7 +179,7 @@ Os estilos principais da tela ficam em `frontend/css/bancos.css`; os breakpoints
 
 O catalogo atual nao mostra um botao de alternancia de tema no cabecalho, mas a infraestrutura de tema permanece disponivel para outras telas ou futuras interfaces.
 
-## Catálogo de bancos
+## CatÃ¡logo de bancos
 
 O catalogo e definido localmente no array `banks` de `frontend/js/bancos.js`.
 
@@ -215,18 +215,18 @@ Os links `linkCompra` atuais usam `https://example.com/...` e devem ser substitu
 
 | Asset | Uso |
 | --- | --- |
-| `frontend/assets/banking-architecture-bg.png` | Fundo oficial enviado, com arquitetura, logos bancárias e iluminação azul/dourada |
-| `frontend/assets/neon-cyber-bg.svg` | Asset legado do fundo neon anterior, não aplicado nas telas principais |
+| `frontend/assets/banking-architecture-bg.png` | Fundo oficial enviado, com arquitetura, logos bancÃ¡rias e iluminaÃ§Ã£o azul/dourada |
+| `frontend/assets/neon-cyber-bg.svg` | Asset legado do fundo neon anterior, nÃ£o aplicado nas telas principais |
 | `frontend/assets/neon-corporate-bg.svg` | Versao alternativa de ambiente corporativo futurista |
-| `frontend/images/professor/prof-betao.png` | Foto oficial do Prof. Betão usada na landing page |
-| `frontend/images/professor/prof-betao-signature-white.png` | Assinatura branca do Prof. Betão sobreposta à foto da landing |
+| `frontend/images/professor/prof-betao.png` | Foto oficial do Prof. BetÃ£o usada na landing page |
+| `frontend/images/professor/prof-betao-signature-white.png` | Assinatura branca do Prof. BetÃ£o sobreposta Ã  foto da landing |
 | `frontend/images/logo/aprovacao-logo.svg` | Logo exibida no cabecalho do catalogo |
 | `frontend/images/bancos/*.png` | Capas originais recebidas para os cards |
 | `frontend/images/bancos/*.svg` | Capas complementares e fallbacks locais |
 
-O fundo oficial usa `background-size: cover` e `background-position: center center`, mantendo a arquitetura central como ponto de foco e preservando a proporção original. Um overlay discreto de contraste é aplicado separadamente para a leitura dos cards e textos, sem alterar o arquivo de imagem.
+O fundo oficial usa `background-size: cover` e `background-position: center center`, mantendo a arquitetura central como ponto de foco e preservando a proporÃ§Ã£o original. Um overlay discreto de contraste Ã© aplicado separadamente para a leitura dos cards e textos, sem alterar o arquivo de imagem.
 
-A foto de `prof-betao.png` possui transparência e é exibida com `object-fit: contain`, preservando o enquadramento original dentro da moldura da landing. A assinatura derivada do arquivo fornecido é mantida em branco, com fundo transparente, e fica sobreposta no canto inferior direito da moldura.
+A foto de `prof-betao.png` possui transparÃªncia e Ã© exibida com `object-fit: contain`, preservando o enquadramento original dentro da moldura da landing. A assinatura derivada do arquivo fornecido Ã© mantida em branco, com fundo transparente, e fica sobreposta no canto inferior direito da moldura.
 
 ## Banco de dados
 
@@ -284,7 +284,7 @@ Para transformar essa estrutura em uma API funcional, sera necessario adicionar,
 5. Endpoints consumidos pelo frontend em substituicao ao array local.
 6. Autenticacao, autorizacao e validacao de URLs de compra antes de producao.
 
-## Customização e manutenção
+## CustomizaÃ§Ã£o e manutenÃ§Ã£o
 
 ### Adicionar ou alterar um banco
 
@@ -296,11 +296,11 @@ Para transformar essa estrutura em uma API funcional, sera necessario adicionar,
 
 ### Alterar o fundo oficial
 
-O asset atual é `frontend/assets/banking-architecture-bg.png`. Ele é aplicado em `body::before`, `body.bancos-showcase::before` e `body.landing-page::before`; mantenha a mesma proporção ao substituí-lo. Os antigos LEDs de borda foram removidos das telas principais.
+O asset atual Ã© `frontend/assets/banking-architecture-bg.png`. Ele Ã© aplicado em `body::before`, `body.bancos-showcase::before` e `body.landing-page::before`; mantenha a mesma proporÃ§Ã£o ao substituÃ­-lo. Os antigos LEDs de borda foram removidos das telas principais.
 
 ### Atualizar a imagem do professor
 
-Substitua `frontend/images/professor/prof-betao.png` por uma imagem autorizada do Prof. Betão. Prefira uma foto vertical com transparência; o frame da landing usa `object-fit: contain` para preservar a composição.
+Substitua `frontend/images/professor/prof-betao.png` por uma imagem autorizada do Prof. BetÃ£o. Prefira uma foto vertical com transparÃªncia; o frame da landing usa `object-fit: contain` para preservar a composiÃ§Ã£o.
 
 ### Alterar a grade e o tamanho dos cards
 
@@ -310,7 +310,7 @@ Edite as regras finais de `frontend/css/bancos.css`:
 - `.bank-card` controla a altura e a proporcao de capa/conteudo;
 - `.bank-card__media` e `.bank-card__body` controlam as duas partes do card.
 
-## Limitações atuais
+## LimitaÃ§Ãµes atuais
 
 - Nao ha API, autenticacao real, checkout real ou persistencia integrada.
 - Os links de compra sao placeholders em `example.com`.
@@ -319,11 +319,11 @@ Edite as regras finais de `frontend/css/bancos.css`:
 - O backend nao pode ser iniciado ate que um projeto Java/Spring executavel seja adicionado.
 - Os dados do SQL e do frontend ainda nao estao sincronizados.
 
-## Verificação manual recomendada
+## VerificaÃ§Ã£o manual recomendada
 
 Antes de publicar, valide ao menos:
 
-1. O carregamento de `frontend/html/index.html` em desktop e celular, incluindo os CTAs para o catálogo.
+1. O carregamento de `frontend/index.html` em desktop e celular, incluindo os CTAs para o catÃ¡logo.
 2. O carregamento e o enquadramento da foto do professor na landing.
 3. A exibicao das 13 capas e o fallback de imagem quando um asset estiver ausente.
 4. O menu de cada card, incluindo fechamento por clique externo e tecla `Esc`.
@@ -331,8 +331,9 @@ Antes de publicar, valide ao menos:
 6. A execucao de `schema.sql` e `inserts.sql` no banco selecionado.
 7. A substituicao do catalogo local por uma API quando o backend estiver pronto.
 
-## Licença
+## LicenÃ§a
 
 Nenhum arquivo de licenca foi encontrado no repositorio. Defina uma licenca antes de distribuir ou abrir o projeto para contribuicoes externas.
-#   A P R O V A - O - P A S S O - A - P A S S O 1 3 . 0  
+#   A P R O V A - O - P A S S O - A - P A S S O 1 3 . 0 
+ 
  

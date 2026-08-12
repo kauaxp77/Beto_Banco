@@ -29,7 +29,7 @@
       const artwork = window.BankPlatform.createBankArtwork(bank.name, bank.sigla, bank.colors);
       image.src = artwork;
       image.alt = `${bank.name} - ${bank.sigla}`;
-      image.dataset.logoPath = `/frontend/images/bancos/outros/${bank.sigla.toLowerCase()}.png`;
+      image.dataset.logoPath = `images/bancos/outros/${bank.sigla.toLowerCase()}.png`;
       title.textContent = bank.name;
       sigla.textContent = bank.sigla;
       subtitle.textContent = bank.subtitle;
