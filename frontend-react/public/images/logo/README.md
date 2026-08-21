@@ -1,0 +1,1 @@
+Store the platform logo assets here.

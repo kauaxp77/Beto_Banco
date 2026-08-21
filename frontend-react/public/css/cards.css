@@ -1,0 +1,7 @@
+.bank-card__image-wrap {
+  position: relative;
+}
+
+.bank-card:hover .bank-card__buy-button {
+  border-color: rgba(59, 130, 246, 0.28);
+}

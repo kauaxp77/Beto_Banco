@@ -1,0 +1,156 @@
+/* LandingPageCMS.css */
+
+.lp-cms {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.cms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.cms-header h3 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.cms-header p {
+    color: var(--text-muted);
+}
+
+.cms-loading {
+    padding: 64px 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.cms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+}
+
+.cms-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+}
+
+.cms-card.has-changes {
+    border-color: var(--primary);
+    box-shadow: 0 4px 20px rgba(233, 190, 69, 0.05);
+}
+
+.cms-card-header {
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.cms-key-badge {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-family: monospace;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+.cms-card-header h4 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.cms-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.cms-card-body {
+    padding: 24px;
+    flex: 1;
+}
+
+.cms-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.2s;
+}
+
+.cms-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(233, 190, 69, 0.02);
+}
+
+.cms-card-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.02);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.unsaved-badge {
+    font-size: 0.8rem;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.btn-save {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: not-allowed;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-save.active {
+    background: var(--primary);
+    color: var(--background);
+    cursor: pointer;
+}
+
+.btn-save.active:hover {
+    background: var(--primary-dark);
+}

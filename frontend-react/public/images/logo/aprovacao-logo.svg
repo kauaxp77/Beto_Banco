@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 72" role="img" aria-label="Aprovação Passo a Passo">
+  <g fill="#ffffff">
+    <path d="M4 6h42v38L17 61V45l15-10V19H18v26L4 54Z" />
+    <path d="M15 17h17v10H15Z" fill="#06080d" />
+    <path d="M22 29h10v10H22Z" fill="#06080d" />
+    <text x="58" y="31" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="800" letter-spacing="0.7">APROVAÇÃO</text>
+    <text x="60" y="51" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" letter-spacing="4.1">PASSO A PASSO</text>
+  </g>
+</svg>

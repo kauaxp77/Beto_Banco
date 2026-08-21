@@ -1,0 +1,1 @@
+Course-related imagery goes here.

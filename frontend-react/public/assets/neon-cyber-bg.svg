@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#020305" />
+      <stop offset="100%" stop-color="#010102" />
+    </linearGradient>
+    <linearGradient id="floorFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#030406" stop-opacity="0" />
+      <stop offset="100%" stop-color="#05070a" stop-opacity="1" />
+    </linearGradient>
+    <filter id="glowBlue" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8" result="blur1" />
+      <feColorMatrix in="blur1" type="matrix" values="1 0 0 0 0  0 1 0 0 0.35  0 0 1 0 0.95  0 0 0 1 0" result="tint1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur2" />
+      <feMerge>
+        <feMergeNode in="tint1" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glowRed" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8" result="blur1" />
+      <feColorMatrix in="blur1" type="matrix" values="1 0 0 0 0.9  0 1 0 0 0.12  0 0 1 0 0.16  0 0 0 1 0" result="tint1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur2" />
+      <feMerge>
+        <feMergeNode in="tint1" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glowGreen" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8" result="blur1" />
+      <feColorMatrix in="blur1" type="matrix" values="1 0 0 0 0.08  0 1 0 0 0.95  0 0 1 0 0.25  0 0 0 1 0" result="tint1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur2" />
+      <feMerge>
+        <feMergeNode in="tint1" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="reflectionBlur" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="13" />
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <rect y="640" width="1600" height="260" fill="url(#floorFade)" />
+
+  <g opacity="0.28">
+    <path d="M120 120H210L240 90H630" fill="none" stroke="#0d1d5f" stroke-width="3" />
+    <path d="M95 160V500L120 530V640H390L430 670H515" fill="none" stroke="#0a1748" stroke-width="3" />
+    <path d="M1480 120H1390L1360 90H970" fill="none" stroke="#5b1118" stroke-width="3" />
+    <path d="M1505 160V500L1480 530V640H1210L1170 670H1085" fill="none" stroke="#3f0b11" stroke-width="3" />
+  </g>
+
+  <g opacity="0.18">
+    <path d="M110 140V540L150 580" fill="none" stroke="#2f76ff" stroke-width="1.5" />
+    <path d="M180 102H620" fill="none" stroke="#2f76ff" stroke-width="1.5" />
+    <path d="M1490 140V540L1450 580" fill="none" stroke="#ff4040" stroke-width="1.5" />
+    <path d="M980 102H1420" fill="none" stroke="#ff4040" stroke-width="1.5" />
+  </g>
+
+  <g filter="url(#glowBlue)" opacity="0.86">
+    <path d="M116 122H210L240 92H630" fill="none" stroke="#4ca3ff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M95 160V500L120 530V640H390L430 670H515" fill="none" stroke="#2c7dff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M106 174V492L130 516V626H397L437 656H500" fill="none" stroke="#8fd6ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.88" />
+    <ellipse cx="110" cy="272" rx="44" ry="172" fill="#1f56ff" opacity="0.08" />
+    <ellipse cx="134" cy="624" rx="84" ry="44" fill="#2a7dff" opacity="0.14" />
+  </g>
+
+  <g filter="url(#glowRed)" opacity="0.86">
+    <path d="M1484 122H1390L1360 92H970" fill="none" stroke="#ff5a5a" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M1505 160V500L1480 530V640H1210L1170 670H1085" fill="none" stroke="#ff3d3d" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M1494 174V492L1470 516V626H1203L1163 656H1100" fill="none" stroke="#ffb1b1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.86" />
+    <ellipse cx="1490" cy="282" rx="44" ry="168" fill="#ff2a2a" opacity="0.07" />
+    <ellipse cx="1458" cy="624" rx="88" ry="44" fill="#ff4343" opacity="0.13" />
+  </g>
+
+  <g filter="url(#glowGreen)" opacity="0.84">
+    <path d="M720 674H1130L1166 646H1326" fill="none" stroke="#28ff57" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M1070 674H1142L1188 722H1360" fill="none" stroke="#21d84b" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M711 674H1122L1158 646H1316" fill="none" stroke="#9cffb2" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.84" />
+    <ellipse cx="1130" cy="680" rx="224" ry="32" fill="#22ff55" opacity="0.1" />
+  </g>
+
+  <g opacity="0.08">
+    <path d="M250 124V596" fill="none" stroke="#2a6eff" stroke-width="1" />
+    <path d="M1360 124V596" fill="none" stroke="#ff4343" stroke-width="1" />
+    <path d="M134 230H150" fill="none" stroke="#9edcff" stroke-width="2" />
+    <path d="M1450 240H1466" fill="none" stroke="#ffb3b3" stroke-width="2" />
+  </g>
+
+  <g filter="url(#reflectionBlur)" opacity="0.22">
+    <path d="M86 676H440" fill="none" stroke="#1f71ff" stroke-width="18" stroke-linecap="round" />
+    <path d="M960 682H1380" fill="none" stroke="#1ee04d" stroke-width="17" stroke-linecap="round" />
+    <path d="M1450 170V736" fill="none" stroke="#ff2b2b" stroke-width="12" stroke-linecap="round" opacity="0.3" />
+    <path d="M115 170V740" fill="none" stroke="#1f71ff" stroke-width="12" stroke-linecap="round" opacity="0.32" />
+  </g>
+
+  <rect x="300" y="120" width="1000" height="560" fill="#000000" opacity="0.72" />
+  <ellipse cx="800" cy="390" rx="520" ry="260" fill="#000000" opacity="0.62" />
+  <ellipse cx="800" cy="430" rx="600" ry="310" fill="#000000" opacity="0.2" />
+  <rect x="0" y="0" width="1600" height="900" fill="#000000" opacity="0.08" />
+</svg>

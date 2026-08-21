@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#06162d" />
+      <stop offset="55%" stop-color="#0f335f" />
+      <stop offset="100%" stop-color="#15548f" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" rx="28" fill="url(#bg)" />
+  <circle cx="520" cy="76" r="104" fill="rgba(117,194,255,0.14)" />
+  <circle cx="112" cy="300" r="126" fill="rgba(255,255,255,0.06)" />
+  <g transform="translate(86 74)" fill="none" stroke="#9bd1ff" stroke-width="12" stroke-linecap="round">
+    <path d="M0 64h148" />
+    <path d="M20 20h128" opacity="0.86" />
+    <path d="M0 108h148" opacity="0.72" />
+    <path d="M166 0v126" opacity="0.86" />
+  </g>
+  <text x="86" y="246" fill="#ffffff" font-family="Arial, sans-serif" font-size="56" font-weight="800">BANCO CENTRAL</text>
+  <text x="88" y="288" fill="rgba(201,232,255,0.88)" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="3">BACEN</text>
+</svg>

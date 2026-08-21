@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081646" />
+      <stop offset="60%" stop-color="#10348f" />
+      <stop offset="100%" stop-color="#1e56d9" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" rx="28" fill="url(#bg)" />
+  <circle cx="508" cy="76" r="102" fill="rgba(255,255,255,0.12)" />
+  <g transform="translate(92 72)" fill="#eef4ff">
+    <rect x="0" y="0" width="66" height="92" rx="14" opacity="0.95" />
+    <path d="M16 18h34c16 0 26 7 26 21 0 9-5 15-16 19 14 3 20 10 20 22 0 17-13 28-34 28H16Zm20 16v18h22c9 0 15-3 15-9s-6-9-16-9Zm0 33v22h24c11 0 17-4 17-11s-6-11-18-11Z" fill="#0f3aa8" />
+    <path d="M94 18h40c20 0 34 12 34 30 0 13-7 22-19 27l25 35h-24l-21-31h-15v31H94Zm20 17v27h18c10 0 16-5 16-14 0-8-6-13-16-13Z" />
+    <path d="M192 18h44c19 0 31 10 31 25 0 9-4 16-13 20 13 4 19 12 19 24 0 17-13 29-35 29h-46Zm20 16v17h21c8 0 13-3 13-8 0-6-5-9-13-9Zm0 32v20h24c10 0 16-4 16-10 0-7-6-10-17-10Z" />
+  </g>
+  <text x="94" y="268" fill="rgba(238,244,255,0.88)" font-family="Arial, sans-serif" font-size="24" font-weight="700">BANCO DE BRASILIA</text>
+</svg>

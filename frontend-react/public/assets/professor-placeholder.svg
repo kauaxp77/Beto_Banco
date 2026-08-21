@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Composição visual para foto do professor">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#08162b" />
+      <stop offset="58%" stop-color="#0b2847" />
+      <stop offset="100%" stop-color="#161125" />
+    </linearGradient>
+    <radialGradient id="light" cx="50%" cy="24%" r="64%">
+      <stop offset="0%" stop-color="#8cd3ff" stop-opacity="0.58" />
+      <stop offset="100%" stop-color="#8cd3ff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#101b2a" />
+      <stop offset="100%" stop-color="#060b13" />
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="18" />
+    </filter>
+  </defs>
+  <rect width="720" height="900" fill="url(#background)" />
+  <rect width="720" height="900" fill="url(#light)" />
+  <path d="M0 726L220 610l70 290H0Z" fill="#07101c" opacity="0.92" />
+  <path d="M720 726L500 610l-70 290h290Z" fill="#10101d" opacity="0.86" />
+  <g opacity="0.5" fill="none" stroke="#57adff" stroke-width="2">
+    <path d="M38 116H194L232 78H310" />
+    <path d="M680 188H572L538 222H462" />
+    <path d="M30 588H156L196 628" />
+    <path d="M688 602H574L534 642" />
+  </g>
+  <ellipse cx="360" cy="276" rx="116" ry="152" fill="#d5b092" />
+  <path d="M243 278c-10-116 41-190 126-190 101 0 144 77 121 197-47-35-99-51-153-22-24 13-56 23-94 15Z" fill="#151517" />
+  <path d="M294 238c26 13 105 11 146-31-14 66-53 111-117 119-27-15-34-45-29-88Z" fill="#c79f82" opacity="0.38" />
+  <path d="M274 394c52 38 116 39 171 0l31 101-117 86-114-86Z" fill="#d9b89a" />
+  <path d="M190 900c20-229 77-330 169-336 105 0 164 109 182 336Z" fill="url(#jacket)" />
+  <path d="M286 564l73 83 77-83 43 90-119 152-120-152Z" fill="#f4f4f2" />
+  <path d="M353 638h17l29 136-41 48-37-48Z" fill="#2d6fa6" />
+  <path d="M212 732l148 168-170 0Z" fill="#0c1625" opacity="0.86" />
+  <path d="M508 732L360 900h170Z" fill="#0a111d" opacity="0.88" />
+  <circle cx="180" cy="200" r="56" fill="#4ca3ff" opacity="0.16" filter="url(#softGlow)" />
+  <circle cx="546" cy="626" r="66" fill="#f6d28d" opacity="0.12" filter="url(#softGlow)" />
+  <g fill="#a7dcff" opacity="0.74">
+    <circle cx="104" cy="278" r="3" /><circle cx="136" cy="494" r="2" /><circle cx="596" cy="296" r="2" /><circle cx="570" cy="570" r="3" />
+  </g>
+</svg>

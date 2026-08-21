@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resultado do Simulado | Aprovação Passo a Passo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;700;800&family=Poppins:wght@500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/simulado.css" />
+    <link rel="icon" href="images/logo.png" type="image/png" />
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-inner container">
+            <a class="brand" href="/">
+                <img src="/images/logo/aprovacao-logo.svg" alt="Aprovação Passo a Passo" class="brand-logo" />
+                <span class="brand-text">RESULTADOS</span>
+            </a>
+            <div class="nav-main">
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/bancos.html">Bancos</a>
+                    <a href="/simulado.html">Novo Simulado</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="padding-top: 40px; padding-bottom: 80px;">
+        <div style="display: grid; gap: 32px; grid-template-columns: 1fr; max-width: 900px; margin: 0 auto;">
+
+            <section class="quiz-card glass" style="text-align: center;">
+                <h2 id="resultTitle" style="color: var(--primary); margin-bottom: 16px;">Calculando resultado...</h2>
+                <div
+                    style="width: 150px; height: 150px; border-radius: 50%; border: 8px solid rgba(233, 190, 69, 0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; position: relative;">
+                    <div id="resultMeter"
+                        style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--primary); border-radius: 50%; z-index: -1;">
+                    </div>
+                    <span id="resultScore" style="font-size: 2.5rem; font-weight: 800; color: #fff;">0%</span>
+                </div>
+                <p id="resultSummary" style="font-size: 1.1rem; color: var(--muted);"></p>
+                <div class="hero-actions" style="justify-content: center; margin-top: 24px;">
+                    <a href="/simulado.html" class="btn btn-primary">Refazer Simulado</a>
+                    <a href="/bancos.html" class="btn btn-secondary">Estudar Novamente</a>
+                </div>
+            </section>
+
+            <section class="quiz-card glass">
+                <h3 style="margin-bottom: 16px; font-size: 1.5rem;">Estatísticas Detalhadas</h3>
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <tbody id="resultStats" style="font-size: 1.05rem; color: var(--text);">
+                        <!-- Injected via Script -->
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="quiz-card glass">
+                <h3 style="margin-bottom: 16px; font-size: 1.5rem;">Revisão das Questões</h3>
+                <div id="reviewList" style="display: grid; gap: 16px;">
+                    <!-- Injected via Script -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="js/simulado.js"></script>
+</body>
+
+</html>

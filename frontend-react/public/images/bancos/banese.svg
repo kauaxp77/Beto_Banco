@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#195f26" />
+      <stop offset="60%" stop-color="#175123" />
+      <stop offset="100%" stop-color="#123f1a" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" rx="28" fill="url(#bg)" />
+  <circle cx="338" cy="116" r="70" fill="rgba(203,226,73,0.16)" />
+  <path d="M286 126c26-30 68-36 110-8-21 28-64 43-110 8Z" fill="#e9dd19" />
+  <g transform="translate(62 168)">
+    <rect x="0" y="0" width="140" height="92" fill="#f7f7f7" />
+    <path d="M18 40c34 4 56 2 84-6-13 17-38 24-84 6Z" fill="#195f26" />
+    <path d="M18 58c34 4 56 2 84-6-13 17-38 24-84 6Z" fill="#195f26" />
+  </g>
+  <text x="224" y="228" fill="#ffffff" font-family="Arial, sans-serif" font-size="68" font-weight="800">Banese</text>
+  <text x="62" y="298" fill="#ffffff" font-family="Arial, sans-serif" font-size="46" font-weight="700">BANCO DO ESTADO</text>
+</svg>

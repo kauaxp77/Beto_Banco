@@ -1,0 +1,233 @@
+@media (min-width: 1280px) {
+  .page-main {
+    padding-top: 40px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .site-header {
+    padding-inline: 18px;
+  }
+
+  .page-main {
+    padding-inline: 18px;
+  }
+
+  .hero-showcase {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-showcase__visual {
+    justify-content: flex-start;
+  }
+
+  .hero-visual-card {
+    width: min(100%, 560px);
+  }
+
+  .banks-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    min-height: 70px;
+    padding: 12px 14px;
+    gap: 14px;
+  }
+
+  .brand__subname {
+    font-size: 0.68rem;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header-button {
+    display: none;
+  }
+
+  .profile-chip__name {
+    display: none;
+  }
+
+  .page-main {
+    padding: 26px 14px 34px;
+  }
+
+  .hero-showcase {
+    gap: 20px;
+  }
+
+  .hero-showcase__cta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-cta {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .hero-cta--primary {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  .hero-showcase__brand-copy h1,
+  .hero-showcase__brand-copy .hero-block h1 {
+    font-size: clamp(1.9rem, 1.4rem + 2vw, 2.6rem);
+  }
+
+  .banks-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .bank-card__media {
+    min-height: 176px;
+  }
+
+  .bank-card__body {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    padding-inline: 12px;
+  }
+
+  .icon-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .profile-chip {
+    padding-right: 8px;
+  }
+
+  .profile-chip__avatar {
+    width: 26px;
+    height: 26px;
+  }
+
+  .page-main {
+    padding-inline: 12px;
+  }
+
+  .hero-block {
+    margin-bottom: 18px;
+  }
+
+  .hero-showcase__cta-row {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-cta--primary {
+    grid-column: auto;
+  }
+
+  .hero-visual-card {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  .banks-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-card__media {
+    min-height: 164px;
+  }
+
+  .bank-card__buy-button {
+    min-height: 44px;
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (max-width: 1024px) {
+  .bancos-showcase .top-header {
+    padding-inline: 18px;
+  }
+
+  .bancos-showcase .page-main {
+    padding-inline: 18px;
+  }
+
+  .bancos-showcase .banks-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .bancos-showcase .top-header {
+    min-height: 72px;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .bancos-showcase .header-button {
+    display: none;
+  }
+
+  .bancos-showcase .profile-chip__name {
+    display: none;
+  }
+
+  .bancos-showcase .page-main {
+    padding: 100px 14px 28px;
+  }
+
+  .bancos-showcase .courses-stage {
+    padding: 20px;
+  }
+
+  .bancos-showcase .courses-stage__subtitle {
+    font-size: 0.94rem;
+  }
+
+  .bancos-showcase .banks-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .bancos-showcase .banks-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .bancos-showcase .top-header {
+    padding-inline: 12px;
+  }
+
+  .bancos-showcase .icon-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .bancos-showcase .profile-chip {
+    min-height: 36px;
+    padding-right: 8px;
+  }
+
+  .bancos-showcase .profile-chip__avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 0.62rem;
+  }
+
+  .bancos-showcase .page-main {
+    padding-inline: 12px;
+  }
+
+  .bancos-showcase .courses-stage {
+    padding: 16px;
+  }
+}

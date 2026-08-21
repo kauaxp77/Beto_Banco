@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8a1e27" />
+      <stop offset="55%" stop-color="#8d1323" />
+      <stop offset="100%" stop-color="#78111e" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" rx="28" fill="url(#bg)" />
+  <g transform="translate(74 78)">
+    <rect x="0" y="58" width="92" height="92" rx="4" fill="#fff" />
+    <path d="M18 82c10-12 30-14 42-4-8 2-15 7-18 13 8 2 18 6 22 14 4 8 1 18-8 24-8 6-21 8-31 4 11-5 17-12 16-19-2-9-14-12-25-15 1-5 1-11 2-17Z" fill="#ba402f" />
+    <rect x="140" y="0" width="152" height="108" rx="4" fill="#fff" />
+    <path d="M174 28c22-18 62-10 78 12 11 16 8 40-7 58-14 17-39 26-62 20 18-8 28-19 30-33 2-18-13-31-32-37-2-6-4-13-7-20Z" fill="#ba402f" />
+  </g>
+  <text x="208" y="232" fill="#fff" font-family="Arial, sans-serif" font-size="72" font-weight="800">Banpará</text>
+  <text x="72" y="294" fill="#fff" font-family="Arial, sans-serif" font-size="46" font-weight="700">BANCO DO ESTADO DO PARÁ</text>
+</svg>

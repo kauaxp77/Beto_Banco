@@ -1,0 +1,148 @@
+﻿node.exe : 
+[31mÔ£ù[39m Build 
+failed in 667ms
+No linha:1 caractere:1
++ & "C:\Program Files\
+nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: ([31mÔ£ù[   
+ 39m Build failed     
+in 667ms:String)     
+[], RemoteExcepti    
+on
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+[31merror during 
+build:
+[31mBuild failed 
+with 1 error:
+
+[31m[MISSING_EXPORT] 
+[0m"Instagram" is 
+not exported by "node_
+modules/lucide-react/d
+ist/esm/lucide-react.m
+js".
+   [38;5;246mÔò¡[0m
+[38;5;246mÔöÇ[0m[38;
+5;246m[[0m src/compon
+ents/Footer/Footer.jsx
+:2:10 [38;5;246m][0m
+   [38;5;246mÔöé[0m
+ [38;5;246m2 Ôöé[0m 
+[38;5;249mi[0m[38;5
+;249mm[0m[38;5;249mp
+[0m[38;5;249mo[0m[
+38;5;249mr[0m[38;5;2
+49mt[0m[38;5;249m [
+0m[38;5;249m{[0m[38
+;5;249m [0mInstagram
+[38;5;249m,[0m[38;5;
+249m [0m[38;5;249mM
+[0m[38;5;249ma[0m[3
+8;5;249mi[0m[38;5;24
+9ml[0m[38;5;249m,[0
+m[38;5;249m [0m[38;
+5;249mC[0m[38;5;249m
+h[0m[38;5;249me[0m
+[38;5;249mv[0m[38;5;
+249mr[0m[38;5;249mo
+[0m[38;5;249mn[0m[3
+8;5;249mR[0m[38;5;24
+9mi[0m[38;5;249mg[0
+m[38;5;249mh[0m[38;
+5;249mt[0m[38;5;249m
+ [0m[38;5;249m}[0m
+[38;5;249m [0m[38;5;
+249mf[0m[38;5;249mr
+[0m[38;5;249mo[0m[3
+8;5;249mm[0m[38;5;24
+9m [0m[38;5;249m"[0
+m[38;5;249ml[0m[38;
+5;249mu[0m[38;5;249m
+c[0m[38;5;249mi[0m
+[38;5;249md[0m[38;5;
+249me[0m[38;5;249m-
+[0m[38;5;249mr[0m[3
+8;5;249me[0m[38;5;24
+9ma[0m[38;5;249mc[0
+m[38;5;249mt[0m[38;
+5;249m"[0m[38;5;249m
+;[0m
+ [38;5;240m  Ôöé[0m 
+         ÔöÇÔöÇÔöÇÔöÇÔ
+ö¼ÔöÇÔöÇÔöÇÔöÇ  
+ [38;5;240m  Ôöé[0m 
+             
+Ôò░ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ 
+Missing export
+[38;5;246mÔöÇÔöÇÔöÇÔò
+»[0m
+[31m
+    at aggregateBindin
+gErrorsIntoJsError (fi
+le:///C:/Users/wende/p
+rojects/Aprova-o-passo
+-a-passo-3/frontend-re
+act/node_modules/rolld
+own/dist/shared/error-
+NcRuXAVN.mjs:48:18)
+    at 
+unwrapBindingResult (f
+ile:///C:/Users/wende/
+projects/Aprova-o-pass
+o-a-passo-3/frontend-r
+eact/node_modules/roll
+down/dist/shared/error
+-NcRuXAVN.mjs:18:128)
+    at #build (file://
+/C:/Users/wende/projec
+ts/Aprova-o-passo-a-pa
+sso-3/frontend-react/n
+ode_modules/rolldown/d
+ist/shared/rolldown-vc
+ii7mEa.mjs:132:34)
+    at async 
+buildEnvironment (file
+:///C:/Users/wende/pro
+jects/Aprova-o-passo-a
+-passo-3/frontend-reac
+t/node_modules/vite/di
+st/node/chunks/node.js
+:33821:66)
+    at async 
+Object.build (file:///
+C:/Users/wende/project
+s/Aprova-o-passo-a-pas
+so-3/frontend-react/no
+de_modules/vite/dist/n
+ode/chunks/node.js:342
+42:19)
+    at async 
+Object.buildApp (file:
+///C:/Users/wende/proj
+ects/Aprova-o-passo-a-
+passo-3/frontend-react
+/node_modules/vite/dis
+t/node/chunks/node.js:
+34239:153)
+    at async 
+CAC.<anonymous> (file:
+///C:/Users/wende/proj
+ects/Aprova-o-passo-a-
+passo-3/frontend-react
+/node_modules/vite/dis
+t/node/cli.js:776:3) {
+  errors: 
+[Getter/Setter]
+}[39m

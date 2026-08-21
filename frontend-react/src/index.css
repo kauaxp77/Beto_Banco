@@ -1,0 +1,202 @@
+:root {
+  --color-gold: #D4AF37;
+  --color-gold-hover: #BF9B2D;
+  --color-gold-glow: rgba(212, 175, 55, 0.3);
+
+  --color-black: #0A0A0A;
+  --color-black-light: #141414;
+  --color-black-surface: #1A1A1A;
+
+  --color-navy: #0F172A;
+  --color-navy-dark: #070B14;
+  --color-navy-light: #1E293B;
+
+  --color-white: #FFFFFF;
+  --color-white-dim: #F8FAFC;
+
+  --color-gray: #CBD5E1;
+  --color-gray-dark: #94A3B8;
+
+  --font-main: 'Poppins', sans-serif;
+
+  --transition: all 0.3s ease;
+  --border-radius: 8px;
+  --border-radius-lg: 16px;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+  --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--color-black);
+  color: var(--color-gray);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  background-color: #010102;
+  background-image: url("/assets/banking-architecture-bg.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  transform: none;
+  opacity: 1;
+}
+
+body::after {
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(1, 4, 8, 0.03) 0%, rgba(1, 4, 8, 0.1) 46%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.06) 0%, rgba(0, 0, 0, 0.2) 100%);
+  filter: none;
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  body::before {
+    background-attachment: scroll;
+    background-position: center center;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-white);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 600;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  font-family: var(--font-main);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Base Utility Classes */
+.text-gold {
+  color: var(--color-gold);
+}
+
+.text-white {
+  color: var(--color-white);
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: var(--color-gold);
+  color: var(--color-black);
+  padding: 16px 32px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 1.125rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+  box-shadow: var(--shadow-gold);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-white);
+  padding: 15px 31px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 1.125rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Sections */
+section {
+  padding: 80px 0;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  section {
+    padding: 120px 0;
+  }
+}
