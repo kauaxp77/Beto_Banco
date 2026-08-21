@@ -148,13 +148,13 @@
 
 .glow-effect {
     position: absolute;
-    width: 80%;
-    height: 80%;
-    background: var(--color-gold);
-    filter: blur(120px);
-    opacity: 0.15;
-    top: 10%;
-    left: 10%;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.4) 0%, rgba(212, 175, 55, 0) 70%);
+    filter: blur(80px);
+    opacity: 0.8;
+    top: -10%;
+    left: -10%;
     z-index: -1;
     border-radius: 50%;
 }
@@ -170,13 +170,13 @@
 
 .floating-card {
     position: absolute;
-    background: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(212, 175, 55, 0.3);
     border-radius: var(--border-radius-lg);
-    padding: 16px;
-    box-shadow: var(--shadow-md);
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(212, 175, 55, 0.05);
     z-index: 5;
     display: flex;
     align-items: center;
