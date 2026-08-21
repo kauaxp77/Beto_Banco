@@ -158,3 +158,17 @@
         display: none;
     }
 }
+
+@media (max-width: 1023px) {
+    .header {
+        padding: 16px 0;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    }
+
+    .mobile-menu {
+        padding-top: 120px;
+    }
+}

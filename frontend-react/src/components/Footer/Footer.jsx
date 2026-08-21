@@ -16,6 +16,7 @@ const Footer = ({ whatsapp }) => {
                                 src="/logo-beto-banco.jpg"
                                 alt="Beto Banco"
                                 className="footer-logo"
+                                style={{ mixBlendMode: 'screen', height: '50px' }}
                             />
                         </a>
                         <p className="footer-bio">

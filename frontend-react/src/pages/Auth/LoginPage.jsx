@@ -91,7 +91,7 @@ const LoginPage = () => {
     return (
         <div className="login-page">
             <div className="login-card">
-                <img src="/logo-beto-banco.jpg" alt="Beto Banco" className="login-logo" style={{ height: '60px', borderRadius: '12px', objectFit: 'contain' }} />
+                <img src="/logo-beto-banco.jpg" alt="Beto Banco" className="login-logo" style={{ height: '60px', borderRadius: '12px', objectFit: 'contain', mixBlendMode: 'screen' }} />
 
                 <h1 className="login-title">Acesse sua Conta</h1>
                 <p className="login-subtitle">A plataforma premium para concursos bancários</p>

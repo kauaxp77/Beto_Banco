@@ -34,9 +34,8 @@ const Header = ({ whatsapp }) => {
     return (
         <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
             <div className="container header-container">
-                <a href="#inicio" className="logo" onClick={handleLogoClick} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <img src="/logo-beto-banco.jpg" alt="Beto Banco" style={{ height: '40px', borderRadius: '8px' }} />
-                    <span style={{ color: 'var(--gold)', fontWeight: 'bold', fontSize: '20px' }}>Beto Banco</span>
+                <a href="#inicio" className="logo" onClick={handleLogoClick}>
+                    <img src="/logo-beto-banco.jpg" alt="Beto Banco" style={{ height: '40px', mixBlendMode: 'screen', objectFit: 'contain' }} />
                 </a>
 
                 {/* Desktop Navigation */}

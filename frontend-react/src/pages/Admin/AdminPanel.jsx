@@ -97,7 +97,7 @@ const AdminPanel = () => {
             {/* Sidebar */}
             <aside className={`admin-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
                 <div className="sidebar-header" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-                    <img src="/logo-beto-banco.jpg" alt="Aprovação" className="sidebar-logo" style={{ borderRadius: '8px', height: '40px' }} />
+                    <img src="/logo-beto-banco.jpg" alt="Aprovação" className="sidebar-logo" style={{ borderRadius: '8px', height: '40px', mixBlendMode: 'screen' }} />
                     <button className="sidebar-toggle-mobile" onClick={(e) => { e.stopPropagation(); setSidebarOpen(false); }}>
                         <X size={24} />
                     </button>

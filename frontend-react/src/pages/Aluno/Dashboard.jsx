@@ -58,9 +58,8 @@ const Dashboard = () => {
         <div className="student-dashboard">
             <header className="dash-header">
                 <div className="d-container">
-                    <a href="/" className="dash-logo-link" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-                        <img src="/logo-beto-banco.jpg" alt="Beto Banco" className="dash-logo" style={{ height: '40px', borderRadius: '8px' }} />
-                        <span style={{ color: 'var(--gold)', fontWeight: 'bold', fontSize: '20px' }}>Beto Banco</span>
+                    <a href="/" className="dash-logo-link">
+                        <img src="/logo-beto-banco.jpg" alt="Beto Banco" className="dash-logo" style={{ height: '45px', mixBlendMode: 'screen' }} />
                     </a>
                     <div className="dash-user">
                         <div className="user-text">
