@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#03050a" />
+      <stop offset="48%" stop-color="#060812" />
+      <stop offset="100%" stop-color="#020307" />
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f1a2d" />
+      <stop offset="100%" stop-color="#07111d" />
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#020305" stop-opacity="0" />
+      <stop offset="100%" stop-color="#04070d" stop-opacity="0.95" />
+    </linearGradient>
+    <filter id="glowBlue" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 0.35 0.75 0 0.95  0 0 1 0 1  0 0 0 1 0" />
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+    <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 1  0 0.35 0.6 0 0.25  0 0 1 0 0.65  0 0 0 1 0" />
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="9" result="blur" />
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.08  0 1 0 0 0.95  0 0 1 0 0.35  0 0 0 1 0" />
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#bg)" />
+  <rect y="720" width="1600" height="280" fill="url(#floor)" />
+
+  <g opacity="0.18">
+    <rect x="204" y="164" width="220" height="420" rx="18" fill="url(#glass)" />
+    <rect x="482" y="122" width="236" height="500" rx="22" fill="url(#glass)" />
+    <rect x="776" y="166" width="208" height="420" rx="18" fill="url(#glass)" />
+    <rect x="1034" y="132" width="262" height="520" rx="22" fill="url(#glass)" />
+  </g>
+
+  <g opacity="0.75" stroke-width="2.4" stroke-linecap="round" fill="none">
+    <path d="M260 180h140" stroke="#4f7bff" />
+    <path d="M220 238h200" stroke="#6f8dff" />
+    <path d="M220 350h200" stroke="#5c4dff" />
+    <path d="M220 490h200" stroke="#4f7bff" />
+    <path d="M540 150h170" stroke="#ff5fe0" />
+    <path d="M520 242h210" stroke="#55e4ff" />
+    <path d="M518 414h210" stroke="#ff5fe0" />
+    <path d="M810 190h140" stroke="#35f0ae" />
+    <path d="M780 280h180" stroke="#4f7bff" />
+    <path d="M780 422h180" stroke="#ff5fe0" />
+    <path d="M1070 170h190" stroke="#55e4ff" />
+    <path d="M1050 270h230" stroke="#ff5fe0" />
+    <path d="M1050 428h230" stroke="#35f0ae" />
+  </g>
+
+  <g filter="url(#glowBlue)">
+    <rect x="206" y="166" width="220" height="420" rx="18" fill="none" stroke="#4da4ff" stroke-width="4" />
+    <rect x="484" y="124" width="236" height="500" rx="22" fill="none" stroke="#2de2ff" stroke-width="4" />
+    <rect x="778" y="168" width="208" height="420" rx="18" fill="none" stroke="#5f74ff" stroke-width="4" />
+    <rect x="1036" y="134" width="262" height="520" rx="22" fill="none" stroke="#4da4ff" stroke-width="4" />
+  </g>
+
+  <g filter="url(#glowPink)">
+    <path d="M304 168v418" stroke="#ff52d3" stroke-width="5" stroke-linecap="round" />
+    <path d="M580 124v500" stroke="#ff5fe0" stroke-width="5" stroke-linecap="round" />
+    <path d="M884 168v420" stroke="#ff5fe0" stroke-width="5" stroke-linecap="round" />
+    <path d="M1178 134v520" stroke="#ff63d5" stroke-width="5" stroke-linecap="round" />
+  </g>
+
+  <g filter="url(#glowGreen)">
+    <path d="M220 588c92 28 176 24 260-8" stroke="#21ff8b" stroke-width="3" stroke-linecap="round" />
+    <path d="M520 638c96 32 186 26 270-14" stroke="#2bff94" stroke-width="3" stroke-linecap="round" />
+    <path d="M780 574c94 24 160 18 222-10" stroke="#31ff9e" stroke-width="3" stroke-linecap="round" />
+  </g>
+
+  <g opacity="0.22">
+    <rect x="240" y="190" width="154" height="206" rx="16" fill="#0d1421" />
+    <rect x="536" y="184" width="168" height="256" rx="14" fill="#0c1421" />
+    <rect x="802" y="198" width="158" height="214" rx="15" fill="#0c1421" />
+    <rect x="1078" y="182" width="184" height="236" rx="15" fill="#0c1421" />
+  </g>
+
+  <ellipse cx="800" cy="840" rx="560" ry="100" fill="#02040a" opacity="0.86" />
+  <ellipse cx="820" cy="840" rx="500" ry="84" fill="#05070d" opacity="0.74" />
+</svg>

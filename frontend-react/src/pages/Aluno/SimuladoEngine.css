@@ -1,0 +1,361 @@
+/* SimuladoEngine.css */
+.simulado-frame {
+    min-height: 100vh;
+    background: #050E17;
+    /* Background Dark */
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+}
+
+.qb-header-top {
+    height: 70px;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+}
+
+.btn-back:hover {
+    color: var(--text);
+}
+
+.timer-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-finish-early {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-finish-early:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+/* Main Area */
+.q-main {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 60px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.q-number-box {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.q-number-box span {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.q-badge {
+    background: rgba(233, 190, 69, 0.1);
+    color: var(--primary);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(233, 190, 69, 0.2);
+}
+
+.q-enunciado p {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: #cbd5e1;
+    /* Slightly muted white */
+}
+
+/* Options */
+.q-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.q-opt-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    padding: 20px 24px;
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.q-opt-btn:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.q-opt-btn.selected {
+    border-color: var(--primary);
+    background: rgba(233, 190, 69, 0.1);
+}
+
+.opt-letter {
+    font-weight: 800;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+}
+
+.q-opt-btn.selected .opt-letter {
+    color: var(--primary);
+}
+
+.opt-text {
+    flex: 1;
+    line-height: 1.5;
+}
+
+.opt-check {
+    color: var(--primary);
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    80% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Footer */
+.q-footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.q-progress {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    width: 100%;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.4s ease;
+}
+
+.q-actions {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-nav {
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.btn-nav:not(.primary):not(.finish) {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-nav.primary {
+    background: var(--primary);
+    color: var(--background);
+}
+
+.btn-nav.primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-nav.finish {
+    background: #10b981;
+    color: #fff;
+}
+
+.btn-nav.finish:hover {
+    background: #059669;
+}
+
+/* Results Mode */
+.results-mode {
+    align-items: center;
+    justify-content: center;
+}
+
+.r-container {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.r-logo {
+    height: 48px;
+    margin-bottom: 40px;
+}
+
+.r-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 48px;
+    border-radius: 24px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+.r-card h2 {
+    font-size: 2rem;
+    margin-bottom: 32px;
+}
+
+.r-score-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(233, 190, 69, 0.2), rgba(233, 190, 69, 0.05));
+    border: 4px solid var(--primary);
+    margin: 0 auto 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 40px rgba(233, 190, 69, 0.2);
+}
+
+.score-val {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.score-lbl {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 8px;
+}
+
+.r-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 40px;
+}
+
+.rst {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.rst strong {
+    color: var(--text);
+}
+
+.r-card .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 16px;
+    font-size: 1.1rem;
+}
+
+.simulado-loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    background: #050E17;
+}
+
+@media (max-width: 768px) {
+    .q-main {
+        padding: 32px 20px;
+        gap: 24px;
+    }
+
+    .q-enunciado p {
+        font-size: 1.1rem;
+    }
+
+    .q-opt-btn {
+        padding: 16px;
+        font-size: 1rem;
+    }
+
+    .q-number-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}

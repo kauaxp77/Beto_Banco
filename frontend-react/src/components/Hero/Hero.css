@@ -1,0 +1,278 @@
+.hero {
+    min-height: 100vh;
+    padding-top: 120px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at top right, var(--color-navy-dark), var(--color-black) 60%);
+}
+
+.hero-blur-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+}
+
+.hero-blur-circle.primary {
+    width: 600px;
+    height: 600px;
+    background: var(--color-gold);
+    top: -200px;
+    right: -100px;
+}
+
+.hero-blur-circle.secondary {
+    width: 400px;
+    height: 400px;
+    background: var(--color-navy-light);
+    bottom: 0;
+    left: -200px;
+}
+
+.hero-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-gray);
+    margin-bottom: 24px;
+    width: fit-content;
+}
+
+.badge-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-gold);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--color-gold);
+}
+
+.hero-title {
+    margin-bottom: 24px;
+}
+
+.hero-description {
+    font-size: 1.125rem;
+    color: var(--color-gray-dark);
+    margin-bottom: 32px;
+    max-width: 600px;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.hero-trust {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.9rem;
+    color: var(--color-gray);
+}
+
+.trust-avatars {
+    display: flex;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--color-navy-light);
+    border: 2px solid var(--color-black);
+    margin-left: -12px;
+}
+
+.avatar:first-child {
+    margin-left: 0;
+    background-color: var(--color-gold);
+}
+
+.avatar:nth-child(2) {
+    background-color: #3b82f6;
+}
+
+.avatar:nth-child(3) {
+    background-color: #ec4899;
+}
+
+.avatar:nth-child(4) {
+    background-color: #8b5cf6;
+}
+
+.hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.hero-image-wrapper {
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+}
+
+.glow-effect {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background: var(--color-gold);
+    filter: blur(120px);
+    opacity: 0.15;
+    top: 10%;
+    left: 10%;
+    z-index: -1;
+    border-radius: 50%;
+}
+
+.professor-img {
+    width: 100%;
+    height: auto;
+    position: relative;
+    z-index: 1;
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+
+.floating-card {
+    position: absolute;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg);
+    padding: 16px;
+    box-shadow: var(--shadow-md);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+}
+
+.metric-card {
+    top: 20%;
+    right: -5%;
+    flex-direction: column;
+    align-items: flex-start;
+    animation: float 6s ease-in-out infinite;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-gold);
+    line-height: 1;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: var(--color-gray-dark);
+    margin-top: 4px;
+}
+
+.approval-card {
+    bottom: 25%;
+    left: -5%;
+    gap: 12px;
+    animation: float 8s ease-in-out infinite reverse;
+}
+
+.approval-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(212, 175, 55, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.approval-title {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-white);
+}
+
+.approval-subtitle {
+    font-size: 0.75rem;
+    color: var(--color-gray-dark);
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-container {
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+    }
+}
+
+@media (max-width: 1023px) {
+    .hero-content {
+        text-align: center;
+        align-items: center;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .hero-visual {
+        margin-top: 40px;
+    }
+
+    .metric-card {
+        right: 5%;
+    }
+
+    .approval-card {
+        left: 5%;
+    }
+}

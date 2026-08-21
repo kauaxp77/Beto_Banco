@@ -1,0 +1,132 @@
+.professor-section {
+    background-color: var(--color-navy);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.professor-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.professor-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.professor-image-frame {
+    position: relative;
+    padding: 20px;
+    max-width: 450px;
+    width: 100%;
+}
+
+.img-fluid {
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+    position: relative;
+    z-index: 2;
+    /* Applying a slight dark luxury filter */
+    filter: contrast(1.1) brightness(0.95);
+}
+
+.frame-corner {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border: 2px solid var(--color-gold);
+    z-index: 1;
+}
+
+.top-left {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+}
+
+.bottom-right {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+}
+
+.professor-name-label {
+    position: absolute;
+    bottom: 40px;
+    left: -20px;
+    background: var(--color-gold);
+    color: var(--color-black);
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    z-index: 3;
+    box-shadow: var(--shadow-md);
+    transform: rotate(-2deg);
+}
+
+.professor-content .section-title {
+    margin-bottom: 40px;
+}
+
+.professor-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-gold);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.stat-text {
+    font-size: 0.85rem;
+    color: var(--color-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+}
+
+.professor-bio p {
+    margin-bottom: 16px;
+    font-size: 1.05rem;
+    color: var(--color-gray-dark);
+}
+
+.professor-bio strong {
+    color: var(--color-white);
+}
+
+.professor-quote {
+    margin-top: 32px;
+    padding: 24px;
+    border-left: 4px solid var(--color-gold);
+    background: rgba(212, 175, 55, 0.05);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--color-white);
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+@media (min-width: 1024px) {
+    .professor-layout {
+        grid-template-columns: 5fr 6fr;
+    }
+}
