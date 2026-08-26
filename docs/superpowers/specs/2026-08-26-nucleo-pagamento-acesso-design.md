@@ -29,6 +29,24 @@ cinco sub-projetos, cada um com sua própria spec, plano e ciclo de implementaç
 
 Este documento especifica **apenas o sub-projeto 1**.
 
+### 1.0 Documentos-fonte
+
+| Documento | Papel |
+|---|---|
+| Prompt mestre "Beto Banco 2.0" | **Autoridade de stack e arquitetura.** Java 21 + Spring Boot, React, JWT próprio |
+| `Levantamento de Requisitos e Caso de Uso - Área de Membros.pdf` | RF01–RF08, RNF01–RNF02, CSU-01 |
+| `Documento de Arquitetura_...docx` | Visão estratégica, MVP vs. Fase de Inteligência |
+| `Documentacao_Beto_Banco.pdf` | Casos de uso e C4 Context do sistema **atual** |
+| `Aprimorar documento executivo.pdf` | Reescrita executiva do levantamento, com valores concretos que os demais não fixam |
+
+O documento executivo declara na primeira página que reescreve o levantamento
+**original**, preservando seus requisitos. Sua seção "Tecnologias Recomendadas"
+sugere Node.js, Express, Next.js e Firebase Authentication. **Essa recomendação não
+se aplica:** ela é anterior e alheia à decisão do Beto Banco 2.0, cujo prompt mestre
+é posterior, explícito e detalhado. Confirmado com o responsável pelo produto em
+2026-08-26. O que se aproveita do documento executivo são os requisitos e os valores
+numéricos, não a escolha de stack.
+
 ### 1.1 Estado real do sistema atual
 
 O levantamento do código revelou divergências relevantes entre a documentação existente e
@@ -95,6 +113,29 @@ O redesenho visual completo do dashboard do aluno também fica fora. Desenhá-lo
 significaria desenhá-lo sem cronograma, sem desempenho e sem simulados — ou seja,
 desenhá-lo duas vezes.
 
+### 2.3 Valores fixados para os sub-projetos seguintes
+
+O documento executivo fixa números que nenhum outro documento estabelecia. Ficam
+registrados aqui para que as specs 2 a 5 não os reinventem:
+
+**Sub-projeto 4 — cronograma (RF-05, RN-05 a RN-07)**
+Distribuição padrão: **40% teoria, 20% revisão, 40% questões**. O cronograma é
+recalculado sempre que a disponibilidade muda. Revisões têm prioridade automática.
+Questões fazem parte do cronograma, não são atividade paralela.
+
+**Sub-projeto 5 — redações (RF-07)**
+Formatos aceitos: **PDF e DOCX**. Status: **`AGUARDANDO_CORRECAO` (amarelo),
+`EM_CORRECAO` (roxo), `CORRIGIDA` (verde)** — são **três**, não quatro. O documento
+executivo elimina o `DEVOLVIDA` que constava do prompt mestre; a spec 5 deve adotar
+os três e justificar caso precise do quarto.
+
+**Sub-projeto 5 — gamificação (RF-08, RN-08 a RN-10)**
+Pontuação: assistir aula completa **+10**; resolver 20 questões **+15**; enviar
+redação **+25**; completar o cronograma diário **+20**. Pontuação e ranking
+atualizados em tempo real. **O instrutor pode conceder bônus** — capacidade que
+exige uma transação de pontos com `source = MANUAL` e o instrutor registrado como
+autor, sob pena de o ranking ficar inauditável.
+
 ---
 
 ## 3. Decisões
@@ -104,9 +145,11 @@ desenhá-lo duas vezes.
 | D1 | Gateway real: **InfinitePay, com split** | Definição do responsável pelo produto. Os demais gateways permanecem como interface sem implementação |
 | D2 | **Manter o PostgreSQL do Supabase**, abandonando Auth, RLS e edge functions | Zero migração de dados, backups já configurados, permitido pelo requisito original |
 | D3 | Modelo de acesso: **catálogo** — cada produto libera um conjunto | Definição do responsável pelo produto. Permite vender turmas e módulos avulsos |
-| D4 | Primeiro acesso por **link de definição de senha**, não senha temporária | Nenhuma senha trafega ou permanece arquivada em caixa de entrada. Reutiliza o mecanismo de recuperação de senha, custando menos código |
+| D4 | Primeiro acesso por **link de definição de senha**, não senha temporária | Nenhuma senha trafega ou permanece arquivada em caixa de entrada. Reutiliza o mecanismo de recuperação de senha, custando menos código. Requisito de senha temporária reafirmado pelo RF-02 do documento executivo e novamente dispensado, com aprovação em 2026-08-26 |
 | D5 | Webhook: **recebe-e-registra síncrono, processa em background** | Única alternativa que entrega simultaneamente segurança, idempotência, auditabilidade e resiliência sem infraestrutura adicional |
-| D6 | **Estorno e chargeback revogam o acesso automaticamente** | Sem isso, reembolso devolve o dinheiro e mantém o acesso indefinidamente |
+| D6 | **Estorno e chargeback revogam o acesso automaticamente** | Sem isso, reembolso devolve o dinheiro e mantém o acesso indefinidamente. **Confirmado pela tabela de eventos do RF-01 e pela RN-03** do documento executivo, que não constavam do prompt mestre |
+| D13 | `payments.status` inclui **`CANCELLED`**, distinto de `REFUNDED` | O RF-01 separa "Pagamento Cancelado → cancelar liberação" de "Reembolso → revogar acesso": cancelamento ocorre antes de o acesso existir, estorno depois |
+| D14 | **`ROLE_INSTRUCTOR` é obrigatório**, não opcional | A tabela de permissões do RNF-03 define três perfis com escopos distintos, não dois |
 | D7 | Monorepo: `backend/` ao lado de `frontend/` no repositório existente | O `vercel.json` na raiz continua válido |
 | D8 | Frontend novo em **TypeScript**, em diretório paralelo | O antigo permanece no ar até o corte; rollback é uma linha no `vercel.json` |
 | D9 | Hashing com `DelegatingPasswordEncoder`: Argon2id para senhas novas, bcrypt aceito para as legadas, re-hash no login | Preserva o acesso dos alunos existentes e migra a base gradualmente |
@@ -119,9 +162,14 @@ desenhá-lo duas vezes.
 Três pontos do documento de requisitos original foram contrariados de forma consciente,
 com aprovação:
 
-- **Item 11 e CSU-01** pedem geração e envio de credenciais temporárias por e-mail.
-  Substituído por link de definição de senha (D4). O objetivo do requisito — o aluno recebe
-  acesso automaticamente após o pagamento — é integralmente atendido.
+- **Item 11, CSU-01 e RF-02** pedem geração e envio de credenciais temporárias por
+  e-mail. Substituído por link de definição de senha (D4). O requisito aparece em três
+  documentos distintos e foi dispensado duas vezes, com aprovação registrada em
+  2026-08-26. O objetivo — o aluno recebe acesso automaticamente após o pagamento, sem
+  intervenção humana — é integralmente atendido; o que muda é apenas o que viaja no
+  e-mail. A RN-04 ("aluno pode redefinir senha") e a RN-02 ("credenciais únicas por
+  aluno") continuam satisfeitas: o e-mail é único por usuário e o fluxo de redefinição
+  é o mesmo mecanismo.
 - **Item 5** lista um módulo `admins`. Removido (D10); endpoints administrativos residem no
   módulo dono do dado.
 - **Item 8** lista a tabela `payment_events`. Removida (D11).
@@ -185,6 +233,11 @@ Todos os identificadores são UUID gerados por `gen_random_uuid()`. Todos os tim
 
 **`roles`** — `id`, `name` (unique): `ROLE_STUDENT`, `ROLE_ADMIN`, `ROLE_INSTRUCTOR`
 
+Os três são obrigatórios (D14). Escopos definidos pela tabela de permissões do
+RNF-03: administrador tem acesso total; instrutor corrige redações e gerencia
+conteúdo, sem acesso a pagamentos, auditoria ou gestão de alunos; aluno acessa
+apenas a própria área.
+
 **`user_roles`** — `user_id`, `role_id`, PK composta
 
 **`students`** — `user_id` (PK e FK para `users`), `phone`, `created_at`, `updated_at`
@@ -219,7 +272,7 @@ refresh.
 
 **`payments`** — `id`, `provider`, `provider_transaction_id`, `product_id`, `user_id`
 (nulo até o aluno ser resolvido), `buyer_email`, `buyer_name`, `amount_cents`, `currency`,
-`status` (`PENDING`, `APPROVED`, `REFUNDED`, `CHARGEBACK`, `FAILED`), `approved_at`,
+`status` (`PENDING`, `APPROVED`, `CANCELLED`, `REFUNDED`, `CHARGEBACK`, `FAILED`), `approved_at`,
 `created_at`, `updated_at`
 
 Unique em `(provider, provider_transaction_id)`.
@@ -330,6 +383,21 @@ Nos métodos: `@PreAuthorize` para o que depende de dado, por exemplo
 que ele comprou. Um aluno adimplente e um inadimplente têm a mesma role — o que os separa é
 o entitlement. Confundir os dois é o mecanismo mais comum de vazamento de acesso.
 
+Matriz de permissões, conforme o RNF-03 do documento executivo:
+
+| Recurso | `ROLE_ADMIN` | `ROLE_INSTRUCTOR` | `ROLE_STUDENT` |
+|---|---|---|---|
+| Gestão de alunos e entitlements | total | — | — |
+| Pagamentos e webhooks | total | — | — |
+| Auditoria | total | — | — |
+| Produtos e catálogo | total | leitura | leitura (apenas ativos) |
+| Conteúdo (sub-projeto 2) | total | criar e editar | consumir o que o entitlement libera |
+| Redações (sub-projeto 5) | total | corrigir e dar feedback | enviar e ver as próprias |
+| Área individual | total | própria | própria |
+
+O instrutor **não** acessa pagamentos, auditoria nem gestão de alunos. É a diferença
+entre "acesso total" e "correções e conteúdos" que o documento estabelece.
+
 ### 6.5 Identidade nunca vem do cliente
 
 Existe um resolver `@CurrentUser` que extrai o `userId` **do token**, e um teste ArchUnit
@@ -402,8 +470,19 @@ e o administrador é notificado.
 Esse comportamento é a implementação do fluxo de exceção 2a do CSU-01, que hoje não existe:
 a edge function atual apenas retorna `400` e o evento se perde.
 
-**Eventos de estorno e chargeback** (D6) revogam o entitlement preenchendo `revoked_at`,
-gravam `ACCESS_REVOKED` na auditoria e notificam o administrador.
+A tabela de eventos do RF-01 define o comportamento por status, e o worker o segue
+literalmente:
+
+| Status recebido | Ação |
+|---|---|
+| Aprovado | Cria o aluno se necessário, concede o entitlement, dispara o e-mail |
+| Pendente | Registra o pagamento como `PENDING`. **Nenhum acesso é liberado** |
+| Cancelado | Marca `CANCELLED`. Se nada foi concedido, nada há a desfazer |
+| Reembolso / chargeback | Revoga o entitlement preenchendo `revoked_at`, grava `ACCESS_REVOKED` na auditoria e notifica o administrador (D6) |
+
+Cancelamento e estorno são eventos distintos porque ocorrem em momentos distintos:
+cancelamento antes de o acesso existir, estorno depois. Tratá-los como um só faria o
+sistema procurar um entitlement inexistente e registrar falha onde não há erro.
 
 ### 7.3 Estágio 3 — entrega do e-mail
 
@@ -569,6 +648,12 @@ extraídos da identidade atual, mais `Button`, `Input`, `Card`, `Table`, `Modal`
 `Skeleton`, `EmptyState`, `ErrorState`, `Toast`. Construir a biblioteca completa agora
 produziria componentes sem consumidor real, e componente sem uso nasce errado.
 
+O RNF-02 do documento executivo fixa **tema escuro premium** como requisito, não como
+preferência. Isso coincide com a identidade já existente — o `Toaster` atual usa
+`#1A1C20` com borda `#C4A15A`, grafite e dourado. Os tokens partem daí. Como o tema
+escuro é o padrão do produto, o contraste WCAG 2.1 AA (seção 9.8) precisa ser
+verificado **sobre o fundo escuro**, que é onde a maioria das paletas falha.
+
 ### 9.7 Estados de interface
 
 Loading, skeleton, vazio, erro, sucesso, não autorizado e não encontrado não ficam a cargo
@@ -648,6 +733,25 @@ Métricas de negócio, não apenas técnicas:
   arquitetura define como devendo ser próxima de zero
 - itens pendentes na outbox de e-mail
 - logins falhos por minuto
+
+### 11.1 Metas de desempenho
+
+O RNF-04 do documento executivo fixa alvos que nenhum outro documento estabelecia.
+Eles viram SLOs medidos, não aspirações escritas — cada um tem um percentil 95
+exposto no Actuator:
+
+| Indicador | Meta |
+|---|---|
+| `POST /auth/login` | ≤ 2s |
+| Carregamento de módulos (sub-projeto 2) | ≤ 3s |
+| Upload de redação (sub-projeto 5) | ≤ 5s |
+| Disponibilidade | 99,9% |
+
+Uma observação honesta sobre o último: 99,9% ao mês equivale a 43 minutos de
+indisponibilidade. Alcançar isso depende de infraestrutura redundante — instância
+única, deploy sem *rolling update* e banco sem réplica não sustentam esse número,
+por melhor que seja o código. O alvo fica registrado; a decisão de infraestrutura
+que o torna possível é do sub-projeto de operação.
 
 Duas condições exigem alerta desde o primeiro dia, porque significam dinheiro recebido sem
 acesso entregue:
