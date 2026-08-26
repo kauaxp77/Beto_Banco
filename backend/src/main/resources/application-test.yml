@@ -10,3 +10,4 @@ betobanco:
   auth:
     jwt-secret: segredo-de-teste-com-mais-de-32-bytes-para-hs256
     cookie-secure: false
+    rate-limit-per-minute: 1000
