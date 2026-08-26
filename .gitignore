@@ -29,3 +29,6 @@ build_output.txt
 build_output_clean.txt
 tsc_output.txt
 error.txt
+
+# Workspace do subagent-driven-development
+.superpowers/
