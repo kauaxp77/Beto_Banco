@@ -1,6 +1,6 @@
 package com.betobanco.users.entity;
 
-import jakarta.persistence.CascadeType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,7 +48,10 @@ public class User {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private Instant updatedAt;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    // Sem cascade de proposito: as roles vem da migration e nunca sao criadas
+    // atraves de um User. Com cascade, uma Role detached (carregada fora da
+    // transacao atual) faz o Hibernate tentar reinseri-la e violar a PK.
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
