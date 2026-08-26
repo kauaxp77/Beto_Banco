@@ -554,6 +554,16 @@ autenticado sem permissão · `404` recurso inexistente · `409` conflito de est
 `422` corpo bem-formado mas semanticamente inválido, incluindo Bean Validation, com
 `fieldErrors` preenchido · `429` rate limit excedido · `500` erro interno
 
+O Spring MVC também sinaliza condições que os oito acima não cobrem. Elas fazem parte do
+contrato e recebem `code` próprio, em vez de serem forçadas num código que mente sobre a
+natureza do erro: `405` `METHOD_NOT_ALLOWED` · `406` `NOT_ACCEPTABLE` · `413`
+`PAYLOAD_TOO_LARGE` · `415` `UNSUPPORTED_MEDIA_TYPE`.
+
+**Nenhum `code` pode divergir da natureza do `status` que o acompanha.** Como `code` é o
+contrato pelo qual o frontend decide comportamento, reaproveitar `MALFORMED_REQUEST` para
+um 4xx que não é corpo malformado quebra a garantia da seção 8.1. Um 4xx que ainda não
+tenha código próprio usa `CLIENT_ERROR`; um 5xx usa `INTERNAL_ERROR`.
+
 Um único `@RestControllerAdvice`. `traceId` vem do MDC e retorna no header `X-Trace-Id`,
 propagado quando o cliente o envia. Stack trace nunca é exposto no perfil `prod`.
 
