@@ -74,6 +74,22 @@ class ModuleBoundariesTest {
                             && PROIBIDOS.contains(valor.toLowerCase().replace("-", "_"));
                 }
 
+                /**
+                 * {@code @PathVariable Long userId} nao declara nome na anotacao: o nome real
+                 * do parametro so existe no atributo MethodParameters do bytecode (ligado pelo
+                 * {@code -parameters} do spring-boot-starter-parent). A API do ArchUnit nao
+                 * expoe {@code JavaParameter#getName()}, entao caimos na reflexao.
+                 */
+                private String nomeRealDoParametro(
+                        com.tngtech.archunit.core.domain.JavaMethod metodo, int indice) {
+                    try {
+                        java.lang.reflect.Parameter[] parametros = metodo.reflect().getParameters();
+                        return indice < parametros.length ? parametros[indice].getName() : null;
+                    } catch (RuntimeException e) {
+                        return null;
+                    }
+                }
+
                 @Override
                 public void check(com.tngtech.archunit.core.domain.JavaClass item,
                                   com.tngtech.archunit.lang.ConditionEvents events) {
@@ -84,9 +100,15 @@ class ModuleBoundariesTest {
                                 if (parametro.isAnnotatedWith(PathVariable.class)) {
                                     PathVariable a = parametro.getAnnotationOfType(PathVariable.class);
                                     declarado = !a.value().isEmpty() ? a.value() : a.name();
+                                    if (declarado.isEmpty()) {
+                                        declarado = nomeRealDoParametro(metodo, parametro.getIndex());
+                                    }
                                 } else if (parametro.isAnnotatedWith(RequestParam.class)) {
                                     RequestParam a = parametro.getAnnotationOfType(RequestParam.class);
                                     declarado = !a.value().isEmpty() ? a.value() : a.name();
+                                    if (declarado.isEmpty()) {
+                                        declarado = nomeRealDoParametro(metodo, parametro.getIndex());
+                                    }
                                 }
 
                                 if (nomeProibido(declarado)) {
