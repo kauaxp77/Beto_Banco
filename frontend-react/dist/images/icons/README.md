@@ -1,1 +1,0 @@
-Store reusable icon assets here.
