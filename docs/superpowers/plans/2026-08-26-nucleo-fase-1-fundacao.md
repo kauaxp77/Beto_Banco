@@ -1711,6 +1711,7 @@ import jakarta.persistence.Entity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -1795,6 +1796,20 @@ class ModuleBoundariesTest {
                                     events.add(com.tngtech.archunit.lang.SimpleConditionEvent
                                             .satisfied(item, metodo.getFullName()
                                                     + " aceita '" + declarado + "' do cliente"));
+                                }
+
+                                if (parametro.isAnnotatedWith(RequestBody.class)) {
+                                    com.tngtech.archunit.core.domain.JavaClass tipo =
+                                            parametro.getRawType();
+                                    tipo.getAllFields().forEach(campo -> {
+                                        if (nomeProibido(campo.getName())) {
+                                            events.add(com.tngtech.archunit.lang.SimpleConditionEvent
+                                                    .satisfied(item, metodo.getFullName()
+                                                            + " aceita '" + campo.getName()
+                                                            + "' do cliente via @RequestBody em "
+                                                            + tipo.getName()));
+                                        }
+                                    });
                                 }
                             }));
                 }
@@ -1993,6 +2008,8 @@ A fase está pronta quando:
 2. `docker compose up -d` sobe PostgreSQL 17 saudável e MailHog
 3. A aplicação sobe com o perfil `dev` e `GET http://localhost:8080/api/v1/actuator/health` devolve `{"status":"UP"}`
 4. `http://localhost:8080/api/v1/swagger-ui.html` abre com o título "Beto Banco API"
+
+   **Atenção nos itens 3 e 4:** `spring-boot-starter-security` está no classpath e esta fase **não** cria nenhum `SecurityFilterChain`. A autoconfiguração padrão do Spring Security protege *tudo* com HTTP Basic, usando um usuário `user` e uma senha aleatória impressa no log de boot (`Using generated security password: ...`). Portanto os dois endpoints respondem `401` sem credencial. Use a senha do log para verificá-los. Deixar esses caminhos abertos é decisão da tarefa de `SecurityConfig`, na Fase 2 — não desta.
 5. `git ls-files frontend-react/node_modules | wc -l` devolve `0`
 6. O workflow **Backend** está verde no GitHub Actions
 7. Os três testes ArchUnit passam e foram comprovadamente capazes de reprovar uma violação (Tarefa 10, Passo 4)
