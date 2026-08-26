@@ -23,6 +23,9 @@ public final class PageRequestFactory {
             return Sort.unsorted();
         }
         String[] partes = sort.split(",");
+        if (partes.length == 0) {
+            return Sort.unsorted();
+        }
         String campo = partes[0].trim();
         if (campo.isEmpty()) {
             return Sort.unsorted();

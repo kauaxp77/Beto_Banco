@@ -48,4 +48,27 @@ class PageRequestFactoryTest {
         assertThat(order).isNotNull();
         assertThat(order.getDirection()).isEqualTo(Sort.Direction.ASC);
     }
+
+    @Test
+    void naoQuebraComSortSoDeVirgula() {
+        Pageable p = PageRequestFactory.of(0, 20, ",");
+
+        assertThat(p.getSort().isSorted()).isFalse();
+    }
+
+    @Test
+    void tratasizeZeroComoPadrao() {
+        Pageable p = PageRequestFactory.of(0, 0, null);
+
+        assertThat(p.getPageSize()).isEqualTo(20);
+    }
+
+    @Test
+    void reconheceDirecaoEmMaiusculas() {
+        Pageable p = PageRequestFactory.of(0, 20, "createdAt,DESC");
+
+        Sort.Order order = p.getSort().getOrderFor("createdAt");
+        assertThat(order).isNotNull();
+        assertThat(order.getDirection()).isEqualTo(Sort.Direction.DESC);
+    }
 }
