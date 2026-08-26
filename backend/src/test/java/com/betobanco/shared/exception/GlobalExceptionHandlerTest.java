@@ -140,6 +140,14 @@ class GlobalExceptionHandlerTest extends PostgresTestBase {
                 .andExpect(jsonPath("$.error.timestamp").isNotEmpty());
     }
 
+    @Test
+    void statusSemCodigoProprioNaoMenteSobreANatureza() throws Exception {
+        mockMvc.perform(get("/teste/status-incomum"))
+                .andExpect(status().isIAmATeapot())
+                .andExpect(jsonPath("$.error.status").value(418))
+                .andExpect(jsonPath("$.error.code").value("CLIENT_ERROR"));
+    }
+
     @TestConfiguration
     static class ControllerDeTeste {
         @Bean
@@ -177,6 +185,12 @@ class GlobalExceptionHandlerTest extends PostgresTestBase {
         @org.springframework.web.bind.annotation.GetMapping("/status-404")
         void statusExplicito() {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "recurso ausente");
+        }
+
+        @org.springframework.web.bind.annotation.GetMapping("/status-incomum")
+        void statusIncomum() {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.I_AM_A_TEAPOT);
         }
 
         record Entrada(@NotBlank String nome) {}
