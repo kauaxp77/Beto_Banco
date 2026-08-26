@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -92,6 +93,20 @@ class ModuleBoundariesTest {
                                     events.add(com.tngtech.archunit.lang.SimpleConditionEvent
                                             .satisfied(item, metodo.getFullName()
                                                     + " aceita '" + declarado + "' do cliente"));
+                                }
+
+                                if (parametro.isAnnotatedWith(RequestBody.class)) {
+                                    com.tngtech.archunit.core.domain.JavaClass tipo =
+                                            parametro.getRawType();
+                                    tipo.getAllFields().forEach(campo -> {
+                                        if (nomeProibido(campo.getName())) {
+                                            events.add(com.tngtech.archunit.lang.SimpleConditionEvent
+                                                    .satisfied(item, metodo.getFullName()
+                                                            + " aceita '" + campo.getName()
+                                                            + "' do cliente via @RequestBody em "
+                                                            + tipo.getName()));
+                                        }
+                                    });
                                 }
                             }));
                 }
