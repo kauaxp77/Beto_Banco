@@ -517,7 +517,9 @@ class LegacyMigrationTest {
         jdbc.execute(corpoDaV3());
 
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM users", Integer.class)).isEqualTo(5);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_roles", Integer.class)).isEqualTo(4);
+        // Cinco usuarios legados, uma role cada. ADMIN e SUPER_ADMIN mapeiam
+        // ambos para ROLE_ADMIN, mas sao usuarios distintos: duas linhas.
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_roles", Integer.class)).isEqualTo(5);
     }
 
     private List<String> roleDe(String email) {
