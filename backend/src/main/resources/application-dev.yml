@@ -16,3 +16,8 @@ spring:
 logging:
   level:
     com.betobanco: DEBUG
+
+betobanco:
+  auth:
+    jwt-secret: ${JWT_SECRET:desenvolvimento-local-troque-isto-em-producao-32b}
+    cookie-secure: false
