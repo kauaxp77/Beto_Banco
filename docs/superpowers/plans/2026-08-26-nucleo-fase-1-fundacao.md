@@ -209,6 +209,8 @@ ls backend
 
 Esperado: `mvnw`, `mvnw.cmd`, `pom.xml`, `src`, `.mvn`. O wrapper elimina a necessidade de instalar Maven.
 
+**Se o comando devolver HTTP 400:** o `start.spring.io` deixou de servir a linha 3.5.x e passou a oferecer apenas Boot 4.x. Nesse caso, gere o esqueleto com a versao que o servico oferecer — o que interessa dele e o wrapper `mvnw` e a estrutura de diretorios — e depois **reescreva `backend/pom.xml`** fixando o parent em 3.5.6 com os artifactIds da serie 3.x. A prova de que deu certo e o banner `:: Spring Boot :: (v3.5.6)` na saida do teste do Passo 7. Nao troque a versao pinada: springdoc 2.8.6 (Tarefa 9) e as convencoes de starter usadas nas Tarefas 4, 5 e 10 sao todas da serie 3.x.
+
 - [ ] **Step 3: Renomear a classe principal**
 
 O Initializr gera `BetoBancoBackendApplication`. Renomeie o arquivo e a classe para `BetoBancoApplication`, conforme a estrutura da spec:
