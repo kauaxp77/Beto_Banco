@@ -1493,6 +1493,8 @@ class PageRequestFactoryTest {
 
 O segundo teste é o que existe por segurança: sem o teto, `size=100000` transforma qualquer listagem em negação de serviço.
 
+**A guarda `partes.length == 0` não é defensividade gratuita.** Em Java, `String.split` descarta as strings vazias finais, então `","` produz um array de **comprimento zero** — e `partes[0]` lança `ArrayIndexOutOfBoundsException`. Como este método é chamado por todo endpoint de listagem, um `?sort=,` na query string derrubaria a requisição com `500` em vez de cair em `unsorted()`, que é o que já acontece com string vazia. O teste `naoQuebraComSortSoDeVirgula` existe para provar isso.
+
 - [ ] **Step 2: Rodar e confirmar que falha**
 
 ```bash
@@ -1531,6 +1533,9 @@ public final class PageRequestFactory {
             return Sort.unsorted();
         }
         String[] partes = sort.split(",");
+        if (partes.length == 0) {
+            return Sort.unsorted();
+        }
         String campo = partes[0].trim();
         if (campo.isEmpty()) {
             return Sort.unsorted();
