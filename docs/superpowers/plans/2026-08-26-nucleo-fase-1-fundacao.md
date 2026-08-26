@@ -1111,28 +1111,39 @@ package com.betobanco.shared.exception;
 import com.betobanco.support.PostgresTestBase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import com.betobanco.shared.trace.TraceIdFilter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false)
 class GlobalExceptionHandlerTest extends PostgresTestBase {
 
     @Autowired
+    private WebApplicationContext context;
+
     private MockMvc mockMvc;
+
+    @BeforeEach
+    void configurarMockMvc() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilters(new TraceIdFilter())
+                .build();
+    }
 
     @Test
     void excecaoDeNegocioViraEnvelopeDeErro() throws Exception {
@@ -1206,6 +1217,8 @@ class GlobalExceptionHandlerTest extends PostgresTestBase {
 ```
 
 O último teste é o que protege o requisito de nunca expor detalhe interno: ele afirma que a mensagem devolvida é genérica, e não a da exceção original.
+
+**Por que o `MockMvc` é construído à mão em vez de injetado.** O caminho óbvio seria `@AutoConfigureMockMvc(addFilters = false)` com um `MockMvc` injetado, mas `addFilters = false` desliga **todos** os filtros — inclusive o `TraceIdFilter` da Tarefa 5, que é quem popula o MDC. O `traceId` chegaria nulo e a asserção `$.error.traceId` falharia. Ligar os filtros também não serve: o starter de security passa a responder `401`. Construir o `MockMvc` registrando apenas o `TraceIdFilter` mantém a security fora do caminho e o trace dentro dele.
 
 - [ ] **Step 2: Rodar e confirmar que falha**
 
@@ -1950,17 +1963,18 @@ cd backend && ./mvnw -B verify
 
 Esperado: `BUILD SUCCESS`, com todos os testes verdes. Se passar aqui e falhar no CI, a diferença é ambiente, não código.
 
-- [ ] **Step 3: Commit e push**
+- [ ] **Step 3: Commit (sem push)**
 
 ```bash
 git add .github/workflows/backend.yml
 git commit -m "ci: workflow de build, testes e imagem Docker do backend"
-git push -u origin docs/spec-nucleo-pagamento-acesso
 ```
 
-- [ ] **Step 4: Confirmar que o CI passou**
+**Não execute `git push`.** Publicar a branch no remoto `kauaxp77/Beto_Banco` é efeito fora do repositório local e depende de autorização explícita do responsável pelo projeto. O push e a verificação do CI ficam para o encerramento da fase.
 
-Abra a aba Actions do repositório `kauaxp77/Beto_Banco` e confirme que o workflow **Backend** terminou verde.
+- [ ] **Step 4: Confirmar que o CI passou** *(após autorização do push)*
+
+Com a branch publicada, abra a aba Actions do repositório `kauaxp77/Beto_Banco` e confirme que o workflow **Backend** terminou verde. Até lá, a garantia local é o Passo 2, que roda exatamente o mesmo comando do CI.
 
 ---
 
