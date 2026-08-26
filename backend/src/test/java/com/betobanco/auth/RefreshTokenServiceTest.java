@@ -31,7 +31,7 @@ class RefreshTokenServiceTest extends PostgresTestBase {
 
     @Test
     void oValorEmClaroNaoEhGuardadoNoBanco() {
-        UserAccount u = novoUsuario("claro@exemplo.com");
+        UserAccount u = novoUsuario("claro@rts.exemplo.com");
 
         String valor = tokens.emitir(u);
 
@@ -41,7 +41,7 @@ class RefreshTokenServiceTest extends PostgresTestBase {
 
     @Test
     void rotacionarDevolveNovoValorEInvalidaOAnterior() {
-        UserAccount u = novoUsuario("rotaciona@exemplo.com");
+        UserAccount u = novoUsuario("rotaciona@rts.exemplo.com");
         String primeiro = tokens.emitir(u);
 
         RefreshTokenService.Rotacao r = tokens.rotacionar(primeiro).orElseThrow();
@@ -53,7 +53,7 @@ class RefreshTokenServiceTest extends PostgresTestBase {
 
     @Test
     void reusarUmTokenJaRotacionadoDerrubaACadeiaInteira() {
-        UserAccount u = novoUsuario("roubado@exemplo.com");
+        UserAccount u = novoUsuario("roubado@rts.exemplo.com");
         String t1 = tokens.emitir(u);
         String t2 = tokens.rotacionar(t1).orElseThrow().novoValor();
         String t3 = tokens.rotacionar(t2).orElseThrow().novoValor();
@@ -74,7 +74,7 @@ class RefreshTokenServiceTest extends PostgresTestBase {
 
     @Test
     void tokenDeUsuarioBloqueadoEhRecusado() {
-        UserAccount u = novoUsuario("bloqueado@exemplo.com");
+        UserAccount u = novoUsuario("bloqueado@rts.exemplo.com");
         String valor = tokens.emitir(u);
         User entidade = users.findById(u.id()).orElseThrow();
         entidade.setStatus(User.BLOCKED);
@@ -85,7 +85,7 @@ class RefreshTokenServiceTest extends PostgresTestBase {
 
     @Test
     void revogarTodosEncerraAsSessoesDoUsuario() {
-        UserAccount u = novoUsuario("sai@exemplo.com");
+        UserAccount u = novoUsuario("sai@rts.exemplo.com");
         String a = tokens.emitir(u);
         String b = tokens.emitir(u);
 
@@ -97,7 +97,7 @@ class RefreshTokenServiceTest extends PostgresTestBase {
 
     @Test
     void revogarUmNaoAfetaOutraSessaoDoMesmoUsuario() {
-        UserAccount u = novoUsuario("duasabas@exemplo.com");
+        UserAccount u = novoUsuario("duasabas@rts.exemplo.com");
         String aba1 = tokens.emitir(u);
         String aba2 = tokens.emitir(u);
 
@@ -109,8 +109,8 @@ class RefreshTokenServiceTest extends PostgresTestBase {
 
     @Test
     void doisUsuariosNaoInterferemEntreSi() {
-        UserAccount a = novoUsuario("a@exemplo.com");
-        UserAccount b = novoUsuario("b@exemplo.com");
+        UserAccount a = novoUsuario("a@rts.exemplo.com");
+        UserAccount b = novoUsuario("b@rts.exemplo.com");
         String tokenA = tokens.emitir(a);
         String tokenB = tokens.emitir(b);
 
