@@ -36,6 +36,9 @@ public interface EntitlementService {
 
     boolean temAcesso(UUID userId, UUID productId);
 
+    /** Quantas concessoes vigentes existem — para o dashboard do admin. */
+    long contarAtivos();
+
     List<Item> listarDe(UUID userId);
 
     record Concessao(UUID entitlementId, boolean criadoAgora) {

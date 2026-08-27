@@ -1,6 +1,7 @@
 package com.betobanco.webhooks.service;
 
 import com.betobanco.audit.api.AuditLogger;
+import com.betobanco.auth.api.FirstAccessTokens;
 import com.betobanco.catalog.api.ProductCatalog;
 import com.betobanco.email.api.EmailService;
 import com.betobanco.entitlements.api.EntitlementService;
@@ -49,6 +50,7 @@ public class WebhookProcessor {
     private final UserDirectory usuarios;
     private final EntitlementService entitlements;
     private final EmailService emails;
+    private final FirstAccessTokens primeiroAcesso;
     private final AuditLogger auditoria;
     private final boolean habilitado;
 
@@ -56,6 +58,7 @@ public class WebhookProcessor {
                             PaymentLedger ledger, List<PaymentGateway> gateways,
                             ProductCatalog catalogo, UserDirectory usuarios,
                             EntitlementService entitlements, EmailService emails,
+                            FirstAccessTokens primeiroAcesso,
                             AuditLogger auditoria,
                             @Value("${betobanco.webhooks.processor-enabled:true}")
                             boolean habilitado) {
@@ -68,6 +71,7 @@ public class WebhookProcessor {
         this.usuarios = usuarios;
         this.entitlements = entitlements;
         this.emails = emails;
+        this.primeiroAcesso = primeiroAcesso;
         this.auditoria = auditoria;
         this.habilitado = habilitado;
     }
@@ -189,8 +193,13 @@ public class WebhookProcessor {
 
         // O e-mail vai para a outbox, nunca enviado aqui dentro.
         if (contaNova) {
+            // Token FIRST_ACCESS criado na mesma transacao que cria o aluno e
+            // enfileira o e-mail: ou o link do e-mail existe no banco, ou nada
+            // acontece (D4).
+            String token = primeiroAcesso.criarPara(aluno);
             emails.enfileirar(aluno.email(), EmailService.Templates.PRIMEIRO_ACESSO,
-                    Map.of("nome", aluno.fullName(), "userId", aluno.id().toString()),
+                    Map.of("nome", aluno.fullName(), "userId", aluno.id().toString(),
+                            "token", token),
                     "primeiro-acesso:" + aluno.id());
         } else {
             emails.enfileirar(aluno.email(), EmailService.Templates.ACESSO_LIBERADO,

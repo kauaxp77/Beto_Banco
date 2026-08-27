@@ -84,6 +84,12 @@ public class EntitlementServiceImpl implements EntitlementService {
 
     @Override
     @Transactional(readOnly = true)
+    public long contarAtivos() {
+        return repo.countByRevokedAtIsNull();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean temAcesso(UUID userId, UUID productId) {
         return repo.findByUserIdAndProductIdAndRevokedAtIsNull(userId, productId)
                 .filter(Entitlement::estaVigente)

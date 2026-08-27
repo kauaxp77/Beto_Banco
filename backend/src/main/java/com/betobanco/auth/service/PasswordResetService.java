@@ -1,5 +1,6 @@
 package com.betobanco.auth.service;
 
+import com.betobanco.auth.api.FirstAccessTokens;
 import com.betobanco.auth.entity.PasswordResetToken;
 import com.betobanco.auth.entity.TokenPurpose;
 import com.betobanco.auth.repository.PasswordResetTokenRepository;
@@ -22,7 +23,7 @@ import java.util.HexFormat;
 import java.util.Map;
 
 @Service
-public class PasswordResetService {
+public class PasswordResetService implements FirstAccessTokens {
 
     private static final int BYTES = 32;
     private static final String LINK_INVALIDO = "Link inválido ou expirado";
@@ -64,6 +65,12 @@ public class PasswordResetService {
         emails.enfileirar(usuario.email(), EmailService.Templates.RECUPERACAO_SENHA,
                 Map.of("nome", usuario.fullName(), "token", valor),
                 "recuperacao-senha:" + hash(valor));
+    }
+
+    @Override
+    @Transactional
+    public String criarPara(UserAccount usuario) {
+        return criarToken(usuario, TokenPurpose.FIRST_ACCESS);
     }
 
     @Transactional
