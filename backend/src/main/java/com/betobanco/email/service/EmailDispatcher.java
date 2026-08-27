@@ -41,7 +41,15 @@ public class EmailDispatcher {
         this.habilitado = habilitado;
     }
 
+    /**
+     * {@code @Transactional} AQUI, e nao so em processarLote: o scheduler
+     * entra por este metodo atraves do proxy do Spring, e a chamada interna
+     * a processarLote() (self-invocation) nao passa pelo proxy — sem a
+     * transacao aberta aqui, o lock pessimista de proximosPendentes falha em
+     * toda execucao agendada e a outbox fica parada para sempre.
+     */
     @Scheduled(fixedDelayString = "${betobanco.email.dispatch-interval-ms:15000}")
+    @Transactional
     public void despachar() {
         if (!habilitado) {
             return;

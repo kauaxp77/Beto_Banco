@@ -31,7 +31,8 @@ function ProfileForm({ perfil }: { perfil: StudentResponse }) {
   const queryClient = useQueryClient()
   const [nome, setNome] = useState(perfil.fullName)
   const [telefone, setTelefone] = useState(perfil.phone ?? '')
-  const [erro, setErro] = useState<string | undefined>()
+  // Erros de validacao por campo, na chave que a API usa no fieldError.
+  const [erros, setErros] = useState<Record<string, string>>({})
 
   useEffect(() => {
     setNome(perfil.fullName)
@@ -49,8 +50,10 @@ function ProfileForm({ perfil }: { perfil: StudentResponse }) {
       toast('Perfil atualizado!')
     },
     onError: (err) => {
-      if (err instanceof ApiError) {
-        setErro(err.fieldErrors?.[0]?.message ?? err.message)
+      if (err instanceof ApiError && err.fieldErrors?.length) {
+        setErros(Object.fromEntries(err.fieldErrors.map((f) => [f.field, f.message])))
+      } else if (err instanceof ApiError) {
+        toastErro(err.message)
       } else {
         toastErro('Erro inesperado ao salvar.')
       }
@@ -59,7 +62,7 @@ function ProfileForm({ perfil }: { perfil: StudentResponse }) {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault()
-    setErro(undefined)
+    setErros({})
     salvar.mutate()
   }
 
@@ -71,7 +74,7 @@ function ProfileForm({ perfil }: { perfil: StudentResponse }) {
           label="Nome"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
-          error={erro}
+          error={erros.fullName}
           required
         />
         <Input
@@ -80,6 +83,7 @@ function ProfileForm({ perfil }: { perfil: StudentResponse }) {
           autoComplete="tel"
           value={telefone}
           onChange={(e) => setTelefone(e.target.value)}
+          error={erros.phone}
         />
         <Button type="submit" disabled={salvar.isPending}>
           {salvar.isPending ? 'Salvando…' : 'Salvar'}
