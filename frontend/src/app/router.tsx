@@ -1,10 +1,12 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { RequireAuth } from '../auth/RequireAuth'
 import { RequireRole } from '../auth/RequireRole'
+import { DefinePasswordPage } from '../pages/DefinePasswordPage'
+import { ForgotPasswordPage } from '../pages/ForgotPasswordPage'
+import { LoginPage } from '../pages/LoginPage'
 import { AppShell } from './AppShell'
 
-// Placeholders das telas: as Tasks 6 e 7 do plano da fase 4a substituem cada
-// um pelo componente real. As telas admin chegam na fase 4b.
+// Placeholders restantes: a Task 7 traz dashboard/perfil; admin fica na 4b.
 const EmBreve = ({ nome }: { nome: string }) => <p>{nome} — em construção.</p>
 
 export const router = createBrowserRouter([
@@ -12,9 +14,9 @@ export const router = createBrowserRouter([
     element: <AppShell />,
     children: [
       { path: '/', element: <Navigate to="/dashboard" replace /> },
-      { path: '/login', element: <EmBreve nome="Login" /> },
-      { path: '/esqueci-senha', element: <EmBreve nome="Esqueci a senha" /> },
-      { path: '/definir-senha/:token', element: <EmBreve nome="Definir senha" /> },
+      { path: '/login', element: <LoginPage /> },
+      { path: '/esqueci-senha', element: <ForgotPasswordPage /> },
+      { path: '/definir-senha/:token', element: <DefinePasswordPage /> },
       {
         path: '/dashboard',
         element: (
