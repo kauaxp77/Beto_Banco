@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ApiError } from '../api/http'
 import { useSession } from '../auth/session'
-import { Button, Card, Input } from '../ui/basics'
+import { Button, Input } from '../ui/basics'
 
 export function LoginPage() {
   const { login } = useSession()
@@ -29,8 +29,9 @@ export function LoginPage() {
   }
 
   return (
-    <Card className="bb-auth-card">
+    <>
       <h1>Entrar</h1>
+      <p className="auth-sub">Bem-vindo de volta. Continue de onde você parou.</p>
       <form onSubmit={onSubmit} noValidate>
         <Input
           label="E-mail"
@@ -53,9 +54,9 @@ export function LoginPage() {
           {enviando ? 'Entrando…' : 'Entrar'}
         </Button>
       </form>
-      <p>
+      <p className="auth-links">
         <Link to="/esqueci-senha">Esqueci minha senha</Link>
       </p>
-    </Card>
+    </>
   )
 }

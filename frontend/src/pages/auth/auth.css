@@ -1,0 +1,207 @@
+/*
+ * Moldura das telas de autenticacao: split-screen com painel editorial a
+ * esquerda (gradiente profundo, citacao, assinatura) e o formulario a
+ * direita em vidro. No mobile o painel colapsa para uma faixa superior.
+ */
+
+.auth {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(380px, 44%) 1fr;
+  background: var(--bb-bg);
+}
+
+@media (max-width: 860px) {
+  .auth {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- painel visual ---------- */
+
+.auth-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(28px, 4vw, 56px);
+  background:
+    radial-gradient(700px 420px at 20% 15%, rgb(196 161 90 / 0.16), transparent 60%),
+    radial-gradient(600px 500px at 90% 90%, rgb(196 161 90 / 0.08), transparent 55%),
+    linear-gradient(160deg, #202329, #16181c 70%);
+  border-right: 1px solid rgb(196 161 90 / 0.14);
+}
+
+.auth-panel::after {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgb(196 161 90 / 0.16);
+  border-radius: 18px;
+  pointer-events: none;
+}
+
+@media (max-width: 860px) {
+  .auth-panel {
+    min-height: 210px;
+    border-right: none;
+    border-bottom: 1px solid rgb(196 161 90 / 0.14);
+  }
+
+  .auth-panel .auth-quote {
+    display: none;
+  }
+}
+
+.auth-logo {
+  font-family: var(--bb-font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--bb-text);
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-logo em {
+  font-style: italic;
+  color: var(--bb-gold);
+}
+
+.auth-quote {
+  position: relative;
+  z-index: 1;
+  font-family: var(--bb-font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  line-height: 1.5;
+  color: var(--bb-text);
+  max-width: 30ch;
+  margin: 0;
+}
+
+.auth-quote .marca {
+  display: block;
+  font-size: 3.4rem;
+  line-height: 0.6;
+  color: var(--bb-gold);
+  margin-bottom: 18px;
+}
+
+.auth-panel-rodape {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.auth-panel-rodape img {
+  height: 46px;
+  opacity: 0.9;
+}
+
+.auth-panel-rodape span {
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
+/* ---------- lado do formulario ---------- */
+
+.auth-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(28px, 5vw, 64px);
+  background:
+    radial-gradient(800px 400px at 80% 0%, rgb(196 161 90 / 0.05), transparent 60%),
+    var(--bb-bg);
+}
+
+.auth-card {
+  width: min(430px, 100%);
+  padding: clamp(28px, 4vw, 44px);
+  border-radius: 20px;
+  background: var(--bb-glass);
+  border: 1px solid var(--bb-glass-border);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 0.45);
+}
+
+.auth-card h1 {
+  font-family: var(--bb-font-display);
+  font-weight: 550;
+  font-size: 1.9rem;
+  margin: 0 0 6px;
+}
+
+.auth-card .auth-sub {
+  color: var(--bb-text-dim);
+  font-size: 0.92rem;
+  margin: 0 0 var(--bb-s5);
+}
+
+.auth-card .bb-field input {
+  background: rgb(26 28 32 / 0.75);
+  border-radius: 12px;
+  padding: 13px 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-card .bb-field input:focus {
+  outline: none;
+  border-color: var(--bb-gold);
+  box-shadow: 0 0 0 3px rgb(196 161 90 / 0.18);
+}
+
+.auth-card .bb-button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 0.98rem;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #d9b96f, var(--bb-gold) 55%, #a98743);
+  box-shadow: 0 10px 30px rgb(196 161 90 / 0.25);
+}
+
+.auth-card .bb-button:hover {
+  box-shadow: 0 14px 38px rgb(196 161 90 / 0.35);
+}
+
+.auth-links {
+  margin-top: var(--bb-s4);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.auth-links a {
+  color: var(--bb-gold);
+  text-decoration: none;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+}
+
+.auth-divisor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--bb-text-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin: var(--bb-s4) 0;
+}
+
+.auth-divisor::before,
+.auth-divisor::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgb(196 161 90 / 0.18);
+}

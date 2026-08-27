@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError } from '../api/http'
-import { Button, Card, Input } from '../ui/basics'
+import { Button, Input } from '../ui/basics'
 import { useToast } from '../ui/Toast'
 
 /** Atende primeiro acesso E recuperacao: o purpose vive no token (spec 8.4). */
@@ -37,8 +37,9 @@ export function DefinePasswordPage() {
   }
 
   return (
-    <Card>
+    <>
       <h1>Definir senha</h1>
+      <p className="auth-sub">Escolha uma senha forte para acessar a plataforma.</p>
       <form onSubmit={onSubmit} noValidate>
         <Input
           label="Nova senha"
@@ -61,6 +62,6 @@ export function DefinePasswordPage() {
           {enviando ? 'Salvando…' : 'Definir senha'}
         </Button>
       </form>
-    </Card>
+    </>
   )
 }

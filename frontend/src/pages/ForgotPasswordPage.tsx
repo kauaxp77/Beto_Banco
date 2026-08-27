@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api/http'
-import { Button, Card, Input } from '../ui/basics'
+import { Button, Input } from '../ui/basics'
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -26,19 +26,22 @@ export function ForgotPasswordPage() {
 
   if (enviado) {
     return (
-      <Card>
+      <>
         <h1>Verifique sua caixa de entrada</h1>
-        <p>Se o e-mail existir em nossa base, você receberá o link de redefinição.</p>
-        <p>
+        <p className="auth-sub">
+          Se o e-mail existir em nossa base, você receberá o link de redefinição.
+        </p>
+        <p className="auth-links">
           <Link to="/login">Voltar ao login</Link>
         </p>
-      </Card>
+      </>
     )
   }
 
   return (
-    <Card>
+    <>
       <h1>Esqueci minha senha</h1>
+      <p className="auth-sub">Informe seu e-mail e enviaremos o link de redefinição.</p>
       <form onSubmit={onSubmit} noValidate>
         <Input
           label="E-mail"
@@ -52,6 +55,9 @@ export function ForgotPasswordPage() {
           {enviando ? 'Enviando…' : 'Enviar link'}
         </Button>
       </form>
-    </Card>
+      <p className="auth-links">
+        <Link to="/login">Voltar ao login</Link>
+      </p>
+    </>
   )
 }

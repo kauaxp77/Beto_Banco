@@ -25,6 +25,14 @@
   --bb-s6: 40px;
 
   --bb-r1: 8px;
+  --bb-r2: 16px;
 
-  --bb-font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --bb-font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  /* Serif de display para titulos editoriais da landing e do auth. */
+  --bb-font-display: 'Fraunces', 'Georgia', serif;
+
+  /* Superficies translucidas e brilhos do visual premium. */
+  --bb-glass: rgb(34 37 43 / 0.55);
+  --bb-glass-border: rgb(196 161 90 / 0.25);
+  --bb-gold-glow: rgb(196 161 90 / 0.35);
 }
