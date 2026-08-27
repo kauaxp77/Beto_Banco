@@ -3,13 +3,22 @@ package com.betobanco.entitlements;
 import com.betobanco.catalog.entity.Product;
 import com.betobanco.catalog.repository.ProductRepository;
 import com.betobanco.entitlements.api.EntitlementService;
+import com.betobanco.entitlements.entity.Entitlement;
+import com.betobanco.entitlements.repository.EntitlementRepository;
 import com.betobanco.support.PostgresTestBase;
 import com.betobanco.users.entity.User;
 import com.betobanco.users.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,6 +26,12 @@ class EntitlementServiceTest extends PostgresTestBase {
 
     @Autowired
     private EntitlementService entitlements;
+
+    @Autowired
+    private EntitlementRepository repo;
+
+    @Autowired
+    private PlatformTransactionManager txManager;
 
     @Autowired
     private UserRepository users;
@@ -43,6 +58,47 @@ class EntitlementServiceTest extends PostgresTestBase {
         assertThat(primeira.criadoAgora()).isTrue();
         assertThat(segunda.criadoAgora()).isFalse();
         assertThat(segunda.entitlementId()).isEqualTo(primeira.entitlementId());
+        assertThat(entitlements.listarDe(u)).hasSize(1);
+    }
+
+    @Test
+    void concessaoConcorrenteDevolveAConcessaoVencedoraSemQuebrarATransacao() throws Exception {
+        UUID u = aluno("corrida@ent.com");
+        UUID p = produto("SKU-CORRIDA");
+
+        // A vencedora insere e segura a transacao aberta; a perdedora chama
+        // conceder(): a consulta inicial nao ve nada (insert nao commitado),
+        // o insert bloqueia no indice unico ate a vencedora commitar e entao
+        // colide — exatamente a corrida que o catch de conceder() recupera.
+        CountDownLatch vencedoraInseriu = new CountDownLatch(1);
+        ExecutorService pool = Executors.newFixedThreadPool(2);
+        TransactionTemplate tx = new TransactionTemplate(txManager);
+
+        Future<UUID> vencedora = pool.submit(() -> tx.execute(status -> {
+            UUID id = repo.saveAndFlush(
+                    new Entitlement(u, p, "PAYMENT", "pay-vencedora")).getId();
+            vencedoraInseriu.countDown();
+            try {
+                // Janela para a perdedora consultar e ficar bloqueada no insert.
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(e);
+            }
+            return id;
+        }));
+
+        Future<EntitlementService.Concessao> perdedora = pool.submit(() -> {
+            vencedoraInseriu.await();
+            return entitlements.conceder(u, p, "PAYMENT", "pay-perdedora");
+        });
+
+        UUID idVencedora = vencedora.get(15, TimeUnit.SECONDS);
+        EntitlementService.Concessao concessao = perdedora.get(15, TimeUnit.SECONDS);
+        pool.shutdown();
+
+        assertThat(concessao.criadoAgora()).isFalse();
+        assertThat(concessao.entitlementId()).isEqualTo(idVencedora);
         assertThat(entitlements.listarDe(u)).hasSize(1);
     }
 
