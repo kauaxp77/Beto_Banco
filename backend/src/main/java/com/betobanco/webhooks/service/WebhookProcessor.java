@@ -5,11 +5,8 @@ import com.betobanco.catalog.api.ProductCatalog;
 import com.betobanco.email.api.EmailService;
 import com.betobanco.entitlements.api.EntitlementService;
 import com.betobanco.payments.api.PaymentGateway;
+import com.betobanco.payments.api.PaymentLedger;
 import com.betobanco.payments.api.PaymentNotification;
-import com.betobanco.payments.entity.Payment;
-import com.betobanco.payments.entity.PaymentSplit;
-import com.betobanco.payments.repository.PaymentRepository;
-import com.betobanco.payments.repository.PaymentSplitRepository;
 import com.betobanco.users.api.UserAccount;
 import com.betobanco.users.api.UserDirectory;
 import com.betobanco.webhooks.entity.WebhookEvent;
@@ -22,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,8 +43,7 @@ public class WebhookProcessor {
 
     private final WebhookEventRepository eventos;
     private final WebhookQueue fila;
-    private final PaymentRepository pagamentos;
-    private final PaymentSplitRepository splits;
+    private final PaymentLedger ledger;
     private final Map<String, PaymentGateway> gateways;
     private final ProductCatalog catalogo;
     private final UserDirectory usuarios;
@@ -58,8 +53,7 @@ public class WebhookProcessor {
     private final boolean habilitado;
 
     public WebhookProcessor(WebhookEventRepository eventos, WebhookQueue fila,
-                            PaymentRepository pagamentos,
-                            PaymentSplitRepository splits, List<PaymentGateway> gateways,
+                            PaymentLedger ledger, List<PaymentGateway> gateways,
                             ProductCatalog catalogo, UserDirectory usuarios,
                             EntitlementService entitlements, EmailService emails,
                             AuditLogger auditoria,
@@ -67,8 +61,7 @@ public class WebhookProcessor {
                             boolean habilitado) {
         this.eventos = eventos;
         this.fila = fila;
-        this.pagamentos = pagamentos;
-        this.splits = splits;
+        this.ledger = ledger;
         this.gateways = gateways.stream()
                 .collect(Collectors.toMap(PaymentGateway::provider, Function.identity()));
         this.catalogo = catalogo;
@@ -149,51 +142,27 @@ public class WebhookProcessor {
             return;
         }
 
-        Payment pagamento = registrarPagamento(n, evento.getProvider());
+        PaymentLedger.Registro registro = ledger.registrar(n, evento.getProvider());
 
         switch (n.tipo()) {
-            case APROVADO -> liberarAcesso(n, pagamento);
-            case PENDENTE -> {
-                // Pagamento pendente NAO libera nada. Registrar e tudo.
-                pagamento.setStatus(Payment.PENDING);
-                pagamentos.saveAndFlush(pagamento);
-            }
+            // Pagamento pendente NAO libera nada. Registrar e tudo.
+            case PENDENTE -> ledger.marcarPendente(registro.paymentId());
+            case APROVADO -> liberarAcesso(n, registro);
             case CANCELADO -> {
                 // Cancelamento ocorre antes de o acesso existir: nada a desfazer.
-                pagamento.setStatus(Payment.CANCELLED);
-                pagamentos.saveAndFlush(pagamento);
+                ledger.marcarCancelado(registro.paymentId());
                 auditoria.registrar("PAYMENT_CANCELLED", "Payment",
-                        pagamento.getId().toString(), Map.of("transactionId", n.transactionId()));
+                        registro.paymentId().toString(),
+                        Map.of("transactionId", n.transactionId()));
             }
-            case REEMBOLSADO, CHARGEBACK -> revogarAcesso(n, pagamento);
+            case REEMBOLSADO, CHARGEBACK -> revogarAcesso(n, registro);
             default -> throw new IllegalStateException("tipo nao tratado: " + n.tipo());
         }
 
         evento.marcarProcessado();
     }
 
-    private Payment registrarPagamento(PaymentNotification n, String provider) {
-        Payment pagamento = pagamentos
-                .findByProviderAndProviderTransactionId(provider, n.transactionId())
-                .orElseGet(() -> new Payment(provider, n.transactionId(), n.buyerEmail(),
-                        n.amountCents(), Payment.PENDING));
-
-        pagamento.setBuyerName(n.buyerName());
-        pagamento.setCurrency(n.currency());
-        pagamentos.saveAndFlush(pagamento);
-
-        if (!n.splits().isEmpty() && splits.countByPaymentId(pagamento.getId()) == 0) {
-            for (PaymentNotification.Split s : n.splits()) {
-                splits.save(new PaymentSplit(pagamento.getId(), s.recipient(),
-                        s.amountCents(), s.percentage()));
-            }
-            splits.flush();
-        }
-
-        return pagamento;
-    }
-
-    private void liberarAcesso(PaymentNotification n, Payment pagamento) {
+    private void liberarAcesso(PaymentNotification n, PaymentLedger.Registro registro) {
         // SKU desconhecido nao e adivinhado: chutar qual produto liberar e
         // pior do que nao liberar. O evento vai para a fila do administrador.
         var produto = catalogo.buscarPorSku(n.sku()).orElseThrow(
@@ -204,16 +173,12 @@ public class WebhookProcessor {
                 .orElseGet(() -> usuarios.criarSemSenha(n.buyerEmail(),
                         n.buyerName() == null ? n.buyerEmail() : n.buyerName()));
 
-        pagamento.setUserId(aluno.id());
-        pagamento.setProductId(produto.id());
-        pagamento.setStatus(Payment.APPROVED);
-        pagamento.setApprovedAt(Instant.now());
-        pagamentos.saveAndFlush(pagamento);
+        ledger.marcarAprovado(registro.paymentId(), aluno.id(), produto.id());
 
         var concessao = entitlements.conceder(aluno.id(), produto.id(),
-                "PAYMENT", pagamento.getId().toString());
+                "PAYMENT", registro.paymentId().toString());
 
-        auditoria.registrar("PAYMENT_APPROVED", "Payment", pagamento.getId().toString(),
+        auditoria.registrar("PAYMENT_APPROVED", "Payment", registro.paymentId().toString(),
                 Map.of("transactionId", n.transactionId(), "sku", n.sku()));
 
         if (concessao.criadoAgora()) {
@@ -234,26 +199,25 @@ public class WebhookProcessor {
         }
     }
 
-    private void revogarAcesso(PaymentNotification n, Payment pagamento) {
-        pagamento.setStatus(n.tipo() == PaymentNotification.Tipo.CHARGEBACK
-                ? Payment.CHARGEBACK : Payment.REFUNDED);
-        pagamentos.saveAndFlush(pagamento);
+    private void revogarAcesso(PaymentNotification n, PaymentLedger.Registro registro) {
+        ledger.marcarEstornado(registro.paymentId(),
+                n.tipo() == PaymentNotification.Tipo.CHARGEBACK);
 
-        int revogados = entitlements.revogarPorOrigem(pagamento.getId().toString());
+        int revogados = entitlements.revogarPorOrigem(registro.paymentId().toString());
 
-        auditoria.registrar("PAYMENT_REFUNDED", "Payment", pagamento.getId().toString(),
+        auditoria.registrar("PAYMENT_REFUNDED", "Payment", registro.paymentId().toString(),
                 Map.of("transactionId", n.transactionId(), "entitlementsRevogados", revogados));
 
         if (revogados > 0) {
-            auditoria.registrar("ACCESS_REVOKED", "Payment", pagamento.getId().toString(),
+            auditoria.registrar("ACCESS_REVOKED", "Payment", registro.paymentId().toString(),
                     Map.of("quantidade", revogados));
 
-            if (pagamento.getUserId() != null) {
-                usuarios.buscarAtivoPorId(pagamento.getUserId()).ifPresent(aluno ->
+            if (registro.userId() != null) {
+                usuarios.buscarAtivoPorId(registro.userId()).ifPresent(aluno ->
                         emails.enfileirar(aluno.email(),
                                 EmailService.Templates.ACESSO_REVOGADO,
                                 Map.of("nome", aluno.fullName()),
-                                "acesso-revogado:" + pagamento.getId()));
+                                "acesso-revogado:" + registro.paymentId()));
             }
         }
     }

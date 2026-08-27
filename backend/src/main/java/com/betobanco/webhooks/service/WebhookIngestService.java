@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -46,7 +45,12 @@ public class WebhookIngestService {
         this.eventos = eventos;
     }
 
-    @Transactional
+    /**
+     * Sem {@code @Transactional} de proposito: a unica escrita e o insert do
+     * evento, que roda na transacao do proprio repositorio. Uma transacao
+     * externa seria marcada rollback-only pela colisao na constraint e o
+     * commit falharia DEPOIS do catch — duplicado viraria 500.
+     */
     public Resultado receber(String provider, byte[] corpoCru, Map<String, String> cabecalhos) {
         PaymentGateway gateway = gateways.get(provider);
         if (gateway == null) {
