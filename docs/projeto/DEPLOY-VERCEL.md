@@ -13,12 +13,27 @@ A plataforma tem duas partes e a Vercel hospeda **apenas uma** delas:
 
 ---
 
-## Passo 1 — Banco de dados (Render, grátis)
+## Passo 1 — Banco de dados: Supabase (recomendado)
 
-1. Crie conta em [render.com](https://render.com) (pode usar o GitHub).
-2. **New → PostgreSQL** → nome `betobanco-db` → plano **Free** → **Create**.
-3. Guarde da página do banco: **Internal Database URL** (algo como
-   `postgresql://user:senha@host/betobanco_db`).
+Use o projeto Supabase **`Banco`** que já existe na sua conta — é o banco da
+plataforma antiga, e as migrações do backend **migram os usuários legados
+automaticamente** no primeiro boot (V3), sem apagar nada.
+
+1. No [dashboard do Supabase](https://supabase.com/dashboard), abra o projeto
+   **Banco** → **Connect** (topo) → aba **Session pooler** (porta 5432).
+   ⚠️ Use o *pooler* (IPv4), não a conexão direta — o Render não tem IPv6.
+2. Os dados de conexão são:
+   - Host: `aws-0-us-west-2.pooler.supabase.com` · Porta: `5432` · Banco: `postgres`
+   - Usuário: `postgres.bjnplubfqoltaxfboodl`
+   - Senha: a senha do banco (se não lembrar: **Settings → Database → Reset
+     database password**)
+3. Para o backend, isso vira:
+   - `DATABASE_URL` = `jdbc:postgresql://aws-0-us-west-2.pooler.supabase.com:5432/postgres`
+   - `DATABASE_USER` = `postgres.bjnplubfqoltaxfboodl`
+   - `DATABASE_PASSWORD` = a senha acima
+
+> Alternativa: um Postgres do próprio Render (New → PostgreSQL, plano Free)
+> também funciona — mas o do Render Free expira em 30 dias; o Supabase não.
 
 ## Passo 2 — Backend (Render, grátis)
 
@@ -26,15 +41,15 @@ A plataforma tem duas partes e a Vercel hospeda **apenas uma** delas:
 2. Configure:
    - **Root Directory**: `backend`
    - **Runtime**: `Docker` (o `backend/Dockerfile` já está pronto)
+   - **Region**: `Oregon (US West)` — mesma região do Supabase `Banco`
    - **Instance Type**: Free
-3. **Environment Variables** (a URL interna do Postgres vem no formato
-   `postgresql://USUARIO:SENHA@HOST/BANCO` — separe os pedaços):
+3. **Environment Variables** (com os valores do Supabase do Passo 1):
 
    | Variável | Valor |
    |---|---|
-   | `DATABASE_URL` | `jdbc:postgresql://HOST/BANCO` ⚠️ prefixo **jdbc:** e sem usuário/senha |
-   | `DATABASE_USER` | `USUARIO` |
-   | `DATABASE_PASSWORD` | `SENHA` |
+   | `DATABASE_URL` | `jdbc:postgresql://aws-0-us-west-2.pooler.supabase.com:5432/postgres` |
+   | `DATABASE_USER` | `postgres.bjnplubfqoltaxfboodl` |
+   | `DATABASE_PASSWORD` | senha do banco no Supabase |
    | `JWT_SECRET` | um segredo longo e aleatório (32+ caracteres) |
    | `CORS_ALLOWED_ORIGINS` | `https://frontend-w77xp.vercel.app` (sua URL da Vercel) |
    | `APP_BASE_URL` | `https://frontend-w77xp.vercel.app` (links dos e-mails) |
