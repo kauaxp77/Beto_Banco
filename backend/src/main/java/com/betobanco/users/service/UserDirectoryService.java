@@ -130,6 +130,12 @@ public class UserDirectoryService implements UserDirectory {
         users.saveAndFlush(usuario);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ContagemAlunos contarAlunos() {
+        return new ContagemAlunos(users.contarAlunos(), users.contarAlunosBloqueados());
+    }
+
     /**
      * Migracao silenciosa: no primeiro login bem-sucedido de um hash legado, a
      * senha e regravada no algoritmo atual. A base migra sozinha, um aluno por

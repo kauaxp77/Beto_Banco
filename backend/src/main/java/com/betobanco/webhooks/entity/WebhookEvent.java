@@ -97,6 +97,10 @@ public class WebhookEvent {
         return payload;
     }
 
+    public Instant getReceivedAt() {
+        return receivedAt;
+    }
+
     public String getStatus() {
         return status;
     }

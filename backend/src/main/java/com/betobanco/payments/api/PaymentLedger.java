@@ -27,11 +27,17 @@ public interface PaymentLedger {
     /** Estorno: {@code REFUNDED}, ou {@code CHARGEBACK} quando contestado. */
     void marcarEstornado(UUID paymentId, boolean chargeback);
 
+    /** Numeros agregados para o dashboard do admin. */
+    Resumo resumo();
+
     /**
      * O que o resto do sistema pode saber de um pagamento registrado.
      * {@code userId} e nulo enquanto nenhuma aprovacao vinculou o pagamento
      * a um aluno — e o caso de um estorno que chega antes da aprovacao.
      */
     record Registro(UUID paymentId, UUID userId) {
+    }
+
+    record Resumo(long aprovados, long receitaAprovadaCents) {
     }
 }

@@ -31,6 +31,12 @@ public class ProductCatalogService implements ProductCatalog {
         return produtos.findById(id).map(ProductCatalogService::resumir);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public long contarAtivos() {
+        return produtos.countByActiveTrue();
+    }
+
     private static ProductSummary resumir(Product p) {
         return new ProductSummary(p.getId(), p.getSku(), p.getName(), p.getPriceCents(),
                 p.isActive());

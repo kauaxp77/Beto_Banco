@@ -13,6 +13,9 @@ public interface ProductCatalog {
 
     Optional<ProductSummary> buscarPorId(UUID id);
 
+    /** Quantos produtos estao a venda — para o dashboard do admin. */
+    long contarAtivos();
+
     record ProductSummary(UUID id, String sku, String name, long priceCents, boolean active) {
     }
 }
