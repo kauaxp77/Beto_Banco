@@ -9,14 +9,16 @@ export interface FieldError {
 
 /** Erro do envelope da API: `code` e contrato estavel; `message` e exibivel. */
 export class ApiError extends Error {
-  constructor(
-    readonly code: string,
-    readonly status: number,
-    message: string,
-    readonly fieldErrors?: FieldError[],
-  ) {
+  readonly code: string
+  readonly status: number
+  readonly fieldErrors?: FieldError[]
+
+  constructor(code: string, status: number, message: string, fieldErrors?: FieldError[]) {
     super(message)
     this.name = 'ApiError'
+    this.code = code
+    this.status = status
+    this.fieldErrors = fieldErrors
   }
 }
 
