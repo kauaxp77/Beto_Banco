@@ -25,6 +25,11 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    # O banco legado (Supabase) tem tabelas em public sem historico Flyway.
+    # Baseline em 0 cria o historico e aplica TODAS as migracoes (V1 e um
+    # no-op de proposito) sem tocar nas tabelas legadas.
+    baseline-on-migrate: true
+    baseline-version: 0
 
 server:
   error:
