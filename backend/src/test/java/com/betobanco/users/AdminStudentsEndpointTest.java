@@ -182,6 +182,27 @@ class AdminStudentsEndpointTest extends PostgresTestBase {
     }
 
     @Test
+    void adminListaOsEntitlementsDoAluno() throws Exception {
+        UUID produtoId = produtos.saveAndFlush(
+                new Product("SKU-ADM-LIST", "Curso Listavel", null, 5500L)).getId();
+        var aluno = diretorio.registrar("listavel@aluno.com", "senha-forte-123",
+                "Aluno Listavel");
+        entitlements.conceder(aluno.id(), produtoId, "MANUAL", "teste-lista");
+        String token = logarAdmin();
+
+        String json = mockMvc.perform(get("/admin/students/" + aluno.id() + "/entitlements")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andReturn().getResponse().getContentAsString();
+
+        List<String> nomes = JsonPath.read(json, "$.data[*].productName");
+        assertThat(nomes).containsExactly("Curso Listavel");
+        List<String> skus = JsonPath.read(json, "$.data[*].sku");
+        assertThat(skus).containsExactly("SKU-ADM-LIST");
+    }
+
+    @Test
     void concederProdutoInexistenteDevolve404() throws Exception {
         var aluno = diretorio.registrar("sempresente@aluno.com", "senha-forte-123", "Aluno Y");
         String token = logarAdmin();

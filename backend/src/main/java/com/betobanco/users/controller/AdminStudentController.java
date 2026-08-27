@@ -8,6 +8,7 @@ import com.betobanco.shared.exception.NotFoundException;
 import com.betobanco.shared.pagination.PageRequestFactory;
 import com.betobanco.shared.response.ApiResponse;
 import com.betobanco.shared.response.PageResponse;
+import com.betobanco.users.dto.EntitlementResponse;
 import com.betobanco.users.dto.GrantEntitlementRequest;
 import com.betobanco.users.dto.StatusUpdateRequest;
 import com.betobanco.users.dto.StudentDetailResponse;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -109,6 +111,27 @@ public class AdminStudentController {
                 "User", id.toString(), Map.of("status", req.status()));
 
         return ResponseEntity.ok(ApiResponse.ok(detalheDe(aluno)));
+    }
+
+    @GetMapping("/{id}/entitlements")
+    @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponse<List<EntitlementResponse>>> entitlementsDoAluno(
+            @PathVariable("id") UUID id) {
+        if (users.findById(id).isEmpty()) {
+            throw new NotFoundException("Aluno não encontrado");
+        }
+
+        List<EntitlementResponse> itens = entitlements.listarDe(id).stream()
+                .map(e -> {
+                    var produto = catalogo.buscarPorId(e.productId()).orElse(null);
+                    return new EntitlementResponse(e.entitlementId(), e.productId(),
+                            produto == null ? null : produto.sku(),
+                            produto == null ? null : produto.name(),
+                            e.source(), e.grantedAt(), e.expiresAt());
+                })
+                .toList();
+
+        return ResponseEntity.ok(ApiResponse.ok(itens));
     }
 
     @PostMapping("/{id}/entitlements")

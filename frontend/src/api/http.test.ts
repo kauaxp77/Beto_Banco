@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { api } from './http'
+import { api, apiPage } from './http'
 import { getAccessToken, setAccessToken } from './token'
 
 const ok = (data: unknown) =>
@@ -72,6 +72,27 @@ describe('api', () => {
 
     await expect(api('/students/me')).rejects.toMatchObject({ status: 401 })
     expect(getAccessToken()).toBeNull()
+  })
+
+  it('apiPage preserva data E pagination do envelope paginado', async () => {
+    setAccessToken('abc')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            success: true,
+            data: [{ id: '1' }],
+            pagination: { page: 0, size: 20, totalElements: 41, totalPages: 3 },
+          }),
+          { status: 200 },
+        ),
+      ),
+    )
+
+    const pagina = await apiPage<{ id: string }>('/admin/payments')
+    expect(pagina.data).toEqual([{ id: '1' }])
+    expect(pagina.pagination.totalPages).toBe(3)
   })
 
   it('erro do envelope vira ApiError com code e fieldErrors', async () => {

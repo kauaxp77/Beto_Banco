@@ -101,6 +101,50 @@ async function desembrulhar<T>(res: Response): Promise<T> {
   )
 }
 
+export interface PaginationMeta {
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export interface Paged<T> {
+  data: T[]
+  pagination: PaginationMeta
+}
+
+/** Como {@link api}, mas para listas paginadas: preserva o `pagination`. */
+export async function apiPage<T>(path: string, init: RequestInit = {}): Promise<Paged<T>> {
+  const res = await executar(path, init)
+
+  if (res.status === 401 && !path.startsWith('/auth')) {
+    const renovado = await refreshSession()
+    if (renovado) {
+      return desembrulharPagina<T>(await executar(path, init))
+    }
+  }
+  return desembrulharPagina<T>(res)
+}
+
+async function desembrulharPagina<T>(res: Response): Promise<Paged<T>> {
+  let body: (Envelope<T[]> & { pagination?: PaginationMeta }) | null = null
+  try {
+    body = (await res.json()) as Envelope<T[]> & { pagination?: PaginationMeta }
+  } catch {
+    // sem corpo
+  }
+  if (res.ok && body?.success && body.pagination) {
+    return { data: body.data ?? [], pagination: body.pagination }
+  }
+  const err = body?.error ?? {}
+  throw new ApiError(
+    err.code ?? 'UNKNOWN',
+    res.status,
+    err.message ?? 'Erro inesperado',
+    err.fieldErrors,
+  )
+}
+
 /** Chama a API e devolve o `data` do envelope, ou lanca {@link ApiError}. */
 export async function api<T = unknown>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await executar(path, init)
