@@ -1,4 +1,15 @@
 spring:
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USER:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${SMTP_AUTH:true}
+          starttls:
+            enable: ${SMTP_STARTTLS:true}
   datasource:
     url: ${DATABASE_URL}
     username: ${DATABASE_USER}
@@ -20,7 +31,27 @@ server:
     include-stacktrace: never
     include-message: never
 
+management:
+  health:
+    mail:
+      # SMTP indisponivel nao significa aplicacao morta: o e-mail vive numa
+      # outbox com retry. Sem isto, o health flaparia DOWN e o orquestrador
+      # reiniciaria um servico saudavel.
+      enabled: false
+
 logging:
   level:
     root: INFO
     com.betobanco: INFO
+
+betobanco:
+  auth:
+    # Lax funciona quando o frontend faz proxy de /api (mesma origem).
+    # Se o navegador falar DIRETO com a API em outro dominio, use None.
+    cookie-same-site: ${COOKIE_SAME_SITE:Lax}
+    cookie-secure: true
+  email:
+    # Base dos links de e-mail (primeiro acesso / recuperacao de senha).
+    base-url: ${APP_BASE_URL:http://localhost:5173}
+  payments:
+    fake-webhook-secret: ${FAKE_WEBHOOK_SECRET:troque-este-segredo}

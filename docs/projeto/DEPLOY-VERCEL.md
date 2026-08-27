@@ -1,130 +1,97 @@
-﻿# Deploy no Vercel - Guia RÃ¡pido
+# 🚀 Deploy em produção — Vercel (frontend) + Render (backend)
 
-## ðŸ“‹ Requisitos
-- Conta no [Vercel](https://vercel.com)
-- RepositÃ³rio GitHub do projeto (jÃ¡ configurado)
+A plataforma tem duas partes e a Vercel hospeda **apenas uma** delas:
 
-## ðŸš€ OpÃ§Ã£o 1: Deploy via Dashboard Vercel (Recomendado)
+| Parte | O que é | Onde hospedar |
+|---|---|---|
+| Frontend | React/Vite (estático) | **Vercel** ✅ |
+| Backend | Java Spring + PostgreSQL | **Render** (ou Railway/Fly) — a Vercel **não roda** Java |
 
-### Passo 1: Conectar ao Vercel
-1. Acesse [https://vercel.com](https://vercel.com)
-2. Clique em **"New Project"**
-3. Clique em **"Import Git Repository"**
-4. Selecione sua conta GitHub (`Felpzcvl`)
-5. Busque por `aprova-o-passo-a-passo1.0` ou `aprovacao-passo-passo2.0`
-6. Clique em **"Import"**
-
-### Passo 2: Configurar Projeto
-- **Project Name**: `aprova-passo-passo` (ou o que preferir)
-- **Framework Preset**: `Other` (Ã© um projeto estÃ¡tico)
-- **Root Directory**: deixe em branco (padrÃ£o Ã© raiz)
-- **Build Command**: deixe vazio
-- **Output Directory**: `frontend`
-- **Environment Variables**: nenhuma necessÃ¡ria
-
-### Passo 3: Deploy
-- Clique em **"Deploy"**
-- Aguarde 1-2 minutos
-- Seu site estarÃ¡ disponÃ­vel em `https://[seu-projeto].vercel.app`
+> **Por que o login falha só com a Vercel?** O site chama a API em `/api/v1/...`.
+> Sem um backend hospedado, essas chamadas não têm para onde ir → o login
+> (e tudo que depende de dados) falha. Deploy do frontend sozinho = vitrine sem sistema.
 
 ---
 
-## ðŸš€ OpÃ§Ã£o 2: Deploy via CLI (Terminal)
+## Passo 1 — Banco de dados (Render, grátis)
 
-### Passo 1: Instalar Vercel CLI
-```bash
-npm install -g vercel
+1. Crie conta em [render.com](https://render.com) (pode usar o GitHub).
+2. **New → PostgreSQL** → nome `betobanco-db` → plano **Free** → **Create**.
+3. Guarde da página do banco: **Internal Database URL** (algo como
+   `postgresql://user:senha@host/betobanco_db`).
+
+## Passo 2 — Backend (Render, grátis)
+
+1. **New → Web Service** → conecte o repositório `kauaxp77/Beto_Banco`.
+2. Configure:
+   - **Root Directory**: `backend`
+   - **Runtime**: `Docker` (o `backend/Dockerfile` já está pronto)
+   - **Instance Type**: Free
+3. **Environment Variables** (a URL interna do Postgres vem no formato
+   `postgresql://USUARIO:SENHA@HOST/BANCO` — separe os pedaços):
+
+   | Variável | Valor |
+   |---|---|
+   | `DATABASE_URL` | `jdbc:postgresql://HOST/BANCO` ⚠️ prefixo **jdbc:** e sem usuário/senha |
+   | `DATABASE_USER` | `USUARIO` |
+   | `DATABASE_PASSWORD` | `SENHA` |
+   | `JWT_SECRET` | um segredo longo e aleatório (32+ caracteres) |
+   | `CORS_ALLOWED_ORIGINS` | `https://frontend-w77xp.vercel.app` (sua URL da Vercel) |
+   | `APP_BASE_URL` | `https://frontend-w77xp.vercel.app` (links dos e-mails) |
+   | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` | seu provedor de e-mail (opcional no início — sem isso os e-mails ficam na fila) |
+
+4. **Create Web Service** → aguarde o build (~5 min). As migrações Flyway
+   rodam sozinhas no primeiro boot.
+5. Anote a URL pública, ex.: `https://betobanco-api.onrender.com`.
+6. Teste: `https://betobanco-api.onrender.com/api/v1/actuator/health`
+   deve responder `{"status":"UP"}`.
+
+> 💡 No plano Free o serviço "dorme" após 15 min sem uso e o primeiro acesso
+> demora ~50s para acordar. Para produção de verdade, use o plano Starter.
+
+## Passo 3 — Frontend (Vercel)
+
+1. Edite **`frontend/vercel.json`** e troque `https://SEU-BACKEND.onrender.com`
+   pela URL real do Passo 2. Commit + push (a Vercel redeploya sozinha).
+
+   *Esse arquivo faz a Vercel **proxyar** `/api/*` para o backend: para o
+   navegador tudo é a mesma origem, então o cookie de login funciona em
+   qualquer navegador, sem CORS complicado.*
+
+2. No projeto da Vercel, confira em **Settings**:
+   - **Root Directory**: `frontend`
+   - **Framework Preset**: Vite (build `npm run build`, output `dist` — automático)
+
+3. **Settings → Deployment Protection** → desative **Vercel Authentication**
+   para Production. ⚠️ *Sem isso, qualquer visitante cai na tela de login DA
+   VERCEL em vez do seu site — é exatamente o que acontece hoje.*
+
+## Passo 4 — Primeiro admin
+
+Com o backend no ar, crie sua conta pelo site (`/login` → registrar não existe
+público; use o registro via API) e promova a admin direto no banco
+(Render → seu Postgres → **Shell**):
+
+```sql
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r
+WHERE u.email = 'seu-email@aqui.com' AND r.name = 'ROLE_ADMIN'
+ON CONFLICT DO NOTHING;
 ```
 
-### Passo 2: Fazer Login
-```bash
-vercel login
-```
-Siga as instruÃ§Ãµes no navegador para autenticar.
+## Checklist final
 
-### Passo 3: Fazer Deploy
-```bash
-cd "C:\Users\felli\Downloads\APPBANCOS"
-vercel --prod
-```
-
-Responda Ã s perguntas:
-- **Project name?** â†’ `aprova-passo-passo` (ou seu nome preferido)
-- **Which scope?** â†’ Escolha sua conta
-- **Linked to existing project?** â†’ `N` (primeira vez)
-- **Directory?** â†’ `./frontend`
-
-O projeto serÃ¡ deployado em produÃ§Ã£o automaticamente.
+- [ ] `/api/v1/actuator/health` do Render responde UP
+- [ ] `frontend/vercel.json` aponta para a URL real do backend
+- [ ] Deployment Protection desativada na Vercel
+- [ ] Login funciona no site público
+- [ ] Sua conta tem ROLE_ADMIN (menu Admin aparece)
 
 ---
 
-## ðŸ“ Estrutura de Arquivos
-O `vercel.json` jÃ¡ estÃ¡ configurado para:
-- âœ… Servir arquivos estÃ¡ticos da pasta `frontend/`
-- âœ… Limpar URLs (sem `.html` na URL)
-- âœ… Cache de assets (imagens, CSS, JS)
-- âœ… Redirecionamentos automÃ¡ticos para pÃ¡ginas HTML
+### Alternativa sem proxy (não recomendada)
 
----
-
-## ðŸ”— URLs Depois do Deploy
-
-ApÃ³s o deploy, suas pÃ¡ginas estarÃ£o disponÃ­veis em:
-
-| PÃ¡gina | URL |
-|--------|-----|
-| Landing | `https://[projeto].vercel.app/` |
-| Bancos | `https://[projeto].vercel.app/bancos` |
-| Cursos | `https://[projeto].vercel.app/cursos` |
-| Perfil | `https://[projeto].vercel.app/perfil` |
-
----
-
-## âœ… Verificar Deploy
-
-1. Acesse o dashboard do Vercel: [https://vercel.com/dashboard](https://vercel.com/dashboard)
-2. Clique no seu projeto
-3. Veja a URL gerada
-4. Clique em **"Visit"** para testar
-
----
-
-## ðŸ”„ Deploy AutomÃ¡tico
-
-Toda vez que vocÃª fazer `git push` para o repositÃ³rio GitHub:
-- Vercel detecta automaticamente
-- Faz novo build e deploy
-- Seu site atualiza em ~1 minuto
-
----
-
-## ðŸ“ Notas Importantes
-
-- âœ… Favicon funciona automaticamente
-- âœ… Imagens de fundo com `background-attachment: fixed` funcionam
-- âœ… Todos os links relativos funcionam
-- âœ… WhatsApp links funcionam (href com `wa.me/`)
-
----
-
-## â“ Problemas Comuns
-
-### "Domain already taken"
-Use um nome diferente para o projeto
-
-### "Build failed"
-O `vercel.json` estÃ¡ configurado para nÃ£o fazer build (Ã© estÃ¡tico)
-
-### "Pages nÃ£o carregam"
-Verifique se todos os arquivos foram commitados no Git e fizeram push
-
----
-
-## ðŸ“ž PrÃ³ximos Passos
-
-1. Escolha OpÃ§Ã£o 1 ou 2 acima
-2. Complete o deploy
-3. Teste no navegador
-4. Compartilhe a URL do Vercel com seu pÃºblico!
-
-ðŸŽ‰ Seu site estarÃ¡ online e acessÃ­vel globalmente!
+Se preferir o navegador falando direto com a API em outro domínio:
+na Vercel defina `VITE_API_URL=https://sua-api/api/v1` e no Render
+`COOKIE_SAME_SITE=None`. Funciona no Chrome, mas o cookie de sessão vira
+"third-party" e o Safari bloqueia — por isso o proxy é o caminho padrão.
