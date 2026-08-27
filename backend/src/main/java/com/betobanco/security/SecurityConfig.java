@@ -57,6 +57,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/webhooks/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products").permitAll()
+                        // Validacao de certificado e prova social: publicos
+                        // por natureza — recrutadores e a landing page.
+                        .requestMatchers(HttpMethod.GET, "/certificates/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/testimonials").permitAll()
                         .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                             .permitAll()

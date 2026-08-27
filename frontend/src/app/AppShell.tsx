@@ -34,7 +34,7 @@ export function AppShell() {
         {status === 'in' && (
           <nav style={{ display: 'flex', gap: 'var(--bb-s4)', flex: 1 }} aria-label="Principal">
             <NavLink to="/dashboard" style={{ color: 'var(--bb-text)' }}>
-              Meus produtos
+              Meus cursos
             </NavLink>
             <NavLink to="/perfil" style={{ color: 'var(--bb-text)' }}>
               Perfil

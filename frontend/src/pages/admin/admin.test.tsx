@@ -41,29 +41,52 @@ function renderAdmin(caminho: string, rotas: Record<string, ReactElement>) {
 }
 
 describe('AdminDashboardPage', () => {
-  it('mostra os numeros agregados como stat tiles', async () => {
+  const resumo = {
+    totalAlunos: 128,
+    alunosBloqueados: 3,
+    produtosAtivos: 5,
+    entitlementsAtivos: 97,
+    pagamentosAprovados: 110,
+    receitaAprovadaCents: 5467000,
+    webhooksAguardandoAtencao: 2,
+  }
+
+  function stubDashboardFetch(pagamentos: unknown[]) {
     vi.stubGlobal(
       'fetch',
-      vi.fn(() =>
+      vi.fn((url: RequestInfo | URL) =>
         Promise.resolve(
-          ok({
-            totalAlunos: 128,
-            alunosBloqueados: 3,
-            produtosAtivos: 5,
-            entitlementsAtivos: 97,
-            pagamentosAprovados: 110,
-            receitaAprovadaCents: 5467000,
-            webhooksAguardandoAtencao: 2,
-          }),
+          String(url).includes('/admin/payments') ? paginado(pagamentos) : ok(resumo),
         ),
       ),
     )
+  }
+
+  it('mostra os numeros agregados como stat tiles', async () => {
+    stubDashboardFetch([])
     renderAdmin('/admin/dashboard', { '/admin/dashboard': <AdminDashboardPage /> })
 
     expect(await screen.findByText('128')).toBeInTheDocument()
     expect(screen.getByText('R$ 54.670,00')).toBeInTheDocument()
     // Webhooks pendentes e um ALERTA: icone+texto, nunca so cor.
     expect(screen.getByText(/2 webhooks aguardando atenção/i)).toBeInTheDocument()
+  })
+
+  it('desenha os graficos quando existem pagamentos', async () => {
+    const hoje = new Date().toISOString()
+    stubDashboardFetch([
+      { amountCents: 49700, status: 'APPROVED', approvedAt: hoje, createdAt: hoje },
+      { amountCents: 19700, status: 'PENDING', approvedAt: null, createdAt: hoje },
+    ])
+    renderAdmin('/admin/dashboard', { '/admin/dashboard': <AdminDashboardPage /> })
+
+    expect(
+      await screen.findByRole('img', { name: /receita aprovada por dia/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /quantidade de vendas por dia/i })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /pagamentos por status/i })).toBeInTheDocument()
+    expect(screen.getByText(/Aprovado — 1/)).toBeInTheDocument()
+    expect(screen.getByText(/Pendente — 1/)).toBeInTheDocument()
   })
 })
 

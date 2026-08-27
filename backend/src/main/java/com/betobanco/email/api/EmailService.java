@@ -27,6 +27,7 @@ public interface EmailService {
         public static final String ACESSO_LIBERADO = "ACESSO_LIBERADO";
         public static final String RECUPERACAO_SENHA = "RECUPERACAO_SENHA";
         public static final String ACESSO_REVOGADO = "ACESSO_REVOGADO";
+        public static final String ANUNCIO = "ANUNCIO";
 
         private Templates() {
         }

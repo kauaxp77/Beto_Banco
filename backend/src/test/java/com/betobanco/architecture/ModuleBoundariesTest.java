@@ -29,7 +29,8 @@ class ModuleBoundariesTest {
     void nenhumModuloAcessaEntityOuRepositoryDeOutro() {
         for (String modulo : new String[]{
                 "users", "auth", "students", "catalog", "entitlements",
-                "payments", "webhooks", "email", "audit", "dashboard"}) {
+                "payments", "webhooks", "email", "audit", "dashboard", "courses",
+                "invites"}) {
             ArchRule regra = noClasses()
                     .that().resideOutsideOfPackage("com.betobanco." + modulo + "..")
                     .should().dependOnClassesThat()

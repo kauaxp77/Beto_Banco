@@ -7,6 +7,12 @@ const LINKS = [
   { para: '/admin/pagamentos', rotulo: 'Pagamentos' },
   { para: '/admin/webhooks', rotulo: 'Webhooks' },
   { para: '/admin/produtos', rotulo: 'Produtos' },
+  { para: '/admin/cursos', rotulo: 'Cursos' },
+  { para: '/admin/comentarios', rotulo: 'Comentários' },
+  { para: '/admin/relatorios', rotulo: 'Relatórios' },
+  { para: '/admin/anuncios', rotulo: 'Anúncios' },
+  { para: '/admin/convites', rotulo: 'Convites' },
+  { para: '/admin/depoimentos', rotulo: 'Depoimentos' },
   { para: '/admin/auditoria', rotulo: 'Auditoria' },
 ]
 

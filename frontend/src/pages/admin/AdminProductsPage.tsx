@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { api, ApiError } from '../../api/http'
 import { Button, Input } from '../../ui/basics'
+import { nomeAmigavel } from '../../ui/format'
 import { QueryBoundary } from '../../ui/QueryBoundary'
 import { useToast } from '../../ui/Toast'
 import { brl, StatusPill } from './AdminLayout'
@@ -165,7 +166,7 @@ export function AdminProductsPage() {
                 {produtos.map((p) => (
                   <tr key={p.id}>
                     <td>{p.sku}</td>
-                    <td>{p.name}</td>
+                    <td>{nomeAmigavel(p.name)}</td>
                     <td>{brl.format(p.priceCents / 100)}</td>
                     <td>
                       <StatusPill valor={p.active ? 'ACTIVE' : 'INACTIVE'} />

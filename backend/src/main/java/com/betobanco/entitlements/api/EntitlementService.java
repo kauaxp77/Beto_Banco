@@ -1,6 +1,7 @@
 package com.betobanco.entitlements.api;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +19,23 @@ public interface EntitlementService {
      * ao mesmo aluno devolve o entitlement que ja existia, sem duplicar.
      */
     Concessao conceder(UUID userId, UUID productId, String source, String sourceRef);
+
+    /**
+     * Como {@link #conceder(UUID, UUID, String, String)}, mas com prazo:
+     * usado pelos convites de cortesia. {@code expiresAt} nulo e vitalicio.
+     * Se ja existe concessao vigente, ela e devolvida sem alterar o prazo.
+     */
+    Concessao conceder(UUID userId, UUID productId, String source, String sourceRef,
+                       Instant expiresAt);
+
+    /**
+     * Usuarios distintos com acesso vigente a qualquer um dos produtos —
+     * e a lista de destinatarios de um anuncio de curso.
+     */
+    List<UUID> usuariosComAcesso(Collection<UUID> productIds);
+
+    /** Concessoes cujo sourceRef comeca com o prefixo — lista de convites. */
+    List<ItemConcedido> listarPorSourceRefPrefixo(String prefixo);
 
     void revogar(UUID userId, UUID productId);
 
@@ -46,5 +64,10 @@ public interface EntitlementService {
 
     record Item(UUID entitlementId, UUID productId, String source, Instant grantedAt,
                 Instant expiresAt) {
+    }
+
+    /** Como {@link Item}, mas com o dono — para listagens administrativas. */
+    record ItemConcedido(UUID entitlementId, UUID userId, UUID productId, Instant grantedAt,
+                         Instant expiresAt, Instant revokedAt) {
     }
 }

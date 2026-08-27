@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api } from '../../api/http'
 import { Button } from '../../ui/basics'
+import { nomeAmigavel } from '../../ui/format'
 import { QueryBoundary } from '../../ui/QueryBoundary'
 import { useToast } from '../../ui/Toast'
 import { dataCurta, StatusPill } from './AdminLayout'
@@ -156,7 +157,7 @@ export function AdminStudentDetailPage() {
                     <option value="">Selecione…</option>
                     {(produtos.data ?? []).map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.name} ({p.sku})
+                        {nomeAmigavel(p.name)} ({p.sku})
                       </option>
                     ))}
                   </select>
@@ -173,7 +174,7 @@ export function AdminStudentDetailPage() {
                     <ul style={{ paddingLeft: 18, margin: 0 }}>
                       {entitlements.data.map((e) => (
                         <li key={e.entitlementId} style={{ marginBottom: 8 }}>
-                          {e.productName ?? e.productId} · {e.source}{' '}
+                          {nomeAmigavel(e.productName) || e.productId} · {e.source}{' '}
                           <Button
                             ghost
                             style={{ padding: '2px 10px', fontSize: '0.78rem' }}

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { api, apiPage } from '../../api/http'
 import { Button, Input } from '../../ui/basics'
+import { nomeAmigavel } from '../../ui/format'
 import { Paginacao } from '../../ui/Paginacao'
 import { QueryBoundary } from '../../ui/QueryBoundary'
 import { useToast } from '../../ui/Toast'
@@ -137,7 +138,7 @@ export function AdminWebhooksPage() {
               <option value="">Selecione…</option>
               {(produtos.data ?? []).map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name} ({p.sku})
+                  {nomeAmigavel(p.name)} ({p.sku})
                 </option>
               ))}
             </select>

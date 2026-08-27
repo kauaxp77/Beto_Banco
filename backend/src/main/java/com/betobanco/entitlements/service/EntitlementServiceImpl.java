@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +44,47 @@ public class EntitlementServiceImpl implements EntitlementService {
                 .map(e -> new Concessao(e.getId(), false))
                 .orElseThrow(() -> new IllegalStateException(
                         "concessao perdeu a corrida mas nenhuma vigente foi encontrada"));
+    }
+
+    @Override
+    @Transactional
+    public Concessao conceder(UUID userId, UUID productId, String source, String sourceRef,
+                              Instant expiresAt) {
+        if (expiresAt == null) {
+            return conceder(userId, productId, source, sourceRef);
+        }
+        var existente = repo.findByUserIdAndProductIdAndRevokedAtIsNull(userId, productId);
+        if (existente.isPresent()) {
+            return new Concessao(existente.get().getId(), false);
+        }
+        UUID id = UUID.randomUUID();
+        int inseridas = repo.inserirSeNaoHouverVigenteComPrazo(id, userId, productId, source,
+                sourceRef, expiresAt);
+        if (inseridas == 1) {
+            return new Concessao(id, true);
+        }
+        return repo.findByUserIdAndProductIdAndRevokedAtIsNull(userId, productId)
+                .map(e -> new Concessao(e.getId(), false))
+                .orElseThrow(() -> new IllegalStateException(
+                        "concessao perdeu a corrida mas nenhuma vigente foi encontrada"));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UUID> usuariosComAcesso(Collection<UUID> productIds) {
+        if (productIds == null || productIds.isEmpty()) {
+            return List.of();
+        }
+        return repo.usuariosComAcessoVigente(productIds);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ItemConcedido> listarPorSourceRefPrefixo(String prefixo) {
+        return repo.findBySourceRefStartingWithOrderByGrantedAtDesc(prefixo).stream()
+                .map(e -> new ItemConcedido(e.getId(), e.getUserId(), e.getProductId(),
+                        e.getGrantedAt(), e.getExpiresAt(), e.getRevokedAt()))
+                .toList();
     }
 
     @Override

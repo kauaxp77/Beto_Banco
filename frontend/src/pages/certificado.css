@@ -1,0 +1,190 @@
+/* Certificado: dourado sobre grafite na tela; no papel, tinta sobre branco. */
+
+.cert-moldura {
+  min-height: 100vh;
+  background: var(--bb-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bb-s5);
+  padding: var(--bb-s5);
+}
+
+.cert-folha {
+  width: min(960px, 100%);
+  aspect-ratio: 297 / 210; /* A4 paisagem */
+  border: 2px solid var(--bb-gold);
+  outline: 1px solid rgb(196 161 90 / 0.35);
+  outline-offset: 8px;
+  border-radius: 4px;
+  background:
+    radial-gradient(circle at 50% -20%, rgb(196 161 90 / 0.12), transparent 60%),
+    linear-gradient(160deg, #22252b, #1a1c20);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(24px, 5vw, 64px);
+  gap: clamp(8px, 1.5vw, 18px);
+}
+
+.cert-marca {
+  font-family: var(--bb-font-display);
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  color: var(--bb-text);
+}
+
+.cert-marca em {
+  font-style: italic;
+  color: var(--bb-gold);
+}
+
+.cert-rotulo {
+  margin: 0;
+  font-size: clamp(0.6rem, 1.2vw, 0.78rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
+.cert-nome {
+  margin: 0;
+  font-family: var(--bb-font-display);
+  font-weight: 550;
+  font-size: clamp(1.6rem, 4.5vw, 3.2rem);
+  color: var(--bb-gold-strong);
+  text-wrap: balance;
+}
+
+.cert-texto {
+  margin: 0;
+  max-width: 58ch;
+  font-size: clamp(0.8rem, 1.6vw, 1.05rem);
+  color: var(--bb-text);
+  line-height: 1.7;
+}
+
+.cert-texto strong {
+  color: var(--bb-gold-strong);
+  font-weight: 600;
+}
+
+.cert-rodape {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  font-size: clamp(0.62rem, 1.2vw, 0.8rem);
+}
+
+.cert-assinatura,
+.cert-codigo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cert-assinatura {
+  text-align: left;
+  font-family: var(--bb-font-display);
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.8vw, 1.15rem);
+  color: var(--bb-text);
+  border-top: 1px solid rgb(196 161 90 / 0.4);
+  padding-top: 8px;
+}
+
+.cert-assinatura small,
+.cert-codigo small {
+  font-family: var(--bb-font);
+  font-style: normal;
+  color: var(--bb-text-dim);
+  font-size: 0.85em;
+}
+
+.cert-codigo {
+  text-align: right;
+  color: var(--bb-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cert-codigo strong {
+  color: var(--bb-gold);
+  font-size: 1.15em;
+  letter-spacing: 0.12em;
+}
+
+.cert-acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-s4);
+}
+
+.cert-acoes a {
+  color: var(--bb-text-dim);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.cert-acoes a:hover {
+  color: var(--bb-gold);
+}
+
+/* ---------- impressao: papel branco, tinta escura, ouro impresso ---------- */
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  .cert-moldura {
+    min-height: auto;
+    padding: 0;
+    background: #fff;
+  }
+
+  .cert-acoes {
+    display: none;
+  }
+
+  .cert-folha {
+    width: 100vw;
+    height: 100vh;
+    aspect-ratio: auto;
+    border-radius: 0;
+    outline-offset: -14px;
+    background: #fff;
+    border-color: #a8853f;
+    outline-color: #a8853f;
+  }
+
+  .cert-marca,
+  .cert-texto,
+  .cert-assinatura {
+    color: #1a1c20;
+  }
+
+  .cert-rotulo,
+  .cert-codigo,
+  .cert-assinatura small,
+  .cert-codigo small {
+    color: #5b5748;
+  }
+
+  .cert-nome,
+  .cert-texto strong,
+  .cert-marca em,
+  .cert-codigo strong {
+    color: #a8853f;
+  }
+}

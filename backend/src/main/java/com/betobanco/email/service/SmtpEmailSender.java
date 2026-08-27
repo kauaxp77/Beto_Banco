@@ -47,6 +47,7 @@ public class SmtpEmailSender implements EmailSender {
             case EmailService.Templates.ACESSO_LIBERADO -> "Novo conteúdo liberado para você";
             case EmailService.Templates.RECUPERACAO_SENHA -> "Redefinição de senha";
             case EmailService.Templates.ACESSO_REVOGADO -> "Seu acesso foi encerrado";
+            case EmailService.Templates.ANUNCIO -> "Aviso do professor — Beto Banco";
             default -> "Beto Banco";
         };
     }
@@ -97,6 +98,20 @@ public class SmtpEmailSender implements EmailSender {
                     Se acredita que houve engano, responda a este e-mail.
 
                     Equipe Beto Banco""".formatted(nome);
+
+            case EmailService.Templates.ANUNCIO -> """
+                    Olá, %s!
+
+                    %s
+
+                    %s
+
+                    Veja na plataforma: %s
+
+                    Equipe Beto Banco""".formatted(nome,
+                    String.valueOf(dados.getOrDefault("titulo", "Novo aviso do professor")),
+                    String.valueOf(dados.getOrDefault("mensagem", "")),
+                    urlBase);
 
             default -> "Mensagem do Beto Banco.";
         };
