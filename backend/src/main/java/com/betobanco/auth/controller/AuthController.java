@@ -3,12 +3,12 @@ package com.betobanco.auth.controller;
 import com.betobanco.auth.dto.ForgotPasswordRequest;
 import com.betobanco.auth.dto.LoginRequest;
 import com.betobanco.auth.dto.MeResponse;
-import com.betobanco.auth.dto.RefreshRequest;
 import com.betobanco.auth.dto.RegisterRequest;
 import com.betobanco.auth.dto.ResetPasswordRequest;
 import com.betobanco.auth.dto.TokenResponse;
 import com.betobanco.auth.service.AuthService;
 import com.betobanco.auth.service.PasswordResetService;
+import com.betobanco.auth.service.RefreshCookies;
 import com.betobanco.auth.service.RefreshTokenService;
 import com.betobanco.security.AuthenticatedUser;
 import com.betobanco.shared.exception.BusinessException;
@@ -19,9 +19,11 @@ import com.betobanco.users.api.UserAccount;
 import com.betobanco.users.api.UserDirectory;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,18 +39,26 @@ public class AuthController {
     private final UserDirectory users;
     private final RefreshTokenService refreshTokens;
     private final PasswordResetService resets;
+    private final RefreshCookies cookies;
 
     public AuthController(AuthService auth, UserDirectory users,
-                          RefreshTokenService refreshTokens, PasswordResetService resets) {
+                          RefreshTokenService refreshTokens, PasswordResetService resets,
+                          RefreshCookies cookies) {
         this.auth = auth;
         this.users = users;
         this.refreshTokens = refreshTokens;
         this.resets = resets;
+        this.cookies = cookies;
     }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<TokenResponse>> login(@Valid @RequestBody LoginRequest req) {
-        return ResponseEntity.ok(ApiResponse.ok(auth.autenticar(req.email(), req.password())));
+        TokenResponse par = auth.autenticar(req.email(), req.password());
+
+        // O refresh vai no cookie HttpOnly; o JSON leva apenas o access token.
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookies.emitir(par.refreshToken()).toString())
+                .body(ApiResponse.ok(par));
     }
 
     @GetMapping("/me")
@@ -64,20 +74,33 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<TokenResponse>> refresh(
-            @Valid @RequestBody RefreshRequest req) {
-        RefreshTokenService.Rotacao rotacao = refreshTokens.rotacionar(req.refreshToken())
+            @CookieValue(value = RefreshCookies.NOME, required = false) String refresh) {
+        if (refresh == null || refresh.isBlank()) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, "Sessão inválida ou expirada");
+        }
+
+        RefreshTokenService.Rotacao rotacao = refreshTokens.rotacionar(refresh)
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.UNAUTHORIZED, "Sessão inválida ou expirada"));
 
-        return ResponseEntity.ok(ApiResponse.ok(
-                auth.emitirParComRefreshExistente(rotacao.usuario(), rotacao.novoValor())));
+        TokenResponse par =
+                auth.emitirParComRefreshExistente(rotacao.usuario(), rotacao.novoValor());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookies.emitir(rotacao.novoValor()).toString())
+                .body(ApiResponse.ok(par));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@Valid @RequestBody RefreshRequest req) {
+    public ResponseEntity<Void> logout(
+            @CookieValue(value = RefreshCookies.NOME, required = false) String refresh) {
         // Sempre 204: responder 404 revelaria quais tokens existem.
-        refreshTokens.revogar(req.refreshToken());
-        return ResponseEntity.noContent().build();
+        if (refresh != null && !refresh.isBlank()) {
+            refreshTokens.revogar(refresh);
+        }
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, cookies.limpar().toString())
+                .build();
     }
 
     @PostMapping("/register")

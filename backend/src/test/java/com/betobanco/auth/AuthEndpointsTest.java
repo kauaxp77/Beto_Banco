@@ -61,8 +61,8 @@ class AuthEndpointsTest extends PostgresTestBase {
                 + "\"fullName\":\"Novo Aluno\"}";
     }
 
-    private String refreshJson(String valor) {
-        return "{\"refreshToken\":\"" + valor + "\"}";
+    private jakarta.servlet.http.Cookie novoCookie(String valor) {
+        return new jakarta.servlet.http.Cookie("bb_refresh", valor);
     }
 
     // ---------- login ----------
@@ -76,7 +76,9 @@ class AuthEndpointsTest extends PostgresTestBase {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty())
+                // O refresh vai no cookie HttpOnly, nunca no corpo (spec 6.2).
+                .andExpect(jsonPath("$.data.refreshToken").doesNotExist())
+                .andExpect(r -> assertThat(r.getResponse().getCookie("bb_refresh")).isNotNull())
                 .andExpect(jsonPath("$.data.expiresIn").value(900))
                 .andExpect(jsonPath("$.data.tokenType").value("Bearer"));
     }
@@ -158,59 +160,50 @@ class AuthEndpointsTest extends PostgresTestBase {
     @Test
     void refreshValidoDevolveNovoParEInvalidaOAnterior() throws Exception {
         criarLegado("refresh@exemplo.com", "senha123", "ROLE_STUDENT");
-        String primeiro = refreshDe("refresh@exemplo.com", "senha123");
+        var primeiro = cookieDe("refresh@exemplo.com", "senha123");
 
-        String corpo = mockMvc.perform(post("/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson(primeiro)))
+        var renovado = mockMvc.perform(post("/auth/refresh").cookie(primeiro))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse().getCookie("bb_refresh");
 
-        assertThat(JsonPath.<String>read(corpo, "$.data.refreshToken")).isNotEqualTo(primeiro);
+        assertThat(renovado.getValue()).isNotEqualTo(primeiro.getValue());
 
-        mockMvc.perform(post("/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson(primeiro)))
+        mockMvc.perform(post("/auth/refresh").cookie(primeiro))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void reusarUmRefreshJaRotacionadoDerrubaTodasAsSessoes() throws Exception {
         criarLegado("roubo@exemplo.com", "senha123", "ROLE_STUDENT");
-        String t1 = refreshDe("roubo@exemplo.com", "senha123");
-        String t2 = JsonPath.read(mockMvc.perform(post("/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson(t1)))
-                .andReturn().getResponse().getContentAsString(), "$.data.refreshToken");
+        var t1 = cookieDe("roubo@exemplo.com", "senha123");
+        var t2 = mockMvc.perform(post("/auth/refresh").cookie(t1))
+                .andReturn().getResponse().getCookie("bb_refresh");
 
-        mockMvc.perform(post("/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson(t1)))
+        mockMvc.perform(post("/auth/refresh").cookie(t1))
                 .andExpect(status().isUnauthorized());
 
         // t2 era legitimo e cai junto: e o preco de conter um roubo.
-        mockMvc.perform(post("/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson(t2)))
+        mockMvc.perform(post("/auth/refresh").cookie(t2))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void logoutEncerraApenasASessaoInformadaESempreDevolve204() throws Exception {
         criarLegado("logout@exemplo.com", "senha123", "ROLE_STUDENT");
-        String aba1 = refreshDe("logout@exemplo.com", "senha123");
-        String aba2 = refreshDe("logout@exemplo.com", "senha123");
+        var aba1 = cookieDe("logout@exemplo.com", "senha123");
+        var aba2 = cookieDe("logout@exemplo.com", "senha123");
 
-        mockMvc.perform(post("/auth/logout")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson(aba1)))
+        mockMvc.perform(post("/auth/logout").cookie(aba1))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(post("/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson(aba1)))
+        mockMvc.perform(post("/auth/refresh").cookie(aba1))
                 .andExpect(status().isUnauthorized());
-        mockMvc.perform(post("/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson(aba2)))
+        mockMvc.perform(post("/auth/refresh").cookie(aba2))
                 .andExpect(status().isOk());
 
         // Token desconhecido tambem devolve 204: 404 revelaria quais existem.
-        mockMvc.perform(post("/auth/logout")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson("qualquer")))
+        mockMvc.perform(post("/auth/logout").cookie(novoCookie("qualquer")))
                 .andExpect(status().isNoContent());
     }
 
@@ -293,7 +286,7 @@ class AuthEndpointsTest extends PostgresTestBase {
     @Test
     void redefinirSenhaEncerraAsSessoesAbertas() throws Exception {
         User u = criarLegado("sessoes@exemplo.com", "senha123", "ROLE_STUDENT");
-        String refresh = refreshDe("sessoes@exemplo.com", "senha123");
+        var refresh = cookieDe("sessoes@exemplo.com", "senha123");
 
         String token = resets.criarToken(
                 new UserAccount(u.getId(), u.getEmail(), u.getFullName(), java.util.Set.of()),
@@ -303,8 +296,7 @@ class AuthEndpointsTest extends PostgresTestBase {
                 .content("{\"token\":\"" + token + "\",\"password\":\"nova-senha-123\"}"))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(post("/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON).content(refreshJson(refresh)))
+        mockMvc.perform(post("/auth/refresh").cookie(refresh))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -340,9 +332,9 @@ class AuthEndpointsTest extends PostgresTestBase {
                 .andReturn().getResponse().getContentAsString(), "$.data.accessToken");
     }
 
-    private String refreshDe(String email, String senha) throws Exception {
-        return JsonPath.read(mockMvc.perform(post("/auth/login")
+    private jakarta.servlet.http.Cookie cookieDe(String email, String senha) throws Exception {
+        return mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON).content(login(email, senha)))
-                .andReturn().getResponse().getContentAsString(), "$.data.refreshToken");
+                .andReturn().getResponse().getCookie("bb_refresh");
     }
 }
