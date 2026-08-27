@@ -69,6 +69,19 @@ public class EntitlementServiceImpl implements EntitlementService {
     }
 
     @Override
+    @Transactional
+    public boolean revogarPorId(UUID userId, UUID entitlementId) {
+        return repo.findById(entitlementId)
+                .filter(e -> e.getUserId().equals(userId) && e.getRevokedAt() == null)
+                .map(e -> {
+                    e.revogar();
+                    repo.saveAndFlush(e);
+                    return true;
+                })
+                .orElse(false);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public boolean temAcesso(UUID userId, UUID productId) {
         return repo.findByUserIdAndProductIdAndRevokedAtIsNull(userId, productId)

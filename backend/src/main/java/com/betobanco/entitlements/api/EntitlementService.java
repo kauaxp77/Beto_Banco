@@ -24,6 +24,16 @@ public interface EntitlementService {
     /** Revoga tudo que foi concedido por um pagamento — usado em estorno. */
     int revogarPorOrigem(String sourceRef);
 
+    /**
+     * Revoga um entitlement especifico, usado pela gestao do admin. O
+     * {@code userId} e conferido de proposito: um id de entitlement de outro
+     * aluno na URL nao pode revogar nada.
+     *
+     * @return true se revogou; false se nao existe, nao e deste aluno ou ja
+     *         estava revogado.
+     */
+    boolean revogarPorId(UUID userId, UUID entitlementId);
+
     boolean temAcesso(UUID userId, UUID productId);
 
     List<Item> listarDe(UUID userId);
