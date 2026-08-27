@@ -30,5 +30,14 @@ public interface UserDirectory {
     /** Cadastro publico: cria a conta como aluno, sem nenhum entitlement. */
     UserAccount registrar(String email, String senha, String nomeCompleto);
 
+    /**
+     * Cria um aluno SEM senha, para quem chegou pelo pagamento.
+     *
+     * <p>Materializa a decisao D4: o aluno nao recebe senha por e-mail, e sim
+     * um link de definicao. Ate usa-lo, {@code password_hash} fica nulo e o
+     * login recusa — que e o comportamento correto, nao um bug.
+     */
+    UserAccount criarSemSenha(String email, String nomeCompleto);
+
     void redefinirSenha(UUID userId, String novaSenha);
 }

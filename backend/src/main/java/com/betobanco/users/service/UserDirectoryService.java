@@ -102,6 +102,27 @@ public class UserDirectoryService implements UserDirectory {
 
     @Override
     @Transactional
+    public UserAccount criarSemSenha(String email, String nomeCompleto) {
+        String normalizado = normalizar(email);
+
+        Optional<User> existente = users.findByEmailIgnoreCase(normalizado);
+        if (existente.isPresent()) {
+            return paraConta(existente.get());
+        }
+
+        Role aluno = roles.findByName("ROLE_STUDENT")
+                .orElseThrow(() -> new IllegalStateException("ROLE_STUDENT ausente"));
+
+        User usuario = new User(normalizado, null, nomeCompleto.trim());
+        usuario.getRoles().add(aluno);
+        users.saveAndFlush(usuario);
+        students.saveAndFlush(new Student(usuario.getId()));
+
+        return paraConta(usuario);
+    }
+
+    @Override
+    @Transactional
     public void redefinirSenha(UUID userId, String novaSenha) {
         User usuario = users.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));

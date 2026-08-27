@@ -1,4 +1,7 @@
 spring:
+  mail:
+    host: localhost
+    port: 1025
   jpa:
     hibernate:
       ddl-auto: validate
@@ -11,3 +14,9 @@ betobanco:
     jwt-secret: segredo-de-teste-com-mais-de-32-bytes-para-hs256
     cookie-secure: false
     rate-limit-per-minute: 1000
+  email:
+    dispatcher-enabled: false
+  webhooks:
+    processor-enabled: false
+  payments:
+    fake-webhook-secret: segredo-de-teste

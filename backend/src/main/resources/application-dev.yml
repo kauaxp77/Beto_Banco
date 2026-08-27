@@ -1,4 +1,7 @@
 spring:
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/betobanco}
     username: ${DATABASE_USER:betobanco}
@@ -21,3 +24,7 @@ betobanco:
   auth:
     jwt-secret: ${JWT_SECRET:desenvolvimento-local-troque-isto-em-producao-32b}
     cookie-secure: false
+  email:
+    base-url: http://localhost:5173
+  payments:
+    fake-webhook-secret: segredo-de-teste
