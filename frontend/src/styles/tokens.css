@@ -1,0 +1,30 @@
+/*
+ * Tokens do tema escuro premium (spec 9.6). Grafite e dourado extraidos da
+ * identidade existente: fundo #1A1C20, destaque #C4A15A. Contraste verificado
+ * sobre o fundo escuro — e onde a maioria das paletas falha.
+ */
+:root {
+  color-scheme: dark;
+
+  --bb-bg: #1a1c20;
+  --bb-surface: #22252b;
+  --bb-surface-2: #2b2f36;
+  --bb-border: #3a3f47;
+  --bb-gold: #c4a15a;
+  --bb-gold-strong: #d9b96f;
+  --bb-text: #e8e6e1;
+  --bb-text-dim: #9a9789;
+  --bb-danger: #e5484d;
+  --bb-success: #46a758;
+
+  --bb-s1: 4px;
+  --bb-s2: 8px;
+  --bb-s3: 12px;
+  --bb-s4: 16px;
+  --bb-s5: 24px;
+  --bb-s6: 40px;
+
+  --bb-r1: 8px;
+
+  --bb-font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}

@@ -1,0 +1,41 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bb-bg);
+  color: var(--bb-text);
+  font-family: var(--bb-font);
+  line-height: 1.5;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--bb-gold);
+}
+
+:focus-visible {
+  outline: 2px solid var(--bb-gold);
+  outline-offset: 2px;
+}
+
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+}
