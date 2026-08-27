@@ -15,7 +15,7 @@ public record CourseContentResponse(
 
     public record LessonContent(UUID id, String title, String description, String videoUrl,
                                 Integer durationSeconds, int position, boolean published,
-                                List<MaterialContent> materials) {
+                                List<MaterialContent> materials, long questionCount) {
     }
 
     public record MaterialContent(UUID id, String title, String url) {

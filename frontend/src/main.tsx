@@ -16,6 +16,13 @@ const queryClient = new QueryClient({
   },
 })
 
+// PWA: so em producao — em dev o service worker atrapalharia o HMR do Vite.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    void navigator.serviceWorker.register('/sw.js')
+  })
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

@@ -1,0 +1,20 @@
+{
+  "name": "Beto Banco — Preparação para Concursos Bancários",
+  "short_name": "Beto Banco",
+  "description": "Área de membros: cursos, simulados, certificados e mentoria para concursos bancários.",
+  "lang": "pt-BR",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1c20",
+  "theme_color": "#1a1c20",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

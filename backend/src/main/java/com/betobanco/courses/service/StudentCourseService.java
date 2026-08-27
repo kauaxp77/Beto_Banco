@@ -20,6 +20,8 @@ import com.betobanco.courses.repository.LessonMaterialRepository;
 import com.betobanco.courses.repository.LessonProgressRepository;
 import com.betobanco.courses.repository.LessonRatingRepository;
 import com.betobanco.courses.repository.LessonRepository;
+import com.betobanco.courses.repository.QuizQuestionRepository;
+import com.betobanco.courses.entity.QuizQuestion;
 import com.betobanco.shared.exception.NotFoundException;
 import com.betobanco.users.api.UserAccount;
 import com.betobanco.users.api.UserDirectory;
@@ -53,6 +55,7 @@ public class StudentCourseService {
     private final LessonMaterialRepository materials;
     private final LessonRatingRepository ratings;
     private final AnnouncementRepository announcements;
+    private final QuizQuestionRepository quizQuestions;
     private final UserDirectory usuarios;
     private final CourseAccess acesso;
 
@@ -63,6 +66,7 @@ public class StudentCourseService {
                                 LessonMaterialRepository materials,
                                 LessonRatingRepository ratings,
                                 AnnouncementRepository announcements,
+                                QuizQuestionRepository quizQuestions,
                                 UserDirectory usuarios, CourseAccess acesso) {
         this.courses = courses;
         this.modules = modules;
@@ -72,6 +76,7 @@ public class StudentCourseService {
         this.materials = materials;
         this.ratings = ratings;
         this.announcements = announcements;
+        this.quizQuestions = quizQuestions;
         this.usuarios = usuarios;
         this.acesso = acesso;
     }
@@ -152,6 +157,12 @@ public class StudentCourseService {
                                 todasAulas.stream().map(Lesson::getId).toList()).stream()
                         .collect(Collectors.groupingBy(LessonMaterial::getLessonId));
 
+        Map<UUID, Long> questoesPorAula = todasAulas.isEmpty() ? Map.of()
+                : quizQuestions.findByLessonIdIn(
+                                todasAulas.stream().map(Lesson::getId).toList()).stream()
+                        .collect(Collectors.groupingBy(QuizQuestion::getLessonId,
+                                Collectors.counting()));
+
         List<CourseDetailResponse.ModuleResponse> modulosResposta = modulosDoCurso.stream()
                 .map(m -> new CourseDetailResponse.ModuleResponse(m.getId(), m.getTitle(),
                         m.getPosition(),
@@ -165,7 +176,8 @@ public class StudentCourseService {
                                                 .map(mat -> new CourseDetailResponse
                                                         .MaterialResponse(mat.getId(),
                                                                 mat.getTitle(), mat.getUrl()))
-                                                .toList()))
+                                                .toList(),
+                                        questoesPorAula.getOrDefault(a.getId(), 0L)))
                                 .toList()))
                 // Modulo sem aula publicada nao aparece para o aluno.
                 .filter(m -> !m.lessons().isEmpty())

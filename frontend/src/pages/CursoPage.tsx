@@ -23,6 +23,7 @@ interface LessonItem {
   position: number
   completed: boolean
   materials: MaterialItem[]
+  questionCount: number
 }
 
 interface ModuleItem {
@@ -85,6 +86,179 @@ function Player({ aula }: { aula: LessonItem }) {
         <video key={player.src} src={player.src} controls />
       )}
     </div>
+  )
+}
+
+interface QuizQuestion {
+  id: string
+  statement: string
+  options: string[]
+  position: number
+}
+
+interface QuizAttemptSummary {
+  id: string
+  correctCount: number
+  totalCount: number
+  createdAt: string
+}
+
+interface QuizData {
+  questions: QuizQuestion[]
+  myAttempts: QuizAttemptSummary[]
+}
+
+interface QuizResultItem {
+  questionId: string
+  myIndex: number
+  correctIndex: number
+  correct: boolean
+  explanation: string | null
+}
+
+interface QuizResult {
+  correctCount: number
+  totalCount: number
+  scorePct: number
+  items: QuizResultItem[]
+}
+
+const LETRAS = ['A', 'B', 'C', 'D', 'E']
+
+function Simulado({ lessonId }: { lessonId: string }) {
+  const queryClient = useQueryClient()
+  const [respostas, setRespostas] = useState<Record<string, number>>({})
+  const [resultado, setResultado] = useState<QuizResult | null>(null)
+
+  const query = useQuery({
+    queryKey: ['quiz', lessonId],
+    queryFn: () => api<QuizData>(`/courses/lessons/${lessonId}/quiz`),
+  })
+
+  const entregar = useMutation({
+    mutationFn: () =>
+      api<QuizResult>(`/courses/lessons/${lessonId}/quiz/submit`, {
+        method: 'POST',
+        body: JSON.stringify({
+          answers: Object.entries(respostas).map(([questionId, answerIndex]) => ({
+            questionId,
+            answerIndex,
+          })),
+        }),
+      }),
+    onSuccess: (r) => {
+      setResultado(r)
+      void queryClient.invalidateQueries({ queryKey: ['quiz', lessonId] })
+      void queryClient.invalidateQueries({ queryKey: ['curso'] })
+      void queryClient.invalidateQueries({ queryKey: ['meus-cursos'] })
+      void queryClient.invalidateQueries({ queryKey: ['minhas-stats'] })
+    },
+  })
+
+  return (
+    <QueryBoundary query={query}>
+      {(quiz) => {
+        if (quiz.questions.length === 0) return null
+        const correcaoDe = (id: string) =>
+          resultado?.items.find((i) => i.questionId === id) ?? null
+        const todasRespondidas = quiz.questions.every((q) => respostas[q.id] !== undefined)
+
+        return (
+          <section className="simulado" aria-label="Questões da aula">
+            <div className="simulado-cabeca">
+              <h3>Questões da aula ({quiz.questions.length})</h3>
+              {quiz.myAttempts.length > 0 && !resultado && (
+                <span className="dim-txt">
+                  Última tentativa: {quiz.myAttempts[0].correctCount}/
+                  {quiz.myAttempts[0].totalCount} acertos
+                </span>
+              )}
+            </div>
+
+            {resultado && (
+              <p
+                className={`simulado-placar ${resultado.scorePct >= 70 ? 'bom' : 'ruim'}`}
+                role="status"
+              >
+                Você acertou {resultado.correctCount} de {resultado.totalCount} (
+                {resultado.scorePct}%)
+                {resultado.scorePct >= 70 ? ' — acima da meta de 70%! 🎯' : ' — siga treinando!'}
+              </p>
+            )}
+
+            <ol className="questoes">
+              {quiz.questions.map((q, numero) => {
+                const correcao = correcaoDe(q.id)
+                return (
+                  <li key={q.id} className="questao">
+                    <p className="enunciado">
+                      <strong>Questão {numero + 1}.</strong> {q.statement}
+                    </p>
+                    <div role="radiogroup" aria-label={`Alternativas da questão ${numero + 1}`}>
+                      {q.options.map((opcao, i) => {
+                        const marcada = respostas[q.id] === i
+                        const classe =
+                          correcao === null
+                            ? marcada
+                              ? 'alternativa marcada'
+                              : 'alternativa'
+                            : i === correcao.correctIndex
+                              ? 'alternativa certa'
+                              : marcada
+                                ? 'alternativa errada'
+                                : 'alternativa'
+                        return (
+                          <button
+                            key={i}
+                            type="button"
+                            role="radio"
+                            aria-checked={marcada}
+                            className={classe}
+                            disabled={correcao !== null}
+                            onClick={() => setRespostas({ ...respostas, [q.id]: i })}
+                          >
+                            <span className="letra">{LETRAS[i]}</span>
+                            {opcao}
+                          </button>
+                        )
+                      })}
+                    </div>
+                    {correcao?.explanation && (
+                      <p className="gabarito-comentado">
+                        <strong>Comentário:</strong> {correcao.explanation}
+                      </p>
+                    )}
+                  </li>
+                )
+              })}
+            </ol>
+
+            {resultado === null ? (
+              <Button
+                disabled={!todasRespondidas || entregar.isPending}
+                onClick={() => entregar.mutate()}
+              >
+                {entregar.isPending
+                  ? 'Corrigindo…'
+                  : todasRespondidas
+                    ? 'Entregar respostas'
+                    : `Responda todas para entregar (${Object.keys(respostas).length}/${quiz.questions.length})`}
+              </Button>
+            ) : (
+              <Button
+                ghost
+                onClick={() => {
+                  setRespostas({})
+                  setResultado(null)
+                }}
+              >
+                Refazer questões
+              </Button>
+            )}
+          </section>
+        )
+      }}
+    </QueryBoundary>
   )
 }
 
@@ -330,7 +504,10 @@ export function CursoPage() {
                 <div>
                   {aulaAtual && (
                     <>
-                      <Player aula={aulaAtual} />
+                      {/* Aula so de questoes dispensa a moldura de video vazia. */}
+                      {(aulaAtual.videoUrl || aulaAtual.questionCount === 0) && (
+                        <Player aula={aulaAtual} />
+                      )}
                       <div className="aula-info">
                         <h2>{aulaAtual.title}</h2>
                         <Button
@@ -345,6 +522,10 @@ export function CursoPage() {
                         <p style={{ color: 'var(--bb-text-dim)', maxWidth: '68ch' }}>
                           {aulaAtual.description}
                         </p>
+                      )}
+
+                      {aulaAtual.questionCount > 0 && (
+                        <Simulado key={`quiz-${aulaAtual.id}`} lessonId={aulaAtual.id} />
                       )}
 
                       {aulaAtual.materials.length > 0 && (
@@ -362,7 +543,7 @@ export function CursoPage() {
                         </div>
                       )}
 
-                      <Discussao key={aulaAtual.id} lessonId={aulaAtual.id} />
+                      <Discussao key={`disc-${aulaAtual.id}`} lessonId={aulaAtual.id} />
                     </>
                   )}
                 </div>
@@ -402,7 +583,11 @@ export function CursoPage() {
                               {aula.completed ? '✓' : ''}
                             </span>
                             <span>{aula.title}</span>
-                            <span className="duracao">{duracao(aula.durationSeconds)}</span>
+                            <span className="duracao">
+                              {aula.questionCount > 0
+                                ? `${aula.questionCount} questões`
+                                : duracao(aula.durationSeconds)}
+                            </span>
                           </button>
                         ))}
                       </details>

@@ -505,6 +505,149 @@
   text-decoration: underline;
 }
 
+/* ---------- simulado (questoes da aula) ---------- */
+
+.simulado {
+  margin-top: var(--bb-s4);
+  border: 1px solid rgb(196 161 90 / 0.2);
+  border-radius: var(--bb-r2);
+  background: rgb(34 37 43 / 0.4);
+  padding: var(--bb-s4) var(--bb-s5);
+}
+
+.simulado-cabeca {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.simulado-cabeca h3 {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
+.simulado-placar {
+  margin: var(--bb-s3) 0 0;
+  padding: 10px 16px;
+  border-radius: var(--bb-r1);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.simulado-placar.bom {
+  border: 1px solid rgb(70 167 88 / 0.5);
+  color: var(--bb-success);
+  background: rgb(70 167 88 / 0.08);
+}
+
+.simulado-placar.ruim {
+  border: 1px solid rgb(196 161 90 / 0.5);
+  color: var(--bb-gold-strong);
+  background: rgb(196 161 90 / 0.08);
+}
+
+.questoes {
+  list-style: none;
+  margin: var(--bb-s4) 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-s5);
+}
+
+.questao .enunciado {
+  margin: 0 0 var(--bb-s3);
+  line-height: 1.6;
+  max-width: 75ch;
+}
+
+.alternativa {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: var(--bb-surface-2);
+  border: 1px solid var(--bb-border);
+  border-radius: var(--bb-r1);
+  color: var(--bb-text);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  font-size: 0.92rem;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.alternativa:hover:not(:disabled) {
+  border-color: rgb(196 161 90 / 0.5);
+}
+
+.alternativa:disabled {
+  cursor: default;
+}
+
+.alternativa .letra {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--bb-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.alternativa.marcada {
+  border-color: var(--bb-gold);
+  background: rgb(196 161 90 / 0.1);
+}
+
+.alternativa.marcada .letra {
+  background: var(--bb-gold);
+  border-color: var(--bb-gold);
+  color: #1a1c20;
+}
+
+.alternativa.certa {
+  border-color: rgb(70 167 88 / 0.7);
+  background: rgb(70 167 88 / 0.1);
+}
+
+.alternativa.certa .letra {
+  background: var(--bb-success);
+  border-color: var(--bb-success);
+  color: #fff;
+}
+
+.alternativa.errada {
+  border-color: rgb(229 72 77 / 0.6);
+  background: rgb(229 72 77 / 0.08);
+}
+
+.alternativa.errada .letra {
+  background: var(--bb-danger);
+  border-color: var(--bb-danger);
+  color: #fff;
+}
+
+.gabarito-comentado {
+  margin: 6px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--bb-gold);
+  background: rgb(196 161 90 / 0.05);
+  border-radius: 0 var(--bb-r1) var(--bb-r1) 0;
+  font-size: 0.88rem;
+  color: var(--bb-text-dim);
+  max-width: 75ch;
+}
+
 /* ---------- avaliacao e comentarios ---------- */
 
 .discussao {

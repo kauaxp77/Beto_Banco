@@ -24,6 +24,16 @@ interface LessonContent {
   position: number
   published: boolean
   materials: MaterialContent[]
+  questionCount: number
+}
+
+interface QuestionAdmin {
+  id: string
+  statement: string
+  options: string[]
+  correctIndex: number
+  explanation: string | null
+  position: number
 }
 
 interface ModuleContent {
@@ -55,6 +65,164 @@ interface FormAula {
   description: string
 }
 
+const LETRAS = ['A', 'B', 'C', 'D', 'E']
+
+/** Banco de questoes de uma aula: listar, adicionar e remover. */
+function PainelQuestoes({ lessonId, aoMudar }: { lessonId: string; aoMudar: () => void }) {
+  const { toastErro } = useToast()
+  const queryClient = useQueryClient()
+  const [enunciado, setEnunciado] = useState('')
+  const [alternativas, setAlternativas] = useState(['', '', '', '', ''])
+  const [correta, setCorreta] = useState(0)
+  const [comentario, setComentario] = useState('')
+
+  const query = useQuery({
+    queryKey: ['admin-questoes', lessonId],
+    queryFn: () => api<QuestionAdmin[]>(`/admin/courses/lessons/${lessonId}/questions`),
+  })
+
+  function invalidar() {
+    void queryClient.invalidateQueries({ queryKey: ['admin-questoes', lessonId] })
+    aoMudar()
+  }
+
+  const criar = useMutation({
+    mutationFn: () => {
+      const options = alternativas.map((a) => a.trim()).filter((a) => a !== '')
+      return api(`/admin/courses/lessons/${lessonId}/questions`, {
+        method: 'POST',
+        body: JSON.stringify({
+          statement: enunciado.trim(),
+          options,
+          correctIndex: correta,
+          explanation: comentario.trim() || null,
+          position: (query.data ?? []).length,
+        }),
+      })
+    },
+    onSuccess: () => {
+      setEnunciado('')
+      setAlternativas(['', '', '', '', ''])
+      setCorreta(0)
+      setComentario('')
+      invalidar()
+    },
+    onError: () => toastErro('Não foi possível salvar a questão. Confira as alternativas.'),
+  })
+
+  const remover = useMutation({
+    mutationFn: (id: string) => api(`/admin/courses/questions/${id}`, { method: 'DELETE' }),
+    onSuccess: invalidar,
+    onError: () => toastErro('Não foi possível remover a questão.'),
+  })
+
+  const preenchidas = alternativas.filter((a) => a.trim() !== '').length
+
+  return (
+    <div style={{ marginTop: 12 }}>
+      <h4 style={{ margin: '0 0 8px', fontSize: '0.88rem' }}>Questões desta aula</h4>
+
+      <QueryBoundary query={query} empty="Nenhuma questão ainda — adicione a primeira abaixo.">
+        {(questoes) => (
+          <ol style={{ paddingLeft: 18, margin: '0 0 12px' }}>
+            {questoes.map((q) => (
+              <li key={q.id} style={{ marginBottom: 8, fontSize: '0.88rem' }}>
+                {q.statement}{' '}
+                <span style={{ color: 'var(--bb-success)', fontWeight: 600 }}>
+                  (gabarito: {LETRAS[q.correctIndex]})
+                </span>{' '}
+                <Button
+                  ghost
+                  style={{ padding: '2px 10px', fontSize: '0.75rem' }}
+                  disabled={remover.isPending}
+                  onClick={() => remover.mutate(q.id)}
+                >
+                  Remover
+                </Button>
+              </li>
+            ))}
+          </ol>
+        )}
+      </QueryBoundary>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          criar.mutate()
+        }}
+      >
+        <div className="bb-field">
+          <label htmlFor={`enunciado-${lessonId}`}>Enunciado</label>
+          <textarea
+            id={`enunciado-${lessonId}`}
+            value={enunciado}
+            onChange={(e) => setEnunciado(e.target.value)}
+            rows={3}
+            maxLength={4000}
+            required
+            style={{
+              width: '100%',
+              background: 'var(--bb-surface-2)',
+              border: '1px solid var(--bb-border)',
+              borderRadius: 'var(--bb-r1)',
+              color: 'var(--bb-text)',
+              padding: '10px 12px',
+              fontFamily: 'inherit',
+            }}
+          />
+        </div>
+        {alternativas.map((alt, i) => (
+          <Input
+            key={i}
+            label={`Alternativa ${LETRAS[i]}${i >= 2 ? ' (opcional)' : ''}`}
+            value={alt}
+            onChange={(e) => {
+              const novas = [...alternativas]
+              novas[i] = e.target.value
+              setAlternativas(novas)
+            }}
+          />
+        ))}
+        <div className="bb-field">
+          <label htmlFor={`correta-${lessonId}`}>Alternativa correta</label>
+          <select
+            id={`correta-${lessonId}`}
+            value={correta}
+            onChange={(e) => setCorreta(Number(e.target.value))}
+            style={{
+              background: 'var(--bb-surface-2)',
+              border: '1px solid var(--bb-border)',
+              borderRadius: 'var(--bb-r1)',
+              color: 'var(--bb-text)',
+              padding: '9px 12px',
+            }}
+          >
+            {alternativas.map(
+              (alt, i) =>
+                alt.trim() !== '' && (
+                  <option key={i} value={i}>
+                    {LETRAS[i]}
+                  </option>
+                ),
+            )}
+          </select>
+        </div>
+        <Input
+          label="Comentário do gabarito (opcional)"
+          value={comentario}
+          onChange={(e) => setComentario(e.target.value)}
+        />
+        <Button
+          type="submit"
+          disabled={!enunciado.trim() || preenchidas < 2 || criar.isPending}
+        >
+          Adicionar questão
+        </Button>
+      </form>
+    </div>
+  )
+}
+
 export function AdminCourseContentPage() {
   const { id } = useParams<{ id: string }>()
   const { toast, toastErro } = useToast()
@@ -81,6 +249,7 @@ export function AdminCourseContentPage() {
   const [matAula, setMatAula] = useState<string | null>(null)
   const [matTitulo, setMatTitulo] = useState('')
   const [matUrl, setMatUrl] = useState('')
+  const [quizAula, setQuizAula] = useState<string | null>(null)
 
   function invalidar() {
     void queryClient.invalidateQueries({ queryKey: ['admin-curso', id] })
@@ -295,6 +464,7 @@ export function AdminCourseContentPage() {
                               ? ` · ${Math.round(aula.durationSeconds / 60)} min`
                               : ''}
                             {aula.materials.length > 0 && ` · ${aula.materials.length} 📎`}
+                            {aula.questionCount > 0 && ` · ${aula.questionCount} questões`}
                           </td>
                           <td style={{ whiteSpace: 'nowrap' }}>
                             <Button
@@ -323,6 +493,15 @@ export function AdminCourseContentPage() {
                               }
                             >
                               Materiais
+                            </Button>{' '}
+                            <Button
+                              ghost
+                              style={{ padding: '2px 10px', fontSize: '0.78rem' }}
+                              onClick={() =>
+                                setQuizAula(quizAula === aula.id ? null : aula.id)
+                              }
+                            >
+                              Questões
                             </Button>{' '}
                             <Button
                               ghost
@@ -417,6 +596,10 @@ export function AdminCourseContentPage() {
                       </div>
                     )
                   })()}
+
+                {quizAula !== null && modulo.lessons.some((a) => a.id === quizAula) && (
+                  <PainelQuestoes lessonId={quizAula} aoMudar={invalidar} />
+                )}
 
                 {formAula?.moduleId === modulo.id && (
                   <form onSubmit={salvarAula} style={{ marginTop: 12 }}>

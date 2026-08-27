@@ -17,8 +17,10 @@ import com.betobanco.courses.entity.LessonMaterial;
 import com.betobanco.courses.repository.CourseModuleRepository;
 import com.betobanco.courses.repository.CourseProductRepository;
 import com.betobanco.courses.repository.CourseRepository;
+import com.betobanco.courses.entity.QuizQuestion;
 import com.betobanco.courses.repository.LessonMaterialRepository;
 import com.betobanco.courses.repository.LessonRepository;
+import com.betobanco.courses.repository.QuizQuestionRepository;
 import com.betobanco.courses.service.AdminCourseLookup;
 import com.betobanco.shared.exception.BusinessException;
 import com.betobanco.shared.exception.ErrorCode;
@@ -62,6 +64,7 @@ public class AdminCourseController {
     private final LessonRepository lessons;
     private final CourseProductRepository courseProducts;
     private final LessonMaterialRepository materials;
+    private final QuizQuestionRepository quizQuestions;
     private final ProductCatalog catalogo;
     private final AdminCourseLookup busca;
 
@@ -69,12 +72,14 @@ public class AdminCourseController {
                                  LessonRepository lessons,
                                  CourseProductRepository courseProducts,
                                  LessonMaterialRepository materials,
+                                 QuizQuestionRepository quizQuestions,
                                  ProductCatalog catalogo, AdminCourseLookup busca) {
         this.courses = courses;
         this.modules = modules;
         this.lessons = lessons;
         this.courseProducts = courseProducts;
         this.materials = materials;
+        this.quizQuestions = quizQuestions;
         this.catalogo = catalogo;
         this.busca = busca;
     }
@@ -114,6 +119,12 @@ public class AdminCourseController {
                                 todasAulas.stream().map(Lesson::getId).toList()).stream()
                         .collect(Collectors.groupingBy(LessonMaterial::getLessonId));
 
+        Map<UUID, Long> questoesPorAula = todasAulas.isEmpty() ? Map.of()
+                : quizQuestions.findByLessonIdIn(
+                                todasAulas.stream().map(Lesson::getId).toList()).stream()
+                        .collect(Collectors.groupingBy(QuizQuestion::getLessonId,
+                                Collectors.counting()));
+
         List<CourseContentResponse.ModuleContent> arvore = modulosDoCurso.stream()
                 .map(m -> new CourseContentResponse.ModuleContent(m.getId(), m.getTitle(),
                         m.getPosition(),
@@ -128,7 +139,8 @@ public class AdminCourseController {
                                                 .map(mat -> new CourseContentResponse
                                                         .MaterialContent(mat.getId(),
                                                                 mat.getTitle(), mat.getUrl()))
-                                                .toList()))
+                                                .toList(),
+                                        questoesPorAula.getOrDefault(a.getId(), 0L)))
                                 .toList()))
                 .toList();
 

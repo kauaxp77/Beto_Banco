@@ -34,6 +34,7 @@ const detalhe = {
           position: 0,
           completed: true,
           materials: [{ id: 'mat1', title: 'Apostila em PDF', url: 'https://cdn.x/a.pdf' }],
+          questionCount: 0,
         },
         {
           id: 'a2',
@@ -44,9 +45,38 @@ const detalhe = {
           position: 1,
           completed: false,
           materials: [],
+          questionCount: 2,
         },
       ],
     },
+  ],
+}
+
+const quiz = {
+  questions: [
+    {
+      id: 'q1',
+      statement: 'Quanto é 2 + 2?',
+      options: ['3', '4', '5'],
+      position: 0,
+    },
+    {
+      id: 'q2',
+      statement: 'Capital do Brasil?',
+      options: ['Rio', 'Brasília'],
+      position: 1,
+    },
+  ],
+  myAttempts: [],
+}
+
+const quizResultado = {
+  correctCount: 2,
+  totalCount: 2,
+  scorePct: 100,
+  items: [
+    { questionId: 'q1', myIndex: 1, correctIndex: 1, correct: true, explanation: 'Aritmética básica.' },
+    { questionId: 'q2', myIndex: 1, correctIndex: 1, correct: true, explanation: null },
   ],
 }
 
@@ -85,6 +115,8 @@ function stubCurso() {
       const u = String(url)
       chamadas.push({ url: u, method: init?.method })
       if (u.includes('/discussion')) return Promise.resolve(ok(discussao))
+      if (u.includes('/quiz/submit')) return Promise.resolve(ok(quizResultado))
+      if (u.includes('/quiz')) return Promise.resolve(ok(quiz))
       if (u.includes('/complete') || u.includes('/rating') || u.includes('/comments')) {
         return Promise.resolve(ok(null))
       }
@@ -116,9 +148,10 @@ describe('CursoPage', () => {
     expect(await screen.findByText('Mentoria Protocolo BB')).toBeInTheDocument()
     expect(screen.getByText('Módulo 1')).toBeInTheDocument()
 
-    // A aula ativa e a nao concluida (a2), que nao tem video.
+    // A aula ativa e a nao concluida (a2): aula de questoes, sem moldura de video.
     expect(screen.getByRole('heading', { name: 'Edital comentado' })).toBeInTheDocument()
-    expect(screen.getByText(/ainda não tem vídeo/i)).toBeInTheDocument()
+    expect(screen.queryByText(/ainda não tem vídeo/i)).not.toBeInTheDocument()
+    expect(await screen.findByText(/Questões da aula \(2\)/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /concluir aula/i })).toBeInTheDocument()
   })
 
@@ -157,6 +190,29 @@ describe('CursoPage', () => {
         chamadas.some((c) => c.url.includes('/lessons/a1/complete') && c.method === 'DELETE'),
       ).toBe(true),
     )
+  })
+
+  it('aula com questoes rende o simulado e entrega mostra o gabarito', async () => {
+    const chamadas = stubCurso()
+    renderCurso()
+
+    // A aula ativa (a2) tem 2 questoes.
+    expect(await screen.findByText(/Questões da aula \(2\)/)).toBeInTheDocument()
+    expect(screen.getByText(/Quanto é 2 \+ 2\?/)).toBeInTheDocument()
+
+    // Sem responder tudo, o botao fica bloqueado.
+    expect(screen.getByRole('button', { name: /responda todas/i })).toBeDisabled()
+
+    // Responde as duas e entrega.
+    await userEvent.click(screen.getByRole('radio', { name: /B\s*4/ }))
+    await userEvent.click(screen.getByRole('radio', { name: /B\s*Brasília/ }))
+    await userEvent.click(screen.getByRole('button', { name: /entregar respostas/i }))
+
+    expect(await screen.findByText(/Você acertou 2 de 2 \(100%\)/)).toBeInTheDocument()
+    expect(screen.getByText(/Aritmética básica\./)).toBeInTheDocument()
+    expect(
+      chamadas.some((c) => c.url.includes('/lessons/a2/quiz/submit') && c.method === 'POST'),
+    ).toBe(true)
   })
 
   it('comentar envia POST com o texto e busca filtra as aulas', async () => {

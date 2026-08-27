@@ -4,10 +4,12 @@ import com.betobanco.courses.entity.Course;
 import com.betobanco.courses.entity.CourseModule;
 import com.betobanco.courses.entity.Lesson;
 import com.betobanco.courses.entity.LessonComment;
+import com.betobanco.courses.entity.QuizQuestion;
 import com.betobanco.courses.repository.CourseModuleRepository;
 import com.betobanco.courses.repository.CourseRepository;
 import com.betobanco.courses.repository.LessonCommentRepository;
 import com.betobanco.courses.repository.LessonRepository;
+import com.betobanco.courses.repository.QuizQuestionRepository;
 import com.betobanco.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +27,16 @@ public class AdminCourseLookup {
     private final CourseModuleRepository modules;
     private final LessonRepository lessons;
     private final LessonCommentRepository comments;
+    private final QuizQuestionRepository questions;
 
     public AdminCourseLookup(CourseRepository courses, CourseModuleRepository modules,
-                             LessonRepository lessons, LessonCommentRepository comments) {
+                             LessonRepository lessons, LessonCommentRepository comments,
+                             QuizQuestionRepository questions) {
         this.courses = courses;
         this.modules = modules;
         this.lessons = lessons;
         this.comments = comments;
+        this.questions = questions;
     }
 
     public Course curso(UUID id) {
@@ -52,5 +57,10 @@ public class AdminCourseLookup {
     public LessonComment comentario(UUID id) {
         return comments.findById(id)
                 .orElseThrow(() -> new NotFoundException("Comentário não encontrado"));
+    }
+
+    public QuizQuestion questao(UUID id) {
+        return questions.findById(id)
+                .orElseThrow(() -> new NotFoundException("Questão não encontrada"));
     }
 }
