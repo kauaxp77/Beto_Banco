@@ -142,6 +142,11 @@ class ModuleBoundariesTest {
                 public void check(com.tngtech.archunit.core.domain.JavaClass item,
                                   com.tngtech.archunit.lang.ConditionEvents events) {
                     item.getMethods().forEach(metodo -> {
+                        // Lambdas viram metodos sinteticos "lambda$N". Sao
+                        // detalhe interno, nao a resposta de um endpoint.
+                        if (metodo.getName().startsWith("lambda$")) {
+                            return;
+                        }
                         var retorno = metodo.getRawReturnType();
                         if (retorno.isAnnotatedWith(Entity.class)) {
                             events.add(com.tngtech.archunit.lang.SimpleConditionEvent

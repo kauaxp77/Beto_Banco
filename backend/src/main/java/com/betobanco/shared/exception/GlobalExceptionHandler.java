@@ -173,7 +173,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .findFirst()
                 .orElse(statusCode.is5xxServerError()
                         ? ErrorCode.INTERNAL_ERROR
-                        : ErrorCode.MALFORMED_REQUEST);
+                        : ErrorCode.CLIENT_ERROR);
     }
 
     /** Mensagem generica por status: nunca a mensagem original da excecao. */

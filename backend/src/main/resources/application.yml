@@ -20,3 +20,13 @@ management:
     health:
       probes:
         enabled: true
+
+betobanco:
+  auth:
+    jwt-secret: ${JWT_SECRET:}
+    access-token-minutes: 15
+    refresh-token-days: 30
+    first-access-token-hours: 72
+    reset-token-hours: 1
+    cookie-secure: true
+    cookie-same-site: Lax
