@@ -4,8 +4,11 @@
 -- dominio) para visualizar telas, graficos e fluxos.
 --
 -- Idempotente: rodar duas vezes nao duplica (ON CONFLICT / verificacoes).
--- NAO rode em producao. Pre-requisitos: migracoes ate V7 aplicadas e o
--- usuario aluno.demo@teste.local criado (fonte do hash de senha).
+-- Pre-requisitos: migracoes ate V10 aplicadas e o usuario
+-- aluno.demo@teste.local criado (fonte do hash de senha).
+-- Em producao, rode apenas se quiser dados de DEMONSTRACAO no ar —
+-- limpeza: apagar usuarios %@demo.local, cursos slug seed-%, pagamentos
+-- seed-tx-% e webhooks seed-evt-% remove tudo em cascata.
 --
 -- Todos os usuarios seed usam a MESMA senha do aluno.demo (DemoTeste123!).
 -- Rodar: docker exec -i betobanco-postgres psql -U betobanco -d betobanco \
@@ -357,6 +360,148 @@ SELECT (SELECT id FROM users WHERE email = 'aluno' || (1 + (g % 15)) || '@demo.l
 FROM generate_series(1, 30) g
 WHERE NOT EXISTS (SELECT 1 FROM audit_logs WHERE entity_type = 'Seed');
 
+-- ---------- 16. Anuncios: 3 gerais + 13 por turma ----------
+DO $$
+DECLARE
+  prof UUID;
+  c RECORD;
+  n INT := 0;
+BEGIN
+  IF EXISTS (SELECT 1 FROM announcements) THEN RETURN; END IF;
+  SELECT id INTO prof FROM users WHERE email = 'professor@demo.local';
+
+  INSERT INTO announcements (course_id, title, body, created_by, created_at) VALUES
+    (NULL, 'Bem-vindos à nova plataforma!', 'A área de membros foi reformulada: progresso por aula, materiais em PDF e comentários com resposta do professor. Explorem!', prof, now() - interval '6 days'),
+    (NULL, 'Manutenção programada', 'Domingo, das 2h às 4h, a plataforma pode ficar instável por atualização de infraestrutura.', prof, now() - interval '3 days'),
+    (NULL, 'Edital BB publicado!', 'Saiu o edital do Banco do Brasil 2026. Aula ao vivo de análise completa nesta quinta às 20h.', prof, now() - interval '1 day');
+
+  FOR c IN SELECT id, title FROM courses WHERE slug LIKE 'seed-%' ORDER BY title LIMIT 13 LOOP
+    n := n + 1;
+    INSERT INTO announcements (course_id, title, body, created_by, created_at)
+    VALUES (c.id,
+            (ARRAY['Aula extra de revisão no sábado','Novo bloco de questões liberado','Cronograma da reta final publicado','Material atualizado com o novo edital'])[1 + (n % 4)],
+            'Aviso da turma ' || c.title || ': confira o conteúdo novo na plataforma e organize sua semana de estudos.',
+            prof, now() - (n || ' days')::interval);
+  END LOOP;
+END $$;
+
+-- ---------- 17. Certificados: 15 formados (progresso 100% coerente) ----------
+DO $$
+DECLARE
+  par RECORD;
+  codigo TEXT;
+BEGIN
+  IF EXISTS (SELECT 1 FROM certificates) THEN RETURN; END IF;
+
+  FOR par IN
+    SELECT DISTINCT ON (e.user_id, cp.course_id) e.user_id, cp.course_id
+    FROM entitlements e
+    JOIN course_products cp ON cp.product_id = e.product_id
+    JOIN courses c ON c.id = cp.course_id AND c.published
+    WHERE e.revoked_at IS NULL AND e.source_ref = 'seed-dev'
+    ORDER BY e.user_id, cp.course_id, random()
+    LIMIT 15
+  LOOP
+    INSERT INTO lesson_progress (user_id, lesson_id, completed_at)
+    SELECT par.user_id, l.id, now() - (random() * 20 || ' days')::interval
+    FROM course_modules cm
+    JOIN lessons l ON l.module_id = cm.id
+    WHERE cm.course_id = par.course_id
+    ON CONFLICT (user_id, lesson_id) DO NOTHING;
+
+    codigo := translate('BB-' || upper(substr(md5(random()::text), 1, 5)) || '-'
+                        || upper(substr(md5(random()::text), 1, 5)), '01IO', 'WXYZ');
+
+    INSERT INTO certificates (user_id, course_id, code, hours, issued_at)
+    SELECT par.user_id, par.course_id, codigo,
+           GREATEST(1, ceil(coalesce(sum(l.duration_seconds), 0) / 3600.0))::int,
+           now() - (random() * 10 || ' days')::interval
+    FROM course_modules cm
+    JOIN lessons l ON l.module_id = cm.id
+    WHERE cm.course_id = par.course_id
+    ON CONFLICT DO NOTHING;
+  END LOOP;
+END $$;
+
+-- ---------- 18. Depoimentos: 18 (aprovados, pendentes e ocultos) ----------
+DO $$
+DECLARE
+  aluno RECORD;
+  n INT := 0;
+  frases TEXT[] := ARRAY[
+    'Passei no concurso do BB graças ao método do professor. Direto ao ponto, sem enrolação.',
+    'Os simulados são idênticos ao estilo da banca. Cheguei na prova sem surpresas.',
+    'Estudei 3 meses seguindo o cronograma e fui aprovada dentro das vagas!',
+    'O professor responde os comentários rapidinho. Parece aula particular.',
+    'Melhor investimento que fiz na minha preparação. Material impecável.',
+    'A trilha do combo me organizou: sabia exatamente o que estudar a cada dia.',
+    'Depois de 2 reprovações, finalmente entendi matemática financeira. Obrigado!',
+    'As aulas de conhecimentos bancários são as melhores que já vi.',
+    'Plataforma simples e completa. Do vídeo ao PDF, tudo no mesmo lugar.',
+    'A sequência de dias me manteve firme até o fim. Aprovado no BNB!',
+    'Certificado saiu na hora que terminei o curso. Já anexei no currículo.',
+    'Conteúdo atualizado com o edital novo em menos de uma semana. Surreal.',
+    'Indiquei para três amigos do grupo de estudos. Todos assinaram.',
+    'Os mapas mentais da reta final valem o curso inteiro.',
+    'Sai do zero absoluto para 82% de acertos no simulado final.',
+    'Aulas curtas e objetivas: dá para estudar até no intervalo do trabalho.',
+    'O suporte nos comentários fez toda a diferença na minha aprovação.',
+    'Método honesto: sem promessa milagrosa, com muito treino direcionado.'];
+  st TEXT;
+BEGIN
+  IF EXISTS (SELECT 1 FROM testimonials) THEN RETURN; END IF;
+
+  FOR aluno IN SELECT id FROM users WHERE email LIKE 'aluno%@demo.local' ORDER BY email LOOP
+    n := n + 1;
+    st := CASE WHEN n % 3 = 0 THEN 'PENDING'
+               WHEN n % 7 = 0 THEN 'HIDDEN'
+               ELSE 'APPROVED' END;
+    INSERT INTO testimonials (user_id, body, status, created_at)
+    VALUES (aluno.id, frases[n], st, now() - (random() * 40 || ' days')::interval);
+    IF n <= 3 THEN
+      INSERT INTO testimonials (user_id, body, status, created_at)
+      VALUES (aluno.id, frases[15 + n], 'APPROVED', now() - (random() * 40 || ' days')::interval);
+    END IF;
+  END LOOP;
+END $$;
+
+-- ---------- 19. Questoes nas aulas (36) + tentativas (30) ----------
+DO $$
+DECLARE
+  aula RECORD;
+BEGIN
+  IF EXISTS (SELECT 1 FROM quiz_questions) THEN RETURN; END IF;
+
+  FOR aula IN
+    SELECT l.id FROM lessons l
+    JOIN course_modules cm ON cm.id = l.module_id
+    JOIN courses c ON c.id = cm.course_id AND c.slug LIKE 'seed-%'
+    WHERE l.title LIKE '%Resolução de questões%'
+    ORDER BY l.id
+    LIMIT 12
+  LOOP
+    INSERT INTO quiz_questions (lesson_id, statement, options, correct_index, explanation, position) VALUES
+      (aula.id,
+       'Sobre o Sistema Financeiro Nacional, qual instituição é responsável por executar a política monetária?',
+       '["Banco do Brasil","Banco Central do Brasil","Caixa Econômica Federal","BNDES","Tesouro Nacional"]'::jsonb,
+       1, 'O Banco Central executa a política monetária definida pelo CMN — pegadinha clássica com o Banco do Brasil.', 0),
+      (aula.id,
+       'Um capital de R$ 1.000,00 aplicado a juros simples de 2% ao mês rende, em 3 meses:',
+       '["R$ 20,00","R$ 40,00","R$ 60,00","R$ 61,21","R$ 80,00"]'::jsonb,
+       2, 'Juros simples: J = C · i · t = 1000 · 0,02 · 3 = R$ 60,00. A alternativa D usa juros compostos.', 1),
+      (aula.id,
+       'No atendimento bancário, a prioridade de atendimento a idosos é garantida a partir de qual idade?',
+       '["55 anos","60 anos","65 anos","70 anos"]'::jsonb,
+       1, 'O Estatuto da Pessoa Idosa garante prioridade a partir dos 60 anos.', 2);
+  END LOOP;
+
+  INSERT INTO quiz_attempts (user_id, lesson_id, correct_count, total_count, answers, created_at)
+  SELECT lp.user_id, lp.lesson_id, 1 + floor(random() * 3)::int, 3, '{}'::jsonb, lp.completed_at
+  FROM lesson_progress lp
+  WHERE lp.lesson_id IN (SELECT DISTINCT lesson_id FROM quiz_questions)
+  LIMIT 30;
+END $$;
+
 COMMIT;
 
 -- Resumo do que existe apos o seed.
@@ -378,4 +523,9 @@ UNION ALL SELECT 'payment_splits', count(*) FROM payment_splits
 UNION ALL SELECT 'webhook_events', count(*) FROM webhook_events
 UNION ALL SELECT 'email_outbox', count(*) FROM email_outbox
 UNION ALL SELECT 'audit_logs', count(*) FROM audit_logs
+UNION ALL SELECT 'announcements', count(*) FROM announcements
+UNION ALL SELECT 'certificates', count(*) FROM certificates
+UNION ALL SELECT 'testimonials', count(*) FROM testimonials
+UNION ALL SELECT 'quiz_questions', count(*) FROM quiz_questions
+UNION ALL SELECT 'quiz_attempts', count(*) FROM quiz_attempts
 ORDER BY tabela;
