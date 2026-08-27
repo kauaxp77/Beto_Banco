@@ -1,1 +1,0 @@
-Icon assets go here.

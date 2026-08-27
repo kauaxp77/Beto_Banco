@@ -1,0 +1,34 @@
+# Node
+node_modules/
+dist/
+.vite/
+*.local
+
+# Java / Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.class
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Saídas de build capturadas por engano
+build_output.txt
+build_output_clean.txt
+tsc_output.txt
+error.txt
+
+# Workspace do subagent-driven-development
+.superpowers/

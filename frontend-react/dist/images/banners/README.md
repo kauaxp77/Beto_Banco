@@ -1,1 +1,0 @@
-Banner imagery goes here.
