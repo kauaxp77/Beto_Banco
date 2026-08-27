@@ -1,0 +1,117 @@
+/* Componentes do design system minimo (spec 9.6). */
+
+.bb-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bb-s2);
+  padding: var(--bb-s2) var(--bb-s4);
+  border-radius: var(--bb-r1);
+  border: 1px solid transparent;
+  background: var(--bb-gold);
+  color: #16130c;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bb-button:hover {
+  background: var(--bb-gold-strong);
+}
+
+.bb-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bb-button--ghost {
+  background: transparent;
+  color: var(--bb-text);
+  border-color: var(--bb-border);
+}
+
+.bb-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-s1);
+  margin-bottom: var(--bb-s4);
+}
+
+.bb-field label {
+  color: var(--bb-text-dim);
+  font-size: 0.9rem;
+}
+
+.bb-field input {
+  background: var(--bb-surface-2);
+  border: 1px solid var(--bb-border);
+  border-radius: var(--bb-r1);
+  color: var(--bb-text);
+  padding: var(--bb-s2) var(--bb-s3);
+}
+
+.bb-field .bb-field-error {
+  color: var(--bb-danger);
+  font-size: 0.85rem;
+}
+
+.bb-card {
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  border-radius: var(--bb-r1);
+  padding: var(--bb-s4);
+}
+
+.bb-badge {
+  display: inline-block;
+  padding: 2px var(--bb-s2);
+  border-radius: 999px;
+  border: 1px solid var(--bb-gold);
+  color: var(--bb-gold);
+  font-size: 0.8rem;
+}
+
+.bb-skeleton {
+  border-radius: var(--bb-r1);
+  background: linear-gradient(90deg, var(--bb-surface) 25%, var(--bb-surface-2) 50%, var(--bb-surface) 75%);
+  background-size: 200% 100%;
+  animation: bb-shimmer 1.2s infinite;
+  min-height: 1em;
+}
+
+@keyframes bb-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.bb-state {
+  text-align: center;
+  padding: var(--bb-s6) var(--bb-s4);
+  color: var(--bb-text-dim);
+}
+
+.bb-toasts {
+  position: fixed;
+  bottom: var(--bb-s4);
+  right: var(--bb-s4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-s2);
+  z-index: 50;
+}
+
+.bb-toast {
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-gold);
+  border-radius: var(--bb-r1);
+  color: var(--bb-text);
+  padding: var(--bb-s3) var(--bb-s4);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.4);
+}
+
+.bb-toast--erro {
+  border-color: var(--bb-danger);
+}
