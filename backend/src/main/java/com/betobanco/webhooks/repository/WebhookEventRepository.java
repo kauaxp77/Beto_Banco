@@ -21,6 +21,10 @@ public interface WebhookEventRepository extends JpaRepository<WebhookEvent, UUID
 
     Page<WebhookEvent> findByStatusInOrderByReceivedAtDesc(List<String> status, Pageable pageable);
 
+    Page<WebhookEvent> findAllByOrderByReceivedAtDesc(Pageable pageable);
+
+    long countByStatusIn(List<String> status);
+
     /**
      * Pega o proximo lote de eventos pendentes com {@code FOR UPDATE SKIP
      * LOCKED}: se um dia o backend rodar em duas instancias, elas nao brigam

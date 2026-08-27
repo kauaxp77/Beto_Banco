@@ -1,6 +1,8 @@
 package com.betobanco.webhooks;
 
 import com.betobanco.audit.repository.AuditLogRepository;
+import com.betobanco.auth.entity.TokenPurpose;
+import com.betobanco.auth.repository.PasswordResetTokenRepository;
 import com.betobanco.catalog.entity.Product;
 import com.betobanco.catalog.repository.ProductRepository;
 import com.betobanco.email.entity.EmailOutbox;
@@ -15,12 +17,16 @@ import com.betobanco.users.api.UserDirectory;
 import com.betobanco.webhooks.entity.WebhookEvent;
 import com.betobanco.webhooks.repository.WebhookEventRepository;
 import com.betobanco.webhooks.service.WebhookProcessor;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.HexFormat;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -72,6 +78,9 @@ class WebhookFluxoTest extends PostgresTestBase {
 
     @Autowired
     private AuditLogRepository auditoria;
+
+    @Autowired
+    private PasswordResetTokenRepository resetTokens;
 
     private UUID criarProduto(String sku) {
         return produtos.saveAndFlush(new Product(sku, "Mentoria " + sku, null, 19900L)).getId();
@@ -288,6 +297,44 @@ class WebhookFluxoTest extends PostgresTestBase {
         assertThat(outbox.findByDedupKey("primeiro-acesso:" + aluno.id())).isEmpty();
         assertThat(outbox.findAll().stream()
                 .anyMatch(e -> e.getTemplate().equals("ACESSO_LIBERADO"))).isTrue();
+    }
+
+    @Test
+    void emailDePrimeiroAcessoContemTokenQueDefineSenha() throws Exception {
+        criarProduto("SKU-TOKEN");
+        assertThat(enviar(payload("evt-token", "payment.approved", "tx-token", "SKU-TOKEN",
+                "token@aluno.com"))).isEqualTo(200);
+        processor.processarLote();
+
+        var aluno = usuarios.buscarPorEmail("token@aluno.com").orElseThrow();
+        EmailOutbox email = outbox.findByDedupKey("primeiro-acesso:" + aluno.id()).orElseThrow();
+
+        // O link "definir-senha/{token}" do e-mail carrega o token em claro;
+        // sem ele o aluno recebe um link quebrado e nunca entra.
+        String token = JsonPath.read(email.getPayload(), "$.token");
+        assertThat(token).isNotBlank();
+
+        // O registro FIRST_ACCESS (validade de 72h, D4) existe no banco.
+        var registro = resetTokens.findByTokenHash(sha256(token)).orElseThrow();
+        assertThat(registro.getPurpose()).isEqualTo(TokenPurpose.FIRST_ACCESS);
+        assertThat(registro.getUserId()).isEqualTo(aluno.id());
+
+        // E o token funciona de verdade: define a senha e o login passa a valer.
+        mockMvc.perform(post("/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"token\":\"" + token + "\","
+                                + "\"password\":\"senha-definida-789\"}"))
+                .andExpect(status().isNoContent());
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"token@aluno.com\","
+                                + "\"password\":\"senha-definida-789\"}"))
+                .andExpect(status().isOk());
+    }
+
+    private static String sha256(String valor) throws Exception {
+        return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
+                .digest(valor.getBytes(StandardCharsets.UTF_8)));
     }
 
     @Test

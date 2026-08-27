@@ -82,7 +82,12 @@ public class AdminStudentController {
     @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse<StudentDetailResponse>> detalhe(
             @PathVariable("id") UUID id) {
-        return ResponseEntity.ok(ApiResponse.ok(detalheDe(exigir(id))));
+        // A regra ArchUnit nenhumControllerRetornaEntidadeJpa inspeciona TODOS
+        // os metodos da classe, inclusive privados: nenhum helper daqui pode
+        // devolver User — por isso os findById ficam inline.
+        User aluno = users.findById(id)
+                .orElseThrow(() -> new NotFoundException("Aluno não encontrado"));
+        return ResponseEntity.ok(ApiResponse.ok(detalheDe(aluno)));
     }
 
     @PatchMapping("/{id}/status")
@@ -92,7 +97,8 @@ public class AdminStudentController {
             @PathVariable("id") UUID id,
             @Valid @RequestBody StatusUpdateRequest req) {
 
-        User aluno = exigir(id);
+        User aluno = users.findById(id)
+                .orElseThrow(() -> new NotFoundException("Aluno não encontrado"));
         aluno.setStatus(req.status());
         users.saveAndFlush(aluno);
 
@@ -112,7 +118,8 @@ public class AdminStudentController {
             @PathVariable("id") UUID id,
             @Valid @RequestBody GrantEntitlementRequest req) {
 
-        User aluno = exigir(id);
+        User aluno = users.findById(id)
+                .orElseThrow(() -> new NotFoundException("Aluno não encontrado"));
         var produto = catalogo.buscarPorId(req.productId())
                 .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
 
@@ -136,7 +143,9 @@ public class AdminStudentController {
             @PathVariable("id") UUID id,
             @PathVariable("eid") UUID eid) {
 
-        exigir(id);
+        if (users.findById(id).isEmpty()) {
+            throw new NotFoundException("Aluno não encontrado");
+        }
         if (!entitlements.revogarPorId(id, eid)) {
             throw new NotFoundException("Entitlement não encontrado para este aluno");
         }
@@ -145,11 +154,6 @@ public class AdminStudentController {
                 "Entitlement", eid.toString(), Map.of());
 
         return ResponseEntity.noContent().build();
-    }
-
-    private User exigir(UUID id) {
-        return users.findById(id)
-                .orElseThrow(() -> new NotFoundException("Aluno não encontrado"));
     }
 
     private StudentSummaryResponse resumo(User u) {

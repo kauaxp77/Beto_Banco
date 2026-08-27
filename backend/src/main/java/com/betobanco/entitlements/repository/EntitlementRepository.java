@@ -37,4 +37,5 @@ public interface EntitlementRepository extends JpaRepository<Entitlement, UUID> 
 
     List<Entitlement> findBySourceRef(String sourceRef);
 
+    long countByRevokedAtIsNull();
 }

@@ -40,4 +40,10 @@ public interface UserDirectory {
     UserAccount criarSemSenha(String email, String nomeCompleto);
 
     void redefinirSenha(UUID userId, String novaSenha);
+
+    /** Numeros agregados para o dashboard do admin. */
+    ContagemAlunos contarAlunos();
+
+    record ContagemAlunos(long total, long bloqueados) {
+    }
 }

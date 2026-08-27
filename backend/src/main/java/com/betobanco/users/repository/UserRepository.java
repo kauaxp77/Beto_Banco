@@ -30,4 +30,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             """)
     Page<User> buscarAlunos(@Param("search") String search, @Param("status") String status,
                             Pageable pageable);
+
+    @Query("select count(distinct u) from User u join u.roles r "
+            + "where r.name = 'ROLE_STUDENT'")
+    long contarAlunos();
+
+    @Query("select count(distinct u) from User u join u.roles r "
+            + "where r.name = 'ROLE_STUDENT' and u.status = 'BLOCKED'")
+    long contarAlunosBloqueados();
 }

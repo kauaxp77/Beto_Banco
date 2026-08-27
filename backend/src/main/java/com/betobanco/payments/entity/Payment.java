@@ -116,6 +116,10 @@ public class Payment {
         return amountCents;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
     public void setCurrency(String currency) {
         this.currency = currency;
     }

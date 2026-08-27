@@ -75,6 +75,13 @@ public class PaymentLedgerService implements PaymentLedger {
         mudarStatus(paymentId, chargeback ? Payment.CHARGEBACK : Payment.REFUNDED);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Resumo resumo() {
+        return new Resumo(pagamentos.countByStatus(Payment.APPROVED),
+                pagamentos.somaAprovadaCents());
+    }
+
     private void mudarStatus(UUID paymentId, String status) {
         Payment pagamento = exigir(paymentId);
         pagamento.setStatus(status);
