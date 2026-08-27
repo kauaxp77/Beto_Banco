@@ -7,7 +7,6 @@ import com.betobanco.auth.dto.RefreshRequest;
 import com.betobanco.auth.dto.RegisterRequest;
 import com.betobanco.auth.dto.ResetPasswordRequest;
 import com.betobanco.auth.dto.TokenResponse;
-import com.betobanco.auth.entity.TokenPurpose;
 import com.betobanco.auth.service.AuthService;
 import com.betobanco.auth.service.PasswordResetService;
 import com.betobanco.auth.service.RefreshTokenService;
@@ -94,10 +93,8 @@ public class AuthController {
     public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest req) {
         // Resposta identica exista o e-mail ou nao: qualquer diferenca
         // transformaria o endpoint num enumerador de clientes.
-        users.buscarPorEmail(req.email())
-                .ifPresent(u -> resets.criarToken(u, TokenPurpose.RESET));
+        users.buscarPorEmail(req.email()).ifPresent(resets::solicitarRecuperacao);
 
-        // O envio do e-mail entra na Fase 3, junto com a outbox.
         return ResponseEntity.noContent().build();
     }
 

@@ -1,8 +1,11 @@
 package com.betobanco.users.controller;
 
+import com.betobanco.catalog.api.ProductCatalog;
+import com.betobanco.entitlements.api.EntitlementService;
 import com.betobanco.security.AuthenticatedUser;
 import com.betobanco.shared.exception.NotFoundException;
 import com.betobanco.shared.response.ApiResponse;
+import com.betobanco.users.dto.EntitlementResponse;
 import com.betobanco.users.dto.StudentResponse;
 import com.betobanco.users.dto.StudentUpdateRequest;
 import com.betobanco.users.entity.Student;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Este controller vive dentro do modulo {@code users}, entao pode usar as
  * entidades e os repositorios dele — a regra ArchUnit proibe atravessar a
@@ -36,10 +41,15 @@ public class StudentController {
 
     private final UserRepository users;
     private final StudentRepository students;
+    private final EntitlementService entitlements;
+    private final ProductCatalog catalogo;
 
-    public StudentController(UserRepository users, StudentRepository students) {
+    public StudentController(UserRepository users, StudentRepository students,
+                             EntitlementService entitlements, ProductCatalog catalogo) {
         this.users = users;
         this.students = students;
+        this.entitlements = entitlements;
+        this.catalogo = catalogo;
     }
 
     @GetMapping("/me")
@@ -53,6 +63,24 @@ public class StudentController {
 
         return ResponseEntity.ok(ApiResponse.ok(new StudentResponse(
                 usuario.getId(), usuario.getEmail(), usuario.getFullName(), telefone)));
+    }
+
+    @GetMapping("/me/entitlements")
+    public ResponseEntity<ApiResponse<List<EntitlementResponse>>> meusEntitlements(
+            @AuthenticationPrincipal AuthenticatedUser atual) {
+        // Sempre pelo id do token; um produto apagado do catalogo nao derruba
+        // a listagem, so aparece sem nome.
+        List<EntitlementResponse> itens = entitlements.listarDe(atual.id()).stream()
+                .map(e -> {
+                    var produto = catalogo.buscarPorId(e.productId()).orElse(null);
+                    return new EntitlementResponse(e.entitlementId(), e.productId(),
+                            produto == null ? null : produto.sku(),
+                            produto == null ? null : produto.name(),
+                            e.source(), e.grantedAt(), e.expiresAt());
+                })
+                .toList();
+
+        return ResponseEntity.ok(ApiResponse.ok(itens));
     }
 
     @PutMapping("/me")
