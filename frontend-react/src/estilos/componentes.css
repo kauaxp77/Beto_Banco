@@ -1,0 +1,490 @@
+/* =============================================================================
+   Documento Mestre V4.0 -- Secao 06, "Estados obrigatorios de cada componente".
+
+   A V3.0 listava sete componentes com uma palavra de estilo cada. Este arquivo
+   entrega a tabela inteira: para cada componente, todos os estados que o
+   documento exige que existam. Estado que falta aqui e estado que sera
+   improvisado depois, em cada tela, de um jeito diferente.
+   ============================================================================= */
+
+/* =============================================================================
+   BOTAO PRIMARIO -- gradiente dourado
+   Estados: hover, active, focus visivel, disabled, loading
+   ============================================================================= */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-2);
+  min-height: 44px;                 /* alvo de toque confortavel em 375 px */
+  padding: var(--esp-3) var(--esp-5);
+  border: 0;
+  border-radius: var(--raio);
+  font-family: var(--fonte-interface);
+  font-size: var(--texto-base);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transicao), transform var(--transicao), filter var(--transicao);
+}
+
+.botao--primario {
+  /* Secao 06 -- botao oficial. */
+  background: linear-gradient(90deg, var(--dourado-escuro), var(--dourado), var(--dourado-brilhante));
+  color: var(--dourado-tinta);      /* 8.9:1 sobre o dourado */
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+}
+
+/* :hover inverte o sentido do gradiente -- o brilho vem do lado oposto. */
+.botao--primario:hover:not(:disabled):not([aria-busy='true']) {
+  background: linear-gradient(270deg, var(--dourado-escuro), var(--dourado), var(--dourado-brilhante));
+}
+
+.botao--primario:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35) inset;
+}
+
+.botao:focus-visible {
+  outline: 2px solid var(--dourado-brilhante);
+  outline-offset: 3px;
+}
+
+.botao:disabled {
+  filter: grayscale(1);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/**
+ * Loading. O botao mantem a largura do rotulo em vez de encolher para um
+ * spinner: encolher move tudo em volta e o dedo do usuario acerta outro alvo.
+ * aria-busy avisa o leitor de tela; aria-disabled bloqueia o clique sem tirar o
+ * botao da ordem de tabulacao, coisa que disabled faria.
+ */
+.botao[aria-busy='true'] {
+  cursor: progress;
+  color: transparent;
+  position: relative;
+}
+.botao[aria-busy='true']::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--dourado-tinta);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: girar 700ms linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+/* =============================================================================
+   BOTAO SECUNDARIO -- contorno
+   Estados: hover, focus, disabled
+   ============================================================================= */
+.botao--secundario {
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid var(--borda-forte);
+}
+.botao--secundario:hover:not(:disabled) {
+  border-color: var(--dourado);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.botao--texto {
+  background: none;
+  border: 0;
+  color: var(--azul-link);
+  padding-inline: var(--esp-2);
+  min-height: 36px;
+  font-weight: 500;
+}
+.botao--texto:hover:not(:disabled) { color: var(--dourado-brilhante); }
+
+/* Acao destrutiva: excluir conta, revogar acesso, cancelar pedido. */
+.botao--perigo {
+  background: transparent;
+  color: var(--critico);
+  border: 1px solid var(--critico);
+}
+.botao--perigo:hover:not(:disabled) { background: var(--critico-fundo); }
+
+/* =============================================================================
+   CAMPO -- glass escuro
+   Estados: focus, erro com mensagem, sucesso, disabled, com mascara
+   ============================================================================= */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-2);
+}
+
+/* Secao 06: "todo campo com label". Nunca placeholder no lugar de rotulo. */
+.campo__rotulo {
+  font-size: var(--texto-sm);
+  font-weight: 500;
+  color: var(--texto-secundario);
+}
+
+.campo__entrada {
+  min-height: 44px;
+  padding: var(--esp-3);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  color: var(--texto);
+  font-family: var(--fonte-interface);
+  font-size: var(--texto-base);
+  transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+
+.campo__entrada::placeholder { color: var(--texto-desabilitado); }
+
+.campo__entrada:focus {
+  outline: none;
+  border-color: var(--azul-destaque);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.campo__entrada:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(15, 23, 42, 0.3);
+}
+
+/* Estado com mascara: CPF, WhatsApp, CEP. Digito de largura fixa nao pula. */
+.campo__entrada--mascara {
+  font-family: var(--fonte-dados);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.campo--erro .campo__entrada {
+  border-color: var(--critico);
+}
+.campo--erro .campo__entrada:focus {
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.25);
+}
+
+.campo--sucesso .campo__entrada {
+  border-color: var(--sucesso);
+}
+
+/**
+ * A mensagem de erro e ligada ao input por aria-describedby e anunciada por
+ * role="alert". Borda vermelha sozinha nao comunica nada a quem nao ve cor --
+ * e um dos criterios de AA que mais passa despercebido.
+ */
+.campo__mensagem {
+  font-size: var(--texto-sm);
+  color: var(--critico);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--esp-2);
+}
+.campo--sucesso .campo__mensagem { color: var(--sucesso); }
+
+.campo__ajuda {
+  font-size: var(--texto-sm);
+  color: var(--texto-secundario);
+}
+
+/* =============================================================================
+   CARD -- #111827, borda #1E293B
+   Estados: hover, selecionado, skeleton de carregamento
+   ============================================================================= */
+.card {
+  background: var(--superficie-card);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-card);
+  padding: var(--esp-5);
+  transition: border-color var(--transicao), transform var(--transicao), box-shadow var(--transicao);
+}
+
+.card--clicavel { cursor: pointer; }
+.card--clicavel:hover {
+  border-color: var(--dourado);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-2);
+}
+
+.card--selecionado {
+  border-color: var(--dourado);
+  box-shadow: var(--sombra-dourada);
+}
+
+/**
+ * Skeleton. Reserva a altura final do conteudo para que a tela nao salte quando
+ * o dado chega -- Core Web Vitals conta esse salto como CLS, e a secao 15 exige
+ * LCP abaixo de 2,5 s.
+ */
+.esqueleto {
+  background: linear-gradient(90deg, #111827 25%, #1E293B 50%, #111827 75%);
+  background-size: 200% 100%;
+  animation: brilho-esqueleto 1.4s ease-in-out infinite;
+  border-radius: var(--raio);
+  color: transparent;
+  user-select: none;
+}
+.esqueleto--linha { height: 1em; margin-block: 0.3em; }
+.esqueleto--titulo { height: 1.6em; width: 60%; }
+.esqueleto--bloco { height: 160px; }
+
+@keyframes brilho-esqueleto {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* =============================================================================
+   NAVBAR -- glass
+   Estados: rolado, mobile aberto
+   ============================================================================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-navbar);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transicao), background var(--transicao);
+}
+
+.navbar--rolado {
+  background: rgba(15, 23, 42, 0.94);
+  border-bottom-color: var(--borda);
+}
+
+.navbar__conteudo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-5);
+  min-height: 64px;
+}
+
+.navbar__menu {
+  display: none;
+  gap: var(--esp-5);
+  align-items: center;
+}
+@media (min-width: 1024px) {
+  .navbar__menu { display: flex; }
+  .navbar__botao-menu { display: none; }
+}
+
+.navbar__menu--aberto {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-block: var(--esp-4);
+  border-top: 1px solid var(--borda);
+}
+
+/* =============================================================================
+   SIDEBAR -- dark, linhas finas
+   Estados: item ativo, recolhida, mobile em gaveta
+   ============================================================================= */
+.sidebar {
+  background: var(--superficie-navegacao);
+  border-right: 1px solid var(--borda);
+  width: 248px;
+  padding: var(--esp-4);
+  transition: width var(--transicao);
+}
+
+.sidebar--recolhida { width: 64px; }
+.sidebar--recolhida .sidebar__rotulo { display: none; }
+
+.sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  padding: var(--esp-3);
+  border-radius: var(--raio);
+  color: var(--texto-secundario);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+}
+.sidebar__item:hover { background: rgba(37, 99, 235, 0.10); color: var(--texto); }
+
+/* Item ativo: cor + barra. Cor sozinha nao serve como unico indicador (AA). */
+.sidebar__item[aria-current='page'] {
+  background: rgba(212, 175, 55, 0.10);
+  border-left-color: var(--dourado);
+  color: var(--texto);
+  font-weight: 600;
+}
+
+/* Mobile em gaveta. */
+@media (max-width: 1023px) {
+  .sidebar {
+    position: fixed;
+    inset-block: 0;
+    left: 0;
+    z-index: var(--z-gaveta);
+    transform: translateX(-100%);
+    transition: transform var(--transicao);
+  }
+  .sidebar--gaveta-aberta { transform: translateX(0); box-shadow: var(--sombra-2); }
+}
+
+/* =============================================================================
+   MODAL -- card + foco preso, fecha no Esc
+   Estados: aberto, fechando, foco preso dentro, fecha no Esc
+   ============================================================================= */
+
+/**
+ * Usa o elemento <dialog> nativo: ele ja entrega foco preso, fechamento por Esc
+ * e inertizacao do resto da pagina, sem a armadilha classica de reimplementar
+ * tudo isso a mao e esquecer o Shift+Tab da borda.
+ */
+.modal {
+  max-width: min(560px, calc(100vw - var(--esp-8)));
+  width: 100%;
+  padding: var(--esp-6);
+  background: var(--superficie-card);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-card);
+  color: var(--texto);
+  box-shadow: var(--sombra-2);
+}
+
+.modal::backdrop {
+  background: rgba(3, 7, 18, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+.modal[open] { animation: modal-entra 180ms cubic-bezier(0.2, 0, 0.2, 1); }
+.modal--fechando { animation: modal-sai 140ms ease-in forwards; }
+
+@keyframes modal-entra {
+  from { opacity: 0; transform: translateY(8px) scale(0.99); }
+}
+@keyframes modal-sai {
+  to { opacity: 0; transform: translateY(4px) scale(0.99); }
+}
+
+/* =============================================================================
+   TABELA -- linhas finas
+   Estados: vazia, carregando, ordenada, paginada
+   ============================================================================= */
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--texto-sm);
+}
+
+.tabela th {
+  text-align: left;
+  padding: var(--esp-3);
+  color: var(--texto-secundario);
+  font-weight: 500;
+  border-bottom: 1px solid var(--borda);
+  white-space: nowrap;
+}
+
+.tabela td {
+  padding: var(--esp-3);
+  border-bottom: 1px solid var(--borda);
+}
+
+.tabela tbody tr:hover { background: rgba(37, 99, 235, 0.06); }
+
+/* Coluna numerica: alinhada a direita e tabular, para comparar de relance. */
+.tabela .numero {
+  text-align: right;
+  font-family: var(--fonte-dados);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ordenacao: aria-sort e o que o leitor de tela anuncia; a seta e so o reforco visual. */
+.tabela th[aria-sort] { cursor: pointer; }
+.tabela th[aria-sort='ascending']::after  { content: ' ↑'; color: var(--dourado); }
+.tabela th[aria-sort='descending']::after { content: ' ↓'; color: var(--dourado); }
+
+.tabela__vazia {
+  padding: var(--esp-7) var(--esp-4);
+  text-align: center;
+  color: var(--texto-secundario);
+}
+
+.tabela__paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  padding-block: var(--esp-4);
+}
+
+/* =============================================================================
+   TOAST -- card + cor semantica
+   Estados: sucesso, erro, atencao
+   ============================================================================= */
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--esp-3);
+  padding: var(--esp-4);
+  background: var(--superficie-card);
+  border: 1px solid var(--borda);
+  border-left-width: 3px;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-2);
+  max-width: 380px;
+}
+
+.toast--sucesso { border-left-color: var(--sucesso); }
+.toast--erro    { border-left-color: var(--critico); }
+.toast--atencao { border-left-color: var(--atencao); }
+
+/* =============================================================================
+   ETIQUETA DE ESTADO
+   ============================================================================= */
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-1);
+  padding: var(--esp-1) var(--esp-3);
+  border-radius: var(--raio-pilula);
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.etiqueta--sucesso { background: var(--sucesso-fundo); color: var(--sucesso); }
+.etiqueta--atencao { background: var(--atencao-fundo); color: var(--atencao); }
+.etiqueta--critico { background: var(--critico-fundo); color: var(--critico); }
+.etiqueta--neutra  { background: rgba(148, 163, 184, 0.12); color: var(--texto-secundario); }
+
+/**
+ * Secao 17: "Toda saida de IA exibida ao aluno e rotulada como gerada por IA."
+ * Etiqueta propria para que isso nunca dependa de o desenvolvedor lembrar de
+ * escrever o aviso na mao.
+ */
+.etiqueta--ia {
+  background: rgba(96, 165, 250, 0.12);
+  color: var(--azul-link);
+  text-transform: none;
+}
+
+/* =============================================================================
+   FAIXA DE AVISO
+   ============================================================================= */
+.faixa {
+  display: flex;
+  gap: var(--esp-3);
+  padding: var(--esp-4);
+  border-radius: var(--raio);
+  border: 1px solid var(--borda);
+  font-size: var(--texto-sm);
+}
+.faixa--atencao { background: var(--atencao-fundo); border-color: var(--atencao); }
+.faixa--critico { background: var(--critico-fundo); border-color: var(--critico); }
+.faixa--info    { background: rgba(37, 99, 235, 0.10); border-color: var(--azul-destaque); }

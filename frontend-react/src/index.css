@@ -1,30 +1,52 @@
+/* =============================================================================
+   Ponto de entrada do CSS. Documento Mestre V4.0, secoes 05 e 06.
+
+   Os tres arquivos abaixo sao o design system; o que vem depois neste arquivo e
+   o CSS herdado da versao anterior da landing, mantido para nao reescrever
+   todos os componentes de uma vez. A ponte esta no bloco :root logo apos os
+   imports: cada variavel antiga passa a apontar para o token V4 equivalente,
+   entao a paleta corrigida (secao 05) chega aos componentes existentes sem que
+   nenhum deles precise ser tocado.
+
+   Regra ao mexer aqui: token novo entra em estilos/tokens.css, nunca neste
+   arquivo. Este so traduz nome antigo para token novo.
+   ============================================================================= */
+
+@import './estilos/tokens.css';
+@import './estilos/base.css';
+@import './estilos/componentes.css';
+
 :root {
-  --color-gold: #D4AF37;
-  --color-gold-hover: #BF9B2D;
+  /* ---- Ponte: nome herdado -> token V4 (secao 05) ------------------------- */
+  --color-gold: var(--dourado);
+  --color-gold-hover: var(--dourado-brilhante);
   --color-gold-glow: rgba(212, 175, 55, 0.3);
 
-  --color-black: #0A0A0A;
-  --color-black-light: #141414;
-  --color-black-surface: #1A1A1A;
+  --color-black: var(--fundo);
+  --color-black-light: var(--superficie-card);
+  --color-black-surface: var(--superficie-card);
 
-  --color-navy: #0F172A;
-  --color-navy-dark: #070B14;
-  --color-navy-light: #1E293B;
+  --color-navy: var(--superficie-navegacao);
+  --color-navy-dark: var(--fundo);
+  --color-navy-light: var(--borda);
 
-  --color-white: #FFFFFF;
-  --color-white-dim: #F8FAFC;
+  /* Branco puro sobre #030712 da 19:1 e vibra na leitura longa. O token de
+     texto da secao 05 (#E8EDF5, 16,4:1) e mais confortavel e continua AAA. */
+  --color-white: var(--texto);
+  --color-white-dim: var(--texto);
 
-  --color-gray: #CBD5E1;
-  --color-gray-dark: #94A3B8;
+  --color-gray: var(--texto);
+  --color-gray-dark: var(--texto-secundario);
 
-  --font-main: 'Poppins', sans-serif;
+  /* Secao 06: a interface e IBM Plex Sans; Poppins sai. */
+  --font-main: var(--fonte-interface);
 
-  --transition: all 0.3s ease;
-  --border-radius: 8px;
-  --border-radius-lg: 16px;
-  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
-  --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.2);
+  --transition: all var(--transicao);
+  --border-radius: var(--raio);
+  --border-radius-lg: var(--raio-card);
+  --shadow-sm: var(--sombra-1);
+  --shadow-md: var(--sombra-2);
+  --shadow-gold: var(--sombra-dourada);
 }
 
 * {
@@ -90,9 +112,10 @@ h3,
 h4,
 h5,
 h6 {
-  color: var(--color-white);
-  font-weight: 700;
-  line-height: 1.2;
+  color: var(--texto);
+  /* Secao 06 declara Spectral em 300 e 600 apenas; 700 cairia em fonte sintetica. */
+  font-weight: 600;
+  line-height: var(--altura-linha-titulo);
 }
 
 h1 {
@@ -148,8 +171,9 @@ button {
 
 /* Primary Button */
 .btn-primary {
-  background-color: var(--color-gold);
-  color: var(--color-black);
+  /* Secao 06 -- botao oficial: gradiente metalico, nao cor chapada. */
+  background: linear-gradient(90deg, var(--dourado-escuro), var(--dourado), var(--dourado-brilhante));
+  color: var(--dourado-tinta);
   padding: 16px 32px;
   border-radius: var(--border-radius);
   font-weight: 600;
@@ -162,16 +186,24 @@ button {
   box-shadow: var(--shadow-gold);
 }
 
+/* :hover inverte o sentido do gradiente (secao 06). */
 .btn-primary:hover {
-  background-color: var(--color-gold-hover);
+  background: linear-gradient(270deg, var(--dourado-escuro), var(--dourado), var(--dourado-brilhante));
   transform: translateY(-2px);
   box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+}
+
+.btn-primary:disabled {
+  filter: grayscale(1);
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Secondary Button */
 .btn-secondary {
   background-color: transparent;
-  color: var(--color-white);
+  color: var(--texto);
   padding: 15px 31px;
   border-radius: var(--border-radius);
   font-weight: 600;
@@ -181,12 +213,12 @@ button {
   justify-content: center;
   gap: 8px;
   transition: var(--transition);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--borda-forte);
 }
 
 .btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(212, 175, 55, 0.08);
+  border-color: var(--dourado);
 }
 
 /* Sections */

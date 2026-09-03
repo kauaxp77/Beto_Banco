@@ -1,0 +1,111 @@
+/* Secao 22 -- banner de cookies. */
+
+.banner-cookies {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: var(--z-consentimento);
+  background: var(--superficie-navegacao);
+  border-top: 1px solid var(--borda);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.45);
+  animation: banner-sobe 220ms cubic-bezier(0.2, 0, 0.2, 1);
+  /* Respeita a area segura do iPhone; sem isso os botoes ficam sob a barra de gestos. */
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+@keyframes banner-sobe {
+  from { transform: translateY(100%); }
+}
+
+.banner-cookies__conteudo {
+  max-width: var(--conteiner-max);
+  margin-inline: auto;
+  padding: var(--esp-5) var(--esp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+}
+
+.banner-cookies__titulo {
+  font-size: var(--texto-lg);
+  font-weight: 600;
+}
+
+.banner-cookies__texto {
+  color: var(--texto-secundario);
+  font-size: var(--texto-sm);
+  max-width: var(--medida-corpo);
+}
+
+.banner-cookies__opcoes {
+  display: grid;
+  gap: var(--esp-3);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: var(--esp-4);
+}
+
+@media (min-width: 768px) {
+  .banner-cookies__opcoes { grid-template-columns: repeat(3, 1fr); }
+}
+
+.banner-cookies__opcao {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--esp-3);
+  cursor: pointer;
+}
+
+.banner-cookies__opcao span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.banner-cookies__opcao small {
+  color: var(--texto-secundario);
+}
+
+.banner-cookies__opcao--fixa {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.banner-cookies__opcao input {
+  margin-top: 3px;
+  accent-color: var(--dourado);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/**
+ * Acoes lado a lado e com a mesma altura. "Recusar todos" e "Aceitar todos" tem
+ * o mesmo tamanho de alvo de propósito -- a exigencia da secao 22 e que recusar
+ * seja tao facil quanto aceitar, e tamanho de botao e parte disso.
+ */
+.banner-cookies__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+  align-items: center;
+}
+
+.banner-cookies__acoes .botao--primario,
+.banner-cookies__acoes .botao--secundario {
+  flex: 1 1 180px;
+}
+
+@media (min-width: 768px) {
+  .banner-cookies__conteudo {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-6);
+  }
+  .banner-cookies__acoes .botao--primario,
+  .banner-cookies__acoes .botao--secundario {
+    flex: 0 0 auto;
+  }
+  .banner-cookies__opcoes { flex: 1 1 100%; }
+}

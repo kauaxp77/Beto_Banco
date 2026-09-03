@@ -1,0 +1,141 @@
+/* =============================================================================
+   Documento Mestre V4.0 -- Secao 05, Identidade visual "Crepusculo Dourado".
+
+   A V4.0 corrige duas coisas da V3.0 que este arquivo passa a ser a fonte unica:
+     1. #0F172A e #111827 estavam declarados para o mesmo elemento (card) em
+        tabelas diferentes. Resolvido: #0F172A e navbar/sidebar, #111827 e card.
+     2. Azuis escuros eram usados como cor de texto, o que reprova em
+        acessibilidade. Cada token azul abaixo carrega o contraste medido sobre
+        o fundo #030712 e o uso que ele permite. Nao existe token azul de texto
+        alem de --azul-link.
+
+   Secao 31 registra a paleta e o dark mode permanente como decisao permanente:
+   mudam apenas por nova versao MAJOR do documento.
+   ============================================================================= */
+
+:root {
+  /* ---------------------------------------------------------------------------
+     Superficies
+     --------------------------------------------------------------------------- */
+  --fundo: #030712;              /* fundo da plataforma */
+  --superficie-navegacao: #0F172A; /* navbar e sidebar */
+  --superficie-card: #111827;    /* cards -- conflito da V3.0 resolvido aqui */
+  --borda: #1E293B;
+  --borda-forte: #2C3A4F;        /* contorno do botao secundario */
+
+  /* ---------------------------------------------------------------------------
+     Azuis -- o contraste anotado e sobre --fundo.
+     REGRA DE CONTRASTE (secao 05): #1E3A8A tem 1,95:1 e nunca pode carregar
+     texto; #2563EB tem 3,90:1 e vale para borda, icone e botao, nao para
+     paragrafo; link em texto corrido usa #60A5FA.
+     --------------------------------------------------------------------------- */
+  --azul-primario: #1E3A8A;      /* 1.95:1  -- so preenchimento, faixa, gradiente */
+  --azul-destaque: #2563EB;      /* 3.90:1  -- borda, icone, botao, texto grande */
+  --azul-link: #60A5FA;          /* 7.93:1  -- AAA, unico azul valido em texto corrido */
+
+  /* ---------------------------------------------------------------------------
+     Dourado -- acento de marca
+     --------------------------------------------------------------------------- */
+  --dourado: #D4AF37;            /* 9.57:1  -- AAA */
+  --dourado-brilhante: #F5C542;  /* hover de CTA */
+  --dourado-escuro: #B8860B;     /* inicio do gradiente do botao */
+  --dourado-tinta: #1A1206;      /* texto sobre dourado -- 8.9:1 */
+
+  /* ---------------------------------------------------------------------------
+     Texto
+     --------------------------------------------------------------------------- */
+  --texto: #E8EDF5;              /* 16.4:1 */
+  --texto-secundario: #94A3B8;   /* 7.86:1 */
+  --texto-desabilitado: #64748B;
+
+  /* ---------------------------------------------------------------------------
+     Cores semanticas (secao 05, NOVO na V4.0).
+     Nao substituem o dourado como acento de marca -- so comunicam estado.
+     --------------------------------------------------------------------------- */
+  --sucesso: #34D399;
+  --atencao: #FBBF24;
+  --critico: #F87171;
+  --sucesso-fundo: rgba(52, 211, 153, 0.12);
+  --atencao-fundo: rgba(251, 191, 36, 0.12);
+  --critico-fundo: rgba(248, 113, 113, 0.12);
+
+  /* ---------------------------------------------------------------------------
+     Tipografia (secao 06)
+     Escala fixa: 12 . 13.5 . 15 . 17 . 20 . 24 . 32 . 44
+     --------------------------------------------------------------------------- */
+  --fonte-display: 'Spectral', Georgia, 'Times New Roman', serif;
+  --fonte-interface: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fonte-dados: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  --texto-xs: 0.75rem;      /* 12   */
+  --texto-sm: 0.84375rem;   /* 13.5 */
+  --texto-base: 0.9375rem;  /* 15   */
+  --texto-md: 1.0625rem;    /* 17   */
+  --texto-lg: 1.25rem;      /* 20   */
+  --texto-xl: 1.5rem;       /* 24   */
+  --texto-2xl: 2rem;        /* 32   */
+  --texto-3xl: 2.75rem;     /* 44   */
+
+  --altura-linha-titulo: 1.15;
+  --altura-linha-corpo: 1.6;
+  /* Secao 06: "Corpo de texto no maximo 72 caracteres de largura." */
+  --medida-corpo: 72ch;
+
+  /* ---------------------------------------------------------------------------
+     Espacamento -- escala de 4 px (secao 06)
+     4 . 8 . 12 . 16 . 24 . 36 . 56 . 80
+     --------------------------------------------------------------------------- */
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 24px;
+  --esp-6: 36px;
+  --esp-7: 56px;
+  --esp-8: 80px;
+
+  /* Grid de 12 colunas, conteiner maximo 1280 px, medianiz 24 px. */
+  --conteiner-max: 1280px;
+  --medianiz: 24px;
+
+  /* ---------------------------------------------------------------------------
+     Forma e profundidade
+     --------------------------------------------------------------------------- */
+  --raio: 4px;               /* o botao oficial da secao 06 usa 4px */
+  --raio-card: 8px;
+  --raio-pilula: 999px;
+
+  --sombra-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sombra-2: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --sombra-dourada: 0 0 0 1px rgba(212, 175, 55, 0.25), 0 8px 32px rgba(212, 175, 55, 0.12);
+
+  --transicao: 160ms cubic-bezier(0.2, 0, 0.2, 1);
+
+  --z-navbar: 100;
+  --z-gaveta: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+  --z-consentimento: 500; /* o banner de cookies fica acima de tudo, secao 22 */
+}
+
+/* -----------------------------------------------------------------------------
+   Secao 31 -- "Dark mode permanente: obrigatorio".
+   A plataforma nao tem tema claro. color-scheme: dark faz o navegador pintar
+   scrollbar, autofill e controles nativos no escuro, em vez de encaixar um
+   retangulo branco no meio da interface.
+   ----------------------------------------------------------------------------- */
+:root {
+  color-scheme: dark;
+}
+
+/* -----------------------------------------------------------------------------
+   Secao 05 -- gradiente da hero, CORRIGIDO.
+   O gradiente de cinco paradas da V3.0 terminava em dourado puro, e o CTA
+   dourado desaparecia sobre o proprio fundo. A parada final vira um veu.
+   ----------------------------------------------------------------------------- */
+.hero-fundo {
+  background:
+    radial-gradient(1100px 420px at 12% -30%, rgba(37, 99, 235, 0.20), transparent 62%),
+    radial-gradient(760px 320px at 88% 8%, rgba(212, 175, 55, 0.13), transparent 60%),
+    linear-gradient(160deg, #030712 0%, #0B1220 45%, #0F172A 100%);
+}

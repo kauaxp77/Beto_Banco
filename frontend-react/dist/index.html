@@ -2,18 +2,53 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/images/logo/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
     <title>Aprovação Passo a Passo | Concursos Bancários</title>
-    <meta name="description" content="Prepare-se para concursos bancários com os cursos, simulados e materiais do Professor Beto Fernandes." />
-    <!-- Fonts -->
+    <meta name="description" content="Mentoria, cursos e simulados por carreira para concursos bancários. Cronograma que se ajusta ao seu desempenho, com acompanhamento real." />
+
+    <!-- Seção 31: dark mode permanente. Declarado aqui para que o navegador
+         pinte o fundo no escuro antes do CSS carregar, sem o flash branco. -->
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#030712" />
+    <style>html,body{background:#030712;margin:0}</style>
+
+    <link rel="icon" type="image/svg+xml" href="/images/logo/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icones/icone-180.png" />
+
+    <!-- Seção 09: PWA instalável, não app nativo. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Seção 15, SEO técnico: Open Graph e canonical. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aprovação Passo a Passo" />
+    <meta property="og:title" content="Aprovação Passo a Passo | Concursos Bancários" />
+    <meta property="og:description" content="Mentoria, cursos e simulados por carreira para concursos bancários." />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!--
+      Seção 06 — tipografia do design system:
+        Display   Spectral 300/600      títulos de página e seção
+        Interface IBM Plex Sans 400/500/600  texto, botões, formulários
+        Dados     IBM Plex Mono 400/500 valores, códigos, rótulos, tabelas
+      display=swap para que o texto apareça na fonte de sistema enquanto a web
+      font carrega — bloquear a pintura por causa de fonte é LCP jogado fora, e
+      a seção 15 exige LCP abaixo de 2,5 s.
+    -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/assets/index-BvhfXTW0.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-C76d2-z7.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/assets/index-BNPAO7Dy.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-B67lrf88.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
+    <noscript>
+      Esta plataforma precisa de JavaScript para funcionar. Ative-o nas configurações do seu navegador.
+    </noscript>
   </body>
 </html>

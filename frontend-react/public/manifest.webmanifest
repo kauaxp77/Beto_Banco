@@ -1,0 +1,25 @@
+{
+  "name": "Aprovação Passo a Passo",
+  "short_name": "Aprovação",
+  "description": "Mentoria, cursos e simulados por carreira para concursos bancários.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#030712",
+  "theme_color": "#030712",
+  "categories": ["education"],
+  "icons": [
+    { "src": "/images/logo/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icones/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Continuar assistindo", "url": "/dashboard?continuar=1" },
+    { "name": "Meus simulados", "url": "/simulados" },
+    { "name": "Minhas redações", "url": "/redacoes" }
+  ]
+}

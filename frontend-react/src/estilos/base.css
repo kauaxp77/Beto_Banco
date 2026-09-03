@@ -1,0 +1,211 @@
+/* =============================================================================
+   Reset, tipografia e grid. Secao 06 -- Design system.
+   ============================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background-color: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte-interface);
+  font-size: var(--texto-base);
+  line-height: var(--altura-linha-corpo);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* -----------------------------------------------------------------------------
+   Tipografia (secao 06)
+   Display: Spectral 300/600 -- titulos de pagina e secao
+   Interface: IBM Plex Sans 400/500/600 -- texto, botoes, formularios
+   Dados: IBM Plex Mono 400/500 -- valores, codigos, rotulos, tabelas
+   ----------------------------------------------------------------------------- */
+h1, h2, h3 {
+  font-family: var(--fonte-display);
+  line-height: var(--altura-linha-titulo);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--texto-3xl); font-weight: 300; }
+h2 { font-size: var(--texto-2xl); font-weight: 300; }
+h3 { font-size: var(--texto-xl); font-weight: 600; }
+h4 { font-size: var(--texto-lg); font-weight: 600; font-family: var(--fonte-interface); }
+
+p {
+  max-width: var(--medida-corpo);
+  text-wrap: pretty;
+}
+
+small { font-size: var(--texto-sm); }
+
+/*
+ * Secao 05: link em texto corrido usa --azul-link (7,93:1, AAA). Nenhum outro
+ * azul da paleta serve para texto. A regra e escopada a paragrafo, lista e
+ * tabela de proposito: link de navegacao e de card herda a cor do componente, e
+ * pinta-lo de azul transformaria menu em mar de links azuis.
+ */
+p a,
+li a,
+td a,
+.texto-corrido a {
+  color: var(--azul-link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+p a:hover,
+li a:hover,
+td a:hover,
+.texto-corrido a:hover { color: var(--dourado-brilhante); }
+
+/**
+ * Secao 06: "Numeros em coluna sempre com tabular-nums."
+ * Sem isso, um valor que muda a cada segundo (cronometro do simulado, contagem
+ * regressiva de inscricao) treme na tela porque cada digito tem largura propria.
+ */
+.dado,
+td.numero,
+.cronometro,
+.valor {
+  font-family: var(--fonte-dados);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* -----------------------------------------------------------------------------
+   Grid de 12 colunas, conteiner maximo 1280 px, medianiz 24 px.
+   Breakpoints: 480 . 768 . 1024 . 1280
+   ----------------------------------------------------------------------------- */
+.conteiner {
+  width: 100%;
+  max-width: var(--conteiner-max);
+  margin-inline: auto;
+  padding-inline: var(--esp-4);
+}
+
+@media (min-width: 768px) {
+  .conteiner { padding-inline: var(--esp-5); }
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--medianiz);
+}
+
+@media (min-width: 768px) {
+  .grade { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .grade { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+
+.pilha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+}
+
+.linha {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  flex-wrap: wrap;
+}
+
+/* -----------------------------------------------------------------------------
+   Secao 06 -- Acessibilidade. Alvo WCAG 2.1 AA (secao 31: obrigatorio).
+   ----------------------------------------------------------------------------- */
+
+/**
+ * Foco visivel em tudo que recebe teclado. O outline dourado tem 9,57:1 sobre o
+ * fundo, entao ele aparece sobre qualquer superficie da paleta -- inclusive
+ * sobre o proprio botao dourado, gracas ao offset.
+ */
+:focus-visible {
+  outline: 2px solid var(--dourado-brilhante);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Remove o outline apenas de quem clicou com o mouse, nunca de quem navega por teclado. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/**
+ * Pular para o conteudo. Primeiro elemento focavel da pagina: quem navega por
+ * teclado ou leitor de tela nao precisa atravessar a navegacao inteira em toda
+ * troca de rota.
+ */
+.pular-para-conteudo {
+  position: absolute;
+  left: var(--esp-4);
+  top: var(--esp-4);
+  z-index: var(--z-consentimento);
+  padding: var(--esp-3) var(--esp-4);
+  background: var(--superficie-card);
+  border: 1px solid var(--dourado);
+  border-radius: var(--raio);
+  color: var(--texto);
+  transform: translateY(-200%);
+}
+.pular-para-conteudo:focus {
+  transform: translateY(0);
+}
+
+/* Visualmente oculto, mas lido por leitor de tela. */
+.apenas-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/**
+ * Secao 06: "Respeitar prefers-reduced-motion."
+ * Nao zeramos a duracao: 0s cancela o evento transitionend e quebra componente
+ * que espera por ele. 0,01ms encerra imediatamente e ainda dispara o evento.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tabela: o container e quem rola, nunca o body (secao 24, 375 px de largura). */
+.rolagem-horizontal {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

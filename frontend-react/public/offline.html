@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Sem conexão | Aprovação Passo a Passo</title>
+    <!--
+      Seção 06 — tela de exceção "offline". Página estática e autocontida: se
+      dependesse do bundle React ou de uma web font, ela mesma falharia offline,
+      que é exatamente quando precisa aparecer.
+    -->
+    <style>
+      :root {
+        color-scheme: dark;
+        --fundo: #030712;
+        --card: #111827;
+        --borda: #1e293b;
+        --texto: #e8edf5;
+        --secundario: #94a3b8;
+        --atencao: #fbbf24;
+        --dourado: #d4af37;
+        --dourado-escuro: #b8860b;
+        --dourado-claro: #f5c542;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: var(--fundo);
+        color: var(--texto);
+        font-family: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        line-height: 1.6;
+        text-align: center;
+      }
+      .caixa { max-width: 480px; display: grid; gap: 16px; justify-items: center; }
+      h1 { font-family: Georgia, serif; font-weight: 300; font-size: 2rem; line-height: 1.15; }
+      p { color: var(--secundario); max-width: 46ch; }
+      .marca { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--atencao); }
+      ul { text-align: left; color: var(--secundario); font-size: 0.875rem; display: grid; gap: 8px; padding-left: 20px; }
+      button {
+        min-height: 44px;
+        padding: 12px 24px;
+        border: 0;
+        border-radius: 4px;
+        background: linear-gradient(90deg, var(--dourado-escuro), var(--dourado), var(--dourado-claro));
+        color: #1a1206;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+      }
+      button:hover { background: linear-gradient(270deg, var(--dourado-escuro), var(--dourado), var(--dourado-claro)); }
+      button:focus-visible { outline: 2px solid var(--dourado-claro); outline-offset: 3px; }
+      @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+    </style>
+  </head>
+  <body>
+    <main class="caixa">
+      <p class="marca">Sem conexão</p>
+      <h1>Você está offline</h1>
+      <p>
+        Os materiais que você já baixou continuam disponíveis no aplicativo. As aulas
+        em vídeo e os simulados precisam de internet.
+      </p>
+      <ul>
+        <li>Confira o Wi-Fi ou os dados móveis do aparelho.</li>
+        <li>Seu progresso das aulas assistidas está salvo e será enviado quando a conexão voltar.</li>
+      </ul>
+      <button type="button" onclick="location.reload()">Tentar de novo</button>
+    </main>
+    <script>
+      // Volta sozinho assim que a conexão retornar, sem exigir o toque no botão.
+      window.addEventListener('online', function () { location.reload(); });
+    </script>
+  </body>
+</html>

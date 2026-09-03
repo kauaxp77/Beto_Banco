@@ -1,0 +1,56 @@
+# =============================================================================
+# Ambiente local. Documento Mestre V4.0 -- Secao 23, "dev local -> staging com
+# dado anonimizado -> prod".
+#
+# Sobe apenas a infraestrutura que a API precisa: PostgreSQL, Redis e um SMTP de
+# mentira. A API e o frontend rodam fora daqui (mvn spring-boot:run e npm run
+# dev), para que o ciclo de edicao continue instantaneo.
+#
+#   docker compose up -d
+#   cd backend && mvn spring-boot:run
+#   cd frontend-react && npm run dev
+# =============================================================================
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: plataforma-postgres
+    environment:
+      POSTGRES_USER: plataforma
+      POSTGRES_PASSWORD: plataforma
+      POSTGRES_DB: plataforma
+      # America/Sao_Paulo so na exibicao; o banco guarda tudo em UTC (secao 18).
+      TZ: UTC
+    ports:
+      - '5432:5432'
+    volumes:
+      - dados-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U plataforma']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    # Secao 23: "Fila -- Redis: webhook, e-mail e IA fora do request".
+    image: redis:7-alpine
+    container_name: plataforma-redis
+    ports:
+      - '6379:6379'
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - dados-redis:/data
+
+  mailpit:
+    # SMTP de desenvolvimento. Captura tudo e nao entrega nada -- um e-mail de
+    # teste que chega de verdade na caixa de um aluno e um incidente de LGPD.
+    image: axllent/mailpit:latest
+    container_name: plataforma-mailpit
+    ports:
+      - '1025:1025'  # SMTP  -> MAIL_PORT da aplicacao
+      - '8025:8025'  # interface web para ler o que foi enviado
+    environment:
+      MP_MAX_MESSAGES: 500
+
+volumes:
+  dados-postgres:
+  dados-redis:

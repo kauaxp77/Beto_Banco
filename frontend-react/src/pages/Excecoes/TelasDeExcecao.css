@@ -1,0 +1,67 @@
+/* Secao 06 -- telas de excecao. Uma base para as oito. */
+
+.excecao {
+  display: grid;
+  place-items: center;
+  min-height: 70dvh;
+  padding: var(--esp-7) var(--esp-4);
+}
+
+.excecao__caixa {
+  max-width: 520px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--esp-4);
+}
+
+.excecao__codigo {
+  font-family: var(--fonte-dados);
+  font-size: var(--texto-2xl);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  color: var(--texto-secundario);
+}
+
+/* Cor semantica so reforca; o titulo abaixo ja diz o que aconteceu por escrito. */
+.excecao__codigo--critica { color: var(--critico); }
+.excecao__codigo--atencao { color: var(--atencao); }
+
+.excecao__titulo {
+  font-size: var(--texto-2xl);
+}
+.excecao__titulo:focus { outline: none; }
+
+.excecao__explicacao {
+  color: var(--texto-secundario);
+  max-width: 46ch;
+}
+
+.excecao__lista {
+  text-align: left;
+  color: var(--texto-secundario);
+  font-size: var(--texto-sm);
+  padding-left: var(--esp-5);
+  display: grid;
+  gap: var(--esp-2);
+}
+
+.excecao__trace {
+  font-size: var(--texto-sm);
+  color: var(--texto-secundario);
+}
+.excecao__trace code {
+  background: var(--superficie-card);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 2px var(--esp-2);
+  user-select: all; /* um toque seleciona o codigo inteiro para colar no chamado */
+}
+
+.excecao__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+  justify-content: center;
+}

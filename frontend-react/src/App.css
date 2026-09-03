@@ -3,3 +3,15 @@
     flex-direction: column;
     min-height: 100vh;
 }
+/*
+ * Secao 06 -- tela de excecao "offline" sobreposta a rota atual.
+ * Fica abaixo do banner de cookies na pilha de z-index: a decisao de
+ * consentimento (secao 22) continua alcancavel mesmo sem conexao.
+ */
+.camada-offline {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: var(--fundo);
+  overflow-y: auto;
+}
