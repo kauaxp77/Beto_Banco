@@ -42,7 +42,8 @@ public class ConfiguracaoSeguranca {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, FiltroJwt filtroJwt) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, FiltroJwt filtroJwt,
+                                           RespostaDeSegurancaEmProblema respostaEmProblema) throws Exception {
         http
             // API sem cookie de sessao: o CSRF classico nao se aplica, e o token vai
             // no cabecalho Authorization, que um formulario de terceiro nao consegue
@@ -86,6 +87,13 @@ public class ConfiguracaoSeguranca {
                 .requestMatchers("/api/v1/professor/**").hasAnyRole("PROFESSOR", "ADMIN", "SUPER_ADMIN")
 
                 .anyRequest().authenticated())
+
+            // Secao 19 -- a rejeicao do Spring Security acontece na cadeia de
+            // filtros, longe do @RestControllerAdvice. Sem isto, requisicao sem
+            // token responderia 403 com corpo vazio em vez de 401 em RFC 7807.
+            .exceptionHandling(e -> e
+                .authenticationEntryPoint(respostaEmProblema)
+                .accessDeniedHandler(respostaEmProblema))
 
             .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
 
