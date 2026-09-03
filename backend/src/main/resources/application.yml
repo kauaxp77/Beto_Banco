@@ -1,0 +1,173 @@
+# =============================================================================
+# Documento Mestre V4.0 -- secoes 19 (API), 21 (Seguranca) e 23 (Infra).
+# Secao 21: "Segredos: variavel de ambiente ou cofre. Nunca no repositorio."
+# Todo valor sensivel abaixo so tem default em perfil local.
+# =============================================================================
+spring:
+  application:
+    name: plataforma-api
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/plataforma}
+    username: ${DATABASE_USER:plataforma}
+    password: ${DATABASE_PASSWORD:plataforma}
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX:10}
+      connection-timeout: 5000
+
+  jpa:
+    open-in-view: false          # evita consulta preguicosa dentro da serializacao
+    hibernate:
+      ddl-auto: validate         # o schema pertence ao Flyway, nunca ao Hibernate
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+        format_sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+  data:
+    redis:
+      url: ${REDIS_URL:redis://localhost:6379}
+
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USER:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${MAIL_AUTH:false}
+      mail.smtp.starttls.enable: ${MAIL_TLS:false}
+
+  jackson:
+    # Secao 19: "JSON em snake_case. Datas em ISO 8601 com fuso."
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+  threads:
+    virtual:
+      enabled: true              # Java 21: uma thread por requisicao sem custo de pool
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+  forward-headers-strategy: framework
+  shutdown: graceful
+
+springdoc:
+  # Secao 19: "OpenAPI gerado pelo springdoc e publicado em /api/docs".
+  api-docs:
+    path: /api/docs
+  swagger-ui:
+    path: /api/docs/ui
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+    br.com.aprovacao: ${LOG_LEVEL:INFO}
+  pattern:
+    # Secao 23: trace_id percorrendo a requisicao. O MDC e populado pelo TraceIdFilter.
+    # O encoder JSON de producao fica em logback-spring.xml, que le esta mesma chave.
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%X{trace_id:-}] %logger{36} - %m%n"
+
+# -----------------------------------------------------------------------------
+# Configuracao propria da plataforma
+# -----------------------------------------------------------------------------
+plataforma:
+  tenant-padrao: 00000000-0000-0000-0000-000000000001
+
+  jwt:
+    # Secao 20: access de 15 min; refresh de 30 dias com rotacao.
+    segredo: ${JWT_SECRET:trocar-este-segredo-em-qualquer-ambiente-que-nao-seja-local-min-32-bytes}
+    emissor: plataforma-api
+    access-minutos: 15
+    refresh-dias: 30
+
+  seguranca:
+    # Secao 21: 5 falhas -> 15 min de bloqueio por conta e por IP.
+    max-falhas-login: 5
+    bloqueio-minutos: 15
+    senha-minima: 10
+    cors-origens: ${CORS_ORIGENS:http://localhost:5173}
+    # Secao 20: 2FA obrigatorio para Admin e Suporte.
+    mfa-obrigatorio-perfis: ADMIN,SUPORTE,SUPER_ADMIN
+
+  rate-limit:
+    # Secao 19: 60/min por IP no publico, 10/min em login e recuperacao de senha.
+    publico-por-minuto: 60
+    autenticacao-por-minuto: 10
+
+  pagamento:
+    gateway: INFINITYPAY
+    webhook-segredo: ${INFINITYPAY_WEBHOOK_SECRET:}
+    api-url: ${INFINITYPAY_API_URL:https://api.infinitypay.io}
+    api-token: ${INFINITYPAY_API_TOKEN:}
+    # Secao 12: backoff 1 -> 5 -> 30 -> 120 min, depois fila morta com alerta.
+    backoff-minutos: 1,5,30,120
+    pedido-expira-horas: 72
+
+  acesso:
+    # Secao 10: limite de 2 dispositivos simultaneos; alerta acima de 4 IPs em 24h.
+    max-sessoes-simultaneas: 2
+    alerta-ips-distintos-24h: 4
+    # Secao 10: URL assinada do R2 com validade de 5 minutos.
+    url-assinada-segundos: 300
+
+  reembolso:
+    # Secao 12 / CDC art. 49: 7 dias corridos, integral, por autoatendimento.
+    arrependimento-dias: 7
+    garantia-comercial-dias: 30
+    garantia-consumo-maximo-percentual: 20
+
+  redacao:
+    prazo-dias: 7
+    tamanho-maximo-mb: 10
+    cota-mentoria-mes: 4
+
+  email:
+    remetente: ${EMAIL_REMETENTE:nao-responda@plataforma.com.br}
+    financeiro: ${EMAIL_FINANCEIRO:financeiro@plataforma.com.br}
+    url-app: ${APP_URL:http://localhost:5173}
+
+  storage:
+    endpoint: ${R2_ENDPOINT:}
+    bucket: ${R2_BUCKET:plataforma}
+    access-key: ${R2_ACCESS_KEY:}
+    secret-key: ${R2_SECRET_KEY:}
+
+  ia:
+    # Secao 17: chamadas saem do backend, nunca do navegador.
+    modelo: ${IA_MODELO:claude-sonnet-5}
+    api-key: ${IA_API_KEY:}
+    teto-centavos-aluno-mes: 200
+    alerta-percentual: 80
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    properties:
+      hibernate:
+        generate_statistics: false
+logging:
+  level:
+    br.com.aprovacao: INFO

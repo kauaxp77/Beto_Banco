@@ -1,0 +1,56 @@
+# Secao 21 -- bloqueio de senhas vazadas.
+# Uma senha por linha, minuscula. Linha iniciada por # e comentario.
+#
+# Este arquivo cobre o topo das listas publicas de vazamento com pelo menos 10
+# caracteres -- abaixo disso o minimo de tamanho ja barra. Para ampliar, exporte o
+# recorte de 10+ caracteres do rockyou/SecLists e concatene aqui; a leitura e feita
+# uma vez, na subida da aplicacao.
+1234567890
+12345678910
+123456789010
+0123456789
+qwertyuiop
+qwerty12345
+1q2w3e4r5t
+adminadmin
+senha123456
+senhasenha
+password123
+password1234
+passw0rd123
+iloveyou123
+brasil2024
+brasil2025
+brasil2026
+corinthians
+flamengo10
+palmeiras1
+saopaulo12
+gremio1234
+cruzeiro12
+vasco12345
+santos1234
+familia123
+teamo12345
+princesa12
+gabriel123
+mariana123
+juliana123
+fernanda12
+rodrigo123
+ronaldo123
+concurso123
+aprovado123
+estudar123
+professor1
+administrador
+administrator
+qwertyuiop123
+asdfghjkl123
+zxcvbnm12345
+abcd1234567
+a1b2c3d4e5
+naosei12345
+naoseiasenha
+minhasenha1
+minhasenha123
