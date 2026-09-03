@@ -161,4 +161,4 @@ Continuam abertas e travando trabalho real:
 Os testes de integração (Testcontainers) não rodaram: o engine do Docker Desktop
 estava fora do ar na máquina de desenvolvimento. Toda validação de banco foi
 feita contra um PostgreSQL 17 local, com as 16 migrações aplicadas em base limpa.
-53 testes unitários passam. As 16 migrações aplicam em base limpa.
+53 testes unitários passam.
