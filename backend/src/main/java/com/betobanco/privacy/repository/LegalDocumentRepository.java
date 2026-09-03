@@ -17,12 +17,13 @@ public interface LegalDocumentRepository extends JpaRepository<LegalDocument, UU
      */
     @Query("""
            SELECT d FROM LegalDocument d
-            WHERE d.type = :type
+            WHERE d.tenantId = :tenantId
+              AND d.type = :type
               AND d.effectiveFrom <= CURRENT_TIMESTAMP
             ORDER BY d.effectiveFrom DESC
             LIMIT 1
            """)
-    Optional<LegalDocument> vigente(@Param("type") String type);
+    Optional<LegalDocument> vigente(@Param("tenantId") UUID tenantId, @Param("type") String type);
 
-    Optional<LegalDocument> findByTypeAndVersion(String type, String version);
+    Optional<LegalDocument> findByTenantIdAndTypeAndVersion(UUID tenantId, String type, String version);
 }

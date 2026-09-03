@@ -1,5 +1,6 @@
 package com.betobanco.privacy.entity;
 
+import com.betobanco.shared.tenant.TenantContext;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +30,14 @@ public class LegalDocument {
     @GeneratedValue
     private UUID id;
 
+    /**
+     * Secao 27 -- cada tenant tem os proprios termos: a razao social do contrato
+     * e outra. Preenchido desde ja, mesmo com um unico tenant, porque acrescentar
+     * a coluna depois obrigaria a revisar todo aceite ja gravado.
+     */
+    @Column(name = "tenant_id", nullable = false)
+    private UUID tenantId = TenantContext.RAIZ;
+
     @Column(nullable = false)
     private String type;
 
@@ -55,6 +64,10 @@ public class LegalDocument {
 
     public UUID getId() {
         return id;
+    }
+
+    public UUID getTenantId() {
+        return tenantId;
     }
 
     public String getType() {

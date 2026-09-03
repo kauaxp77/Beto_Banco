@@ -8,6 +8,7 @@ import com.betobanco.privacy.repository.ConsentRepository;
 import com.betobanco.privacy.repository.LegalAcceptanceRepository;
 import com.betobanco.privacy.repository.LegalDocumentRepository;
 import com.betobanco.shared.exception.NotFoundException;
+import com.betobanco.shared.tenant.TenantContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -119,7 +120,7 @@ public class ConsentService {
 
     @Transactional(readOnly = true)
     public LegalDocument vigente(String type) {
-        return documents.vigente(type)
+        return documents.vigente(TenantContext.atual(), type)
                 .orElseThrow(() -> new NotFoundException("Documento legal indisponível: " + type));
     }
 
@@ -134,11 +135,12 @@ public class ConsentService {
     @Transactional
     public LegalAcceptance registrarAceite(UUID userId, String type, String version,
                                            String ip, String userAgent) {
-        LegalDocument documento = documents.findByTypeAndVersion(type, version)
+        LegalDocument documento = documents
+                .findByTenantIdAndTypeAndVersion(TenantContext.atual(), type, version)
                 .orElseThrow(() -> new NotFoundException(
                         "Versão %s de %s não encontrada".formatted(version, type)));
 
-        Optional<LegalDocument> atual = documents.vigente(type);
+        Optional<LegalDocument> atual = documents.vigente(TenantContext.atual(), type);
         if (atual.isPresent() && !atual.get().getId().equals(documento.getId())) {
             log.warn("Aceite de {} na versao {} enquanto a vigente e {}. "
                             + "Cliente provavelmente com pagina em cache.",
