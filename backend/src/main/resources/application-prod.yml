@@ -51,6 +51,10 @@ logging:
 
 betobanco:
   auth:
+    # Secao 10 -- protecao de conteudo: limite de dispositivos simultaneos
+    # e alerta de conta compartilhada.
+    max-active-sessions: 2
+    alert-distinct-ips-24h: 4
     # Lax funciona quando o frontend faz proxy de /api (mesma origem).
     # Se o navegador falar DIRETO com a API em outro dominio, use None.
     cookie-same-site: ${COOKIE_SAME_SITE:Lax}
@@ -63,3 +67,8 @@ betobanco:
     # Secao 12 -- gateway oficial. Sem valor padrao de proposito: um segredo
     # embutido aqui seria publico e aceitaria webhook forjado.
     infinitypay-webhook-secret: ${INFINITYPAY_WEBHOOK_SECRET:}
+  essays:
+    # Secao 14 -- a cota e o que mantem a margem da secao 04 de pe:
+    # 4 correcoes mensais por 12 meses custam R$ 864 por aluno de mentoria,
+    # contra um ticket de R$ 3.564.
+    cota-mensal-mentoria: 4

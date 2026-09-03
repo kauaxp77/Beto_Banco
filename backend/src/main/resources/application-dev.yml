@@ -25,6 +25,10 @@ CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:5174
 
 betobanco:
   auth:
+    # Secao 10 -- protecao de conteudo: limite de dispositivos simultaneos
+    # e alerta de conta compartilhada.
+    max-active-sessions: 2
+    alert-distinct-ips-24h: 4
     jwt-secret: ${JWT_SECRET:desenvolvimento-local-troque-isto-em-producao-32b}
     cookie-secure: false
   email:
@@ -34,3 +38,8 @@ betobanco:
     # Secao 12 -- gateway oficial. Sem valor padrao de proposito: um segredo
     # embutido aqui seria publico e aceitaria webhook forjado.
     infinitypay-webhook-secret: ${INFINITYPAY_WEBHOOK_SECRET:}
+  essays:
+    # Secao 14 -- a cota e o que mantem a margem da secao 04 de pe:
+    # 4 correcoes mensais por 12 meses custam R$ 864 por aluno de mentoria,
+    # contra um ticket de R$ 3.564.
+    cota-mensal-mentoria: 4
