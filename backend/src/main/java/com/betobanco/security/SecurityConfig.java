@@ -61,6 +61,10 @@ public class SecurityConfig {
                         // por natureza — recrutadores e a landing page.
                         .requestMatchers(HttpMethod.GET, "/certificates/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/testimonials").permitAll()
+                        // Secao 22 -- os textos legais precisam ser lidos antes do
+                        // aceite, e o aceite acontece no checkout, antes de existir
+                        // conta. Termo de uso atras de login nao informa ninguem.
+                        .requestMatchers(HttpMethod.GET, "/legal/*").permitAll()
                         .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                             .permitAll()
