@@ -65,6 +65,10 @@ public class SecurityConfig {
                         // aceite, e o aceite acontece no checkout, antes de existir
                         // conta. Termo de uso atras de login nao informa ninguem.
                         .requestMatchers(HttpMethod.GET, "/legal/*").permitAll()
+                        // Secoes 07/11/15 -- a ficha de concurso e "pagina completa
+                        // e indexavel" e e a fonte de trafego organico do plano.
+                        // Atras de login ela nao e indexavel por ninguem.
+                        .requestMatchers(HttpMethod.GET, "/contests/**").permitAll()
                         .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                             .permitAll()
