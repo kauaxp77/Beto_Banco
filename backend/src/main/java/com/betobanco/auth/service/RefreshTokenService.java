@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,14 +30,25 @@ public class RefreshTokenService {
     private final RefreshTokenRepository repo;
     private final UserDirectory users;
     private final Duration validade;
+    private final int maxSessoes;
+    private final int alertaIpsDistintos;
     private final SecureRandom random = new SecureRandom();
 
     public RefreshTokenService(RefreshTokenRepository repo,
                                UserDirectory users,
-                               @Value("${betobanco.auth.refresh-token-days}") long dias) {
+                               @Value("${betobanco.auth.refresh-token-days}") long dias,
+                               @Value("${betobanco.auth.max-active-sessions:2}") int maxSessoes,
+                               @Value("${betobanco.auth.alert-distinct-ips-24h:4}") int alertaIpsDistintos) {
         this.repo = repo;
         this.users = users;
         this.validade = Duration.ofDays(dias);
+        this.maxSessoes = maxSessoes;
+        this.alertaIpsDistintos = alertaIpsDistintos;
+    }
+
+    /** De onde a sessao nasceu. Secao 10 -- protecao de conteudo. */
+    public record Origem(String ip, String userAgent) {
+        public static final Origem DESCONHECIDA = new Origem(null, null);
     }
 
     public record Rotacao(UserAccount usuario, String novoValor) {
@@ -44,10 +56,59 @@ public class RefreshTokenService {
 
     @Transactional
     public String emitir(UserAccount usuario) {
+        return emitir(usuario, Origem.DESCONHECIDA);
+    }
+
+    /**
+     * Emite um refresh token e aplica a protecao de conteudo da secao 10.
+     *
+     * <p>"Limite de 2 dispositivos simultaneos; a terceira sessao derruba a mais
+     * antiga." O corte acontece ANTES de gravar a nova, e o excedente e
+     * calculado contando a sessao que esta prestes a nascer -- senao o limite
+     * efetivo seria de tres, nao de dois.
+     *
+     * <p>A escolha de derrubar em vez de recusar e deliberada: recusar o login
+     * do aluno que trocou de celular seria puni-lo por um limite que existe para
+     * conter compartilhamento de conta, nao uso legitimo.
+     */
+    @Transactional
+    public String emitir(UserAccount usuario, Origem origem) {
+        aplicarLimiteDeDispositivos(usuario.id());
+        alertarSeAcessoAnomalo(usuario.id());
+
         String valor = gerarValor();
         repo.saveAndFlush(new RefreshToken(
-                usuario.id(), hash(valor), Instant.now().plus(validade)));
+                usuario.id(), hash(valor), Instant.now().plus(validade),
+                origem.ip(), origem.userAgent()));
         return valor;
+    }
+
+    private void aplicarLimiteDeDispositivos(UUID userId) {
+        List<RefreshToken> vigentes = repo.vigentesDe(userId);
+        int excedente = vigentes.size() - (maxSessoes - 1);
+
+        for (int i = 0; i < excedente; i++) {
+            RefreshToken maisAntiga = vigentes.get(i);
+            maisAntiga.revogar();
+            repo.save(maisAntiga);
+            log.info("Sessao mais antiga de {} derrubada pelo limite de {} dispositivos.",
+                    userId, maxSessoes);
+        }
+    }
+
+    /**
+     * Secao 10: "Alerta automatico quando uma conta e acessada de mais de 4 IPs
+     * distintos em 24h." Alerta, e nao bloqueio: a mesma contagem sobe quando um
+     * aluno viaja ou troca de operadora, e bloquear seria trancar o cliente
+     * legitimo do lado de fora por um sinal que e apenas indicio.
+     */
+    private void alertarSeAcessoAnomalo(UUID userId) {
+        long ips = repo.contarIpsDistintosDesde(userId, Instant.now().minus(Duration.ofHours(24)));
+        if (ips > alertaIpsDistintos) {
+            log.warn("Conta {} acessada de {} IPs distintos em 24h (limite de alerta: {}). "
+                            + "Possivel compartilhamento de conta.",
+                    userId, ips, alertaIpsDistintos);
+        }
     }
 
     /**

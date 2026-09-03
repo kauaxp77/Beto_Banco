@@ -33,20 +33,34 @@ public class AuthService {
 
     @Transactional
     public TokenResponse autenticar(String email, String senha) {
+        return autenticar(email, senha, RefreshTokenService.Origem.DESCONHECIDA);
+    }
+
+    /**
+     * Secao 10 -- a origem da sessao (IP e dispositivo) e o que permite limitar
+     * dispositivos simultaneos e detectar conta compartilhada.
+     */
+    @Transactional
+    public TokenResponse autenticar(String email, String senha, RefreshTokenService.Origem origem) {
         Optional<UserAccount> conta = users.verificarCredenciais(email, senha);
 
         if (conta.isEmpty()) {
             throw new BusinessException(ErrorCode.UNAUTHORIZED, CREDENCIAIS_INVALIDAS);
         }
 
-        return emitirPar(conta.get());
+        return emitirPar(conta.get(), origem);
     }
 
     /** Emite um par completo de tokens para um usuario ja autenticado. */
     @Transactional
     public TokenResponse emitirPar(UserAccount usuario) {
+        return emitirPar(usuario, RefreshTokenService.Origem.DESCONHECIDA);
+    }
+
+    @Transactional
+    public TokenResponse emitirPar(UserAccount usuario, RefreshTokenService.Origem origem) {
         String access = jwt.gerar(usuario.id(), usuario.email(), usuario.roles());
-        String refresh = refreshTokens.emitir(usuario);
+        String refresh = refreshTokens.emitir(usuario, origem);
         return TokenResponse.bearer(access, refresh, jwt.duracaoSegundos());
     }
 

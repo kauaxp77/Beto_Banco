@@ -10,6 +10,7 @@ import com.betobanco.auth.service.AuthService;
 import com.betobanco.auth.service.PasswordResetService;
 import com.betobanco.auth.service.RefreshCookies;
 import com.betobanco.auth.service.RefreshTokenService;
+import jakarta.servlet.http.HttpServletRequest;
 import com.betobanco.security.AuthenticatedUser;
 import com.betobanco.shared.exception.BusinessException;
 import com.betobanco.shared.exception.ErrorCode;
@@ -52,8 +53,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<TokenResponse>> login(@Valid @RequestBody LoginRequest req) {
-        TokenResponse par = auth.autenticar(req.email(), req.password());
+    public ResponseEntity<ApiResponse<TokenResponse>> login(@Valid @RequestBody LoginRequest req,
+                                                            HttpServletRequest http) {
+        TokenResponse par = auth.autenticar(req.email(), req.password(), origemDe(http));
 
         // O refresh vai no cookie HttpOnly; o JSON leva apenas o access token.
         return ResponseEntity.ok()
@@ -125,5 +127,21 @@ public class AuthController {
     public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest req) {
         resets.redefinir(req.token(), req.password());
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Secao 10 -- de onde a sessao nasceu.
+     *
+     * <p>Atras da Vercel e do Render o IP real vem em X-Forwarded-For; o
+     * primeiro elemento e o cliente e os seguintes sao os proxies. Ler
+     * getRemoteAddr() direto registraria o IP do proxy para todo mundo, e a
+     * contagem de IPs distintos da secao 10 nunca dispararia.
+     */
+    private RefreshTokenService.Origem origemDe(HttpServletRequest req) {
+        String encaminhado = req.getHeader("X-Forwarded-For");
+        String ip = (encaminhado != null && !encaminhado.isBlank())
+                ? encaminhado.split(",")[0].trim()
+                : req.getRemoteAddr();
+        return new RefreshTokenService.Origem(ip, req.getHeader("User-Agent"));
     }
 }

@@ -43,6 +43,20 @@ public class RefreshToken {
     protected RefreshToken() {
     }
 
+    /**
+     * Secao 10 -- as colunas ip e user_agent existem no schema desde a V4 mas
+     * nunca eram preenchidas. Sem elas nao da para limitar dispositivos nem
+     * detectar conta compartilhada, que sao as duas mitigacoes que a secao 30
+     * lista contra pirataria.
+     */
+    public RefreshToken(UUID userId, String tokenHash, Instant expiresAt,
+                        String ip, String userAgent) {
+        this(userId, tokenHash, expiresAt);
+        this.ip = ip;
+        this.userAgent = userAgent == null ? null
+                : userAgent.substring(0, Math.min(userAgent.length(), 400));
+    }
+
     public RefreshToken(UUID userId, String tokenHash, Instant expiresAt) {
         this.userId = userId;
         this.tokenHash = tokenHash;
@@ -59,6 +73,18 @@ public class RefreshToken {
 
     public String getTokenHash() {
         return tokenHash;
+    }
+
+    public Instant getIssuedAt() {
+        return issuedAt;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
     }
 
     public Instant getExpiresAt() {
