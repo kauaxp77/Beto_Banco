@@ -97,7 +97,11 @@ services:
       context: ./frontend-react
     container_name: plataforma-web
     depends_on:
-      - api
+      # service_healthy, e nao apenas started: a API leva cerca de um minuto para
+      # subir, e o nginx aceitando trafego antes disso devolve 502 no login --
+      # que parece defeito da aplicacao, quando e so ordem de inicializacao.
+      api:
+        condition: service_healthy
     ports:
       - '8090:80'
 

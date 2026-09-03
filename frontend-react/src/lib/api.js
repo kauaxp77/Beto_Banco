@@ -49,6 +49,37 @@ export const tokens = {
 };
 
 /**
+ * Lê as claims do access token sem verificar a assinatura.
+ *
+ * Verificar do lado do cliente não provaria nada — quem controla o navegador
+ * controla o código que verifica. Isto serve só para a interface saber o que
+ * desenhar (nome, perfis, se já expirou); toda decisão de acesso continua sendo
+ * do servidor, que valida a assinatura em cada requisição (§20).
+ */
+export function claimsDoToken(token = tokens.access()) {
+  if (!token) return null;
+  try {
+    const [, carga] = token.split('.');
+    const normalizado = carga.replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(
+      atob(normalizado)
+        .split('')
+        .map((c) => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'))
+        .join(''),
+    );
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
+/** true quando o access token ainda não expirou. */
+export function tokenValido(token = tokens.access()) {
+  const claims = claimsDoToken(token);
+  return Boolean(claims?.exp && claims.exp * 1000 > Date.now());
+}
+
+/**
  * Uma renovacao por vez.
  *
  * Sem esta trava, tres chamadas que recebem 401 ao mesmo tempo disparam tres
@@ -165,6 +196,8 @@ export const api = {
     }
     tokens.limpar();
   },
+  /** Renova a sessão pela rotação do refresh. Compartilha a trava de concorrência. */
+  renovar: () => renovarSessao(),
   recuperarSenha: (email) => requisitar('/auth/senha/recuperar', { metodo: 'POST', corpo: { email } }),
   redefinirSenha: (token, nova_senha) =>
     requisitar('/auth/senha/redefinir', { metodo: 'POST', corpo: { token, nova_senha } }),
