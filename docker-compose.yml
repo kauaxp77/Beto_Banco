@@ -1,14 +1,19 @@
 # =============================================================================
-# Ambiente local. Documento Mestre V4.0 -- Secao 23, "dev local -> staging com
-# dado anonimizado -> prod".
+# Stack completa em conteiner. Documento Mestre V4.0 -- Secao 23,
+# "dev local -> staging com dado anonimizado -> prod".
 #
-# Sobe apenas a infraestrutura que a API precisa: PostgreSQL, Redis e um SMTP de
-# mentira. A API e o frontend rodam fora daqui (mvn spring-boot:run e npm run
-# dev), para que o ciclo de edicao continue instantaneo.
+#   docker compose up -d --build
 #
-#   docker compose up -d
-#   cd backend && mvn spring-boot:run
-#   cd frontend-react && npm run dev
+#   Front .............. http://localhost:8090
+#   API (direta) ....... http://localhost:8091/api/docs/ui
+#   E-mail capturado ... http://localhost:8025
+#
+# O front e servido pelo nginx, que faz proxy de /api para a API: mesma origem,
+# entao nao ha CORS no caminho. Em producao o front vai para a Vercel (secao 23)
+# e ai sim o CORS_ORIGENS da API precisa listar o dominio.
+#
+# Portas de host escolhidas fora das usuais de proposito: 8080 costuma estar
+# ocupada (Docker Desktop, Apache) e 5432 por um PostgreSQL local.
 # =============================================================================
 services:
   postgres:
@@ -21,14 +26,14 @@ services:
       # America/Sao_Paulo so na exibicao; o banco guarda tudo em UTC (secao 18).
       TZ: UTC
     ports:
-      - '5432:5432'
+      - '5433:5432'
     volumes:
       - dados-postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U plataforma']
-      interval: 10s
+      test: ['CMD-SHELL', 'pg_isready -U plataforma -d plataforma']
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   redis:
     # Secao 23: "Fila -- Redis: webhook, e-mail e IA fora do request".
@@ -39,6 +44,11 @@ services:
     command: redis-server --save 60 1 --loglevel warning
     volumes:
       - dados-redis:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   mailpit:
     # SMTP de desenvolvimento. Captura tudo e nao entrega nada -- um e-mail de
@@ -46,10 +56,50 @@ services:
     image: axllent/mailpit:latest
     container_name: plataforma-mailpit
     ports:
-      - '1025:1025'  # SMTP  -> MAIL_PORT da aplicacao
+      - '1025:1025'  # SMTP
       - '8025:8025'  # interface web para ler o que foi enviado
     environment:
       MP_MAX_MESSAGES: 500
+
+  api:
+    build:
+      context: ./backend
+    container_name: plataforma-api
+    depends_on:
+      # service_healthy, nao apenas started: o Flyway roda na subida da API e
+      # falharia contra um PostgreSQL que ainda esta inicializando o cluster.
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/plataforma
+      DATABASE_USER: plataforma
+      DATABASE_PASSWORD: plataforma
+      REDIS_URL: redis://redis:6379
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      # Secao 21: segredo em variavel de ambiente ou cofre, nunca no repositorio.
+      # Estes valores sao de desenvolvimento e nao servem para nenhum outro lugar.
+      JWT_SECRET: ${JWT_SECRET:-segredo-local-de-desenvolvimento-com-mais-de-32-bytes-aqui}
+      INFINITYPAY_WEBHOOK_SECRET: ${INFINITYPAY_WEBHOOK_SECRET:-segredo-webhook-local}
+      INFINITYPAY_API_TOKEN: ${INFINITYPAY_API_TOKEN:-}
+      # O front chega pelo nginx, mesma origem. A lista cobre o acesso direto a
+      # API e o dev server do Vite rodando fora do conteiner.
+      CORS_ORIGENS: http://localhost:8090,http://localhost:5173
+      APP_URL: http://localhost:8090
+      LOG_LEVEL: INFO
+    ports:
+      - '8091:8080'
+
+  web:
+    build:
+      context: ./frontend-react
+    container_name: plataforma-web
+    depends_on:
+      - api
+    ports:
+      - '8090:80'
 
 volumes:
   dados-postgres:

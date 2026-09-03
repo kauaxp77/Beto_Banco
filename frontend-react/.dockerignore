@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.git/
+*.log
+build_output*.txt
+tsc_output.txt
+error.txt
+.env.local
