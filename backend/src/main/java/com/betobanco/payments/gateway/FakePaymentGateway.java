@@ -105,7 +105,10 @@ public class FakePaymentGateway implements PaymentGateway {
                     texto(raiz, "buyer_name"),
                     raiz.path("amount_cents").asLong(0),
                     raiz.hasNonNull("currency") ? raiz.get("currency").asText() : "BRL",
-                    splits));
+                    splits,
+                    // O formato de referencia nao declara momento; a fila entao
+                    // trata estes eventos na ordem em que chegaram.
+                    null));
         } catch (Exception e) {
             return Optional.empty();
         }

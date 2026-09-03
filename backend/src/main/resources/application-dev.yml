@@ -31,3 +31,6 @@ betobanco:
     base-url: http://localhost:5173
   payments:
     fake-webhook-secret: segredo-de-teste
+    # Secao 12 -- gateway oficial. Sem valor padrao de proposito: um segredo
+    # embutido aqui seria publico e aceitaria webhook forjado.
+    infinitypay-webhook-secret: ${INFINITYPAY_WEBHOOK_SECRET:}

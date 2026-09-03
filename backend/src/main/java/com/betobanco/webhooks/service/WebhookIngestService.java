@@ -73,7 +73,8 @@ public class WebhookIngestService {
         try {
             eventos.saveAndFlush(new WebhookEvent(
                     provider, n.eventId(), n.eventType(),
-                    new String(corpoCru, StandardCharsets.UTF_8)));
+                    new String(corpoCru, StandardCharsets.UTF_8),
+                    n.occurredAt()));
             return new Resultado(Desfecho.ACEITO, n.eventId());
         } catch (DataIntegrityViolationException e) {
             // Colidiu no indice unico: e o mesmo evento chegando de novo.

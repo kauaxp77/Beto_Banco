@@ -1,5 +1,6 @@
 package com.betobanco.payments.api;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -16,7 +17,17 @@ public record PaymentNotification(
         String buyerName,
         long amountCents,
         String currency,
-        List<Split> splits) {
+        List<Split> splits,
+        /**
+         * Momento do evento no provedor, quando ele declara um.
+         *
+         * <p>Secao 12: "eventos podem chegar fora de ordem. Comparar
+         * ocorrido_em e ignorar evento mais antigo que o estado atual". A
+         * ordem de chegada aqui nao serve para isso: ela depende da fila e
+         * das retentativas do gateway, nao de quando o fato aconteceu.
+         * Nulo quando o provedor nao informa.
+         */
+        Instant occurredAt) {
 
     /**
      * As acoes que o RF-01 define por status. Cancelado e reembolso sao

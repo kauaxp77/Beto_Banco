@@ -49,6 +49,14 @@ public class WebhookEvent {
     @Column(name = "signature_valid", nullable = false)
     private boolean signatureValid = true;
 
+    /**
+     * Momento do evento no provedor (secao 12). Ordena a fila; received_at nao
+     * serve, porque depende da fila e das retentativas do proprio gateway.
+     * Nulo quando o provedor nao declara um.
+     */
+    @Column(name = "occurred_at")
+    private Instant occurredAt;
+
     @Column(name = "received_at", insertable = false, updatable = false)
     private Instant receivedAt;
 
@@ -71,10 +79,16 @@ public class WebhookEvent {
     }
 
     public WebhookEvent(String provider, String eventId, String eventType, String payload) {
+        this(provider, eventId, eventType, payload, null);
+    }
+
+    public WebhookEvent(String provider, String eventId, String eventType, String payload,
+                        Instant occurredAt) {
         this.provider = provider;
         this.eventId = eventId;
         this.eventType = eventType;
         this.payload = payload;
+        this.occurredAt = occurredAt;
     }
 
     public UUID getId() {
@@ -91,6 +105,10 @@ public class WebhookEvent {
 
     public String getEventType() {
         return eventType;
+    }
+
+    public Instant getOccurredAt() {
+        return occurredAt;
     }
 
     public String getPayload() {

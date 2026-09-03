@@ -35,6 +35,11 @@ public interface WebhookEventRepository extends JpaRepository<WebhookEvent, UUID
             value = "-2"))
     @Query("SELECT e FROM WebhookEvent e WHERE e.status = 'RECEIVED' "
             + "OR (e.status = 'FAILED' AND e.nextAttemptAt <= :agora) "
-            + "ORDER BY e.receivedAt ASC")
+            // Secao 12: a ordem e a do provedor (occurredAt), nao a de chegada.
+            // Um cancelamento que ficou preso na fila do gateway chega depois da
+            // aprovacao que ele desfaz; drenar por receivedAt aplicaria os dois
+            // na ordem errada e deixaria o aluno com acesso a um pedido estornado.
+            // receivedAt segue como desempate para quem nao declara momento.
+            + "ORDER BY e.occurredAt ASC NULLS FIRST, e.receivedAt ASC")
     List<WebhookEvent> proximosPendentes(@Param("agora") Instant agora, Pageable limite);
 }
