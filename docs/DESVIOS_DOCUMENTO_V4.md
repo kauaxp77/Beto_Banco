@@ -117,16 +117,27 @@ tenant alheio é recusado pelo `WITH CHECK`.
 
 ---
 
+## 6. §07 — Busca sem posts, por enquanto
+
+**O documento pede:** "busca única sobre concursos, cursos **e posts**".
+
+**O código faz:** busca única sobre concursos e cursos.
+
+**Por quê:** o domínio de blog não existe (§15, abaixo). A `vw_search` é um
+`UNION ALL`, e posts entram como mais um ramo quando houver o que indexar — sem
+tocar em nada do que já está lá.
+
+---
+
 ## Seções não iniciadas, e o tamanho real delas
 
-Estas três foram descritas como "lacunas" numa análise inicial que estava errada.
-Elas não são ajustes — são domínios inteiros que não existem no código:
-
-| Seção | O que falta | Ordem de grandeza |
+| Seção | Situação | Ordem de grandeza |
 |---|---|---|
-| §07 Busca unificada | Não há o que buscar: não existe domínio de concursos nem de posts. A busca atual é um `LIKE` sobre `users`, no admin. | Depende de §11 e §15 |
-| §11 Sistema de concursos | Nenhuma tabela, entidade ou tela. Modelo de dados, ficha indexável, fila de revisão de 60 dias, importação de edital. | Comparável ao módulo `courses` |
-| §15 Blog e SEO | Nenhum post, autor ou fluxo de revisão. Inclui a política de fontes reescrita e o E-E-A-T. | Comparável ao módulo `courses` |
+| §11 Sistema de concursos | **Feito.** Carreira/órgão/cargo, ficha indexável, junção com carreiras, fila de revisão de 60 dias. Falta a importação automática de edital. | — |
+| §07 Busca unificada | **Feito** para concursos e cursos, com `tsvector` + `pg_trgm`. | — |
+| §15 Blog e SEO | **Não iniciado.** Nenhum post, autor ou fluxo de revisão humana. Inclui a política de fontes reescrita e os sinais de E-E-A-T. | Comparável ao módulo `courses` |
+| §13 Banco de questões | Schema de quiz existe (V10), mas ⛔ travado pela **pendência 03**: a origem das questões não foi decidida, e copiar comentário de terceiro é infração. | Bloqueado por decisão |
+| §17 Inteligência artificial | Não iniciado. Cache por hash, teto de gasto por aluno, rótulo de "gerado por IA" e revisão humana obrigatória antes de publicar. | Médio |
 
 ---
 
@@ -149,5 +160,5 @@ Continuam abertas e travando trabalho real:
 
 Os testes de integração (Testcontainers) não rodaram: o engine do Docker Desktop
 estava fora do ar na máquina de desenvolvimento. Toda validação de banco foi
-feita contra um PostgreSQL 17 local, com as 14 migrações aplicadas em base limpa.
-43 testes unitários passam.
+feita contra um PostgreSQL 17 local, com as 16 migrações aplicadas em base limpa.
+53 testes unitários passam. As 16 migrações aplicam em base limpa.
