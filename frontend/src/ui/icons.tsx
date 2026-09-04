@@ -103,3 +103,31 @@ export function IconeCamera(props: Props) {
     </Base>
   )
 }
+
+export function IconeLupa(props: Props) {
+  return (
+    <Base {...props}>
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="m15.5 15.5 4.5 4.5" />
+    </Base>
+  )
+}
+
+export function IconeAlerta(props: Props) {
+  return (
+    <Base {...props}>
+      <path d="M12 3.5 22 20.5H2z" />
+      <path d="M12 10v4.5" />
+      <path d="M12 17.6v.1" />
+    </Base>
+  )
+}
+
+export function IconeLink(props: Props) {
+  return (
+    <Base size={15} {...props}>
+      <path d="M9.5 14.5a4.5 4.5 0 0 0 6.4 0l3.1-3.1a4.5 4.5 0 0 0-6.4-6.4L11 6.6" />
+      <path d="M14.5 9.5a4.5 4.5 0 0 0-6.4 0L5 12.6a4.5 4.5 0 0 0 6.4 6.4l1.6-1.6" />
+    </Base>
+  )
+}

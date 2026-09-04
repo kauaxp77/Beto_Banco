@@ -3,6 +3,7 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api/http'
 import { Badge, Button, Card, Skeleton } from '../ui/basics'
+import { IconeCheck } from '../ui/icons'
 import { nomeAmigavel } from '../ui/format'
 import './cursos.css'
 
@@ -256,6 +257,80 @@ function Avisos() {
   )
 }
 
+
+interface CartaoDeAula {
+  lessonId: string
+  lessonTitle: string
+  courseId: string
+  courseTitle: string
+  durationSeconds: number | null
+  positionSeconds: number | null
+  percent: number
+  at: string
+}
+
+/**
+ * "Continue assistindo" (V3.0, secao 5).
+ *
+ * A API ja exclui o que foi concluido: a aula que o aluno acabou de terminar
+ * nao pode encabecar a fila de continuar, que e exatamente onde ela nao deve
+ * estar. Some quando nao ha nada comecado — secao vazia so ocupa espaco.
+ */
+function ContinueAssistindo() {
+  const query = useQuery({
+    queryKey: ['continue-assistindo'],
+    queryFn: () => api<CartaoDeAula[]>('/courses/me/continue'),
+  })
+
+  const aulas = query.data ?? []
+  if (aulas.length === 0) return null
+
+  return (
+    <section className="retomar" aria-label="Continue assistindo">
+      <h2 className="secao-titulo">Continue assistindo</h2>
+      <div className="retomar-faixa">
+        {aulas.map((a) => (
+          <Link key={a.lessonId} to={`/curso/${a.courseId}?aula=${a.lessonId}`} className="retomar-card">
+            <span className="retomar-curso">{nomeAmigavel(a.courseTitle)}</span>
+            <span className="retomar-aula">{a.lessonTitle}</span>
+            <span className="barra-progresso" aria-hidden="true">
+              <span style={{ width: `${a.percent}%` }} />
+            </span>
+            <span className="retomar-pct">{a.percent}% assistido</span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/** Aulas marcadas para revisar (V3.0, secao 5). */
+function Favoritos() {
+  const query = useQuery({
+    queryKey: ['meus-favoritos'],
+    queryFn: () => api<CartaoDeAula[]>('/courses/me/favorites'),
+  })
+
+  const aulas = query.data ?? []
+  if (aulas.length === 0) return null
+
+  return (
+    <section style={{ marginTop: 'var(--bb-s6)' }} aria-label="Favoritos">
+      <h2 className="secao-titulo">Salvas para revisar</h2>
+      <ul className="favoritos-lista">
+        {aulas.map((a) => (
+          <li key={a.lessonId}>
+            <Link to={`/curso/${a.courseId}?aula=${a.lessonId}`}>
+              <IconeCheck size={13} /> {a.lessonTitle}
+            </Link>
+            <span className="dim-txt">{nomeAmigavel(a.courseTitle)}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 function CursoCard({ curso }: { curso: CourseSummary }) {
   const pct =
     curso.totalLessons === 0
@@ -327,6 +402,7 @@ export function DashboardPage() {
 
       <Constancia />
       <Avisos />
+      <ContinueAssistindo />
       <Trilhas />
 
       {cursos.isError ? (
@@ -369,6 +445,8 @@ export function DashboardPage() {
           aparecem aqui.
         </p>
       )}
+
+      <Favoritos />
 
       <CertificadosEDepoimento />
     </section>

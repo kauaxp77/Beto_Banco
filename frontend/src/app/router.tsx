@@ -2,6 +2,10 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { RequireAuth } from '../auth/RequireAuth'
 import { RequireRole } from '../auth/RequireRole'
 import { AdminAuditPage } from '../pages/admin/AdminAuditPage'
+import { AdminContestsPage } from '../pages/admin/AdminContestsPage'
+import { AdminLeadsPage } from '../pages/admin/AdminLeadsPage'
+import { AdminMateriaisPage } from '../pages/admin/AdminMateriaisPage'
+import { AdminRedacoesPage } from '../pages/admin/AdminRedacoesPage'
 import { AdminAnnouncementsPage } from '../pages/admin/AdminAnnouncementsPage'
 import { AdminCommentsPage } from '../pages/admin/AdminCommentsPage'
 import { AdminCourseContentPage } from '../pages/admin/AdminCourseContentPage'
@@ -18,6 +22,13 @@ import { AdminTestimonialsPage } from '../pages/admin/AdminTestimonialsPage'
 import { AdminWebhooksPage } from '../pages/admin/AdminWebhooksPage'
 import { AuthLayout } from '../pages/auth/AuthLayout'
 import { CertificadoPage } from '../pages/CertificadoPage'
+import { CheckoutPage } from '../pages/CheckoutPage'
+import { LegalPage } from '../pages/LegalPage'
+import { PrivacidadePage } from '../pages/PrivacidadePage'
+import { CorrecoesPage } from '../pages/redacoes/CorrecoesPage'
+import { RedacoesPage } from '../pages/redacoes/RedacoesPage'
+import { ConcursoFichaPage } from '../pages/concursos/ConcursoFichaPage'
+import { ConcursosPage } from '../pages/concursos/ConcursosPage'
 import { CursoPage } from '../pages/CursoPage'
 import { DashboardPage } from '../pages/DashboardPage'
 import { DefinePasswordPage } from '../pages/DefinePasswordPage'
@@ -49,6 +60,10 @@ export const router = createBrowserRouter([
   {
     element: <AppShell />,
     children: [
+      { path: '/concursos', element: <ConcursosPage /> },
+      { path: '/checkout', element: <CheckoutPage /> },
+      { path: '/legal/:tipo', element: <LegalPage /> },
+      { path: '/concursos/:slug', element: <ConcursoFichaPage /> },
       {
         path: '/dashboard',
         element: (
@@ -62,6 +77,31 @@ export const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <CursoPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/redacoes',
+        element: (
+          <RequireAuth>
+            <RedacoesPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        // Os mesmos papeis que o backend aceita na fila de correcao.
+        path: '/correcoes',
+        element: (
+          <RequireRole role={['ROLE_CORRECTOR', 'ROLE_ADMIN']}>
+            <CorrecoesPage />
+          </RequireRole>
+        ),
+      },
+      {
+        path: '/privacidade',
+        element: (
+          <RequireAuth>
+            <PrivacidadePage />
           </RequireAuth>
         ),
       },
@@ -101,6 +141,10 @@ export const router = createBrowserRouter([
       { path: '/admin/convites', element: <AdminInvitesPage /> },
       { path: '/admin/depoimentos', element: <AdminTestimonialsPage /> },
       { path: '/admin/auditoria', element: <AdminAuditPage /> },
+      { path: '/admin/concursos', element: <AdminContestsPage /> },
+      { path: '/admin/leads', element: <AdminLeadsPage /> },
+      { path: '/admin/materiais', element: <AdminMateriaisPage /> },
+      { path: '/admin/redacoes', element: <AdminRedacoesPage /> },
     ],
   },
 ])

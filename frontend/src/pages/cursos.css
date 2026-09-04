@@ -808,3 +808,93 @@
 .voltar-cursos:hover {
   color: var(--bb-gold);
 }
+
+/* ------------------------------------------------------------------ */
+/* Continue assistindo e favoritos (V3.0, seção 5)                      */
+/* ------------------------------------------------------------------ */
+
+.retomar { margin-bottom: var(--bb-s5); }
+
+/*
+ * Faixa que rola na horizontal, e não grade que quebra em linhas: são poucos
+ * cartões e a ordem importa — o primeiro é o mais recente, e uma grade
+ * empurraria o resto para baixo do que interessa.
+ */
+.retomar-faixa {
+  display: flex;
+  gap: var(--bb-s3);
+  overflow-x: auto;
+  padding-bottom: var(--bb-s2);
+  scroll-snap-type: x proximity;
+}
+
+.retomar-card {
+  flex: 0 0 258px;
+  scroll-snap-align: start;
+  display: grid;
+  gap: 7px;
+  padding: var(--bb-s4);
+  border-radius: 13px;
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 140ms ease, transform 140ms ease;
+}
+
+.retomar-card:hover {
+  border-color: var(--bb-gold);
+  transform: translateY(-1px);
+}
+
+.retomar-curso {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
+.retomar-aula {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.retomar-pct {
+  font-size: 0.78rem;
+  color: var(--bb-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.favoritos-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--bb-s2);
+}
+
+.favoritos-lista li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bb-s4);
+  flex-wrap: wrap;
+  padding: var(--bb-s3) var(--bb-s4);
+  border-radius: 10px;
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+}
+
+.favoritos-lista a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--bb-text);
+  text-decoration: none;
+  font-size: 0.92rem;
+}
+
+.favoritos-lista a:hover { color: var(--bb-gold); }
+.favoritos-lista a svg { color: var(--bb-gold); }

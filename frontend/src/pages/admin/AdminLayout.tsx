@@ -5,6 +5,10 @@ import './admin.css'
 const LINKS = [
   { para: '/admin/dashboard', rotulo: 'Dashboard' },
   { para: '/admin/alunos', rotulo: 'Alunos' },
+  { para: '/admin/concursos', rotulo: 'Concursos' },
+  { para: '/admin/leads', rotulo: 'Leads' },
+  { para: '/admin/materiais', rotulo: 'Materiais' },
+  { para: '/admin/redacoes', rotulo: 'Redações' },
   { para: '/admin/pagamentos', rotulo: 'Pagamentos' },
   { para: '/admin/webhooks', rotulo: 'Webhooks' },
   { para: '/admin/produtos', rotulo: 'Produtos' },

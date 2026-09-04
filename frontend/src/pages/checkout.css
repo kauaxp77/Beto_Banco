@@ -1,0 +1,225 @@
+/* Início da compra (V3.0, seção 8). */
+
+.ck {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.ck-cabecalho h1 {
+  font-family: var(--bb-font-display);
+  font-size: clamp(1.7rem, 4vw, 2.3rem);
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.ck-cabecalho p {
+  margin: 0 0 var(--bb-s5);
+  color: var(--bb-text-dim);
+  max-width: 58ch;
+}
+
+/* ------------------------------------------------------------------ */
+/* Escolha do produto                                                   */
+/* ------------------------------------------------------------------ */
+
+.ck-produtos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--bb-s3);
+}
+
+.ck-produto {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  text-align: left;
+  padding: var(--bb-s4) var(--bb-s5);
+  border-radius: 14px;
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 140ms ease, transform 140ms ease;
+}
+
+.ck-produto:hover {
+  border-color: var(--bb-gold);
+  transform: translateY(-1px);
+}
+
+.ck-produto-nome { font-size: 1.04rem; font-weight: 600; }
+.ck-produto-desc { color: var(--bb-text-dim); font-size: 0.88rem; line-height: 1.5; }
+
+.ck-produto-preco {
+  font-family: var(--bb-font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--bb-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ */
+/* Resumo + formulário                                                  */
+/* ------------------------------------------------------------------ */
+
+.ck-cartao {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--bb-border);
+  border: 1px solid var(--bb-border);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+@media (max-width: 760px) {
+  .ck-cartao { grid-template-columns: 1fr; }
+}
+
+.ck-resumo,
+.ck-form {
+  background: var(--bb-surface);
+  padding: var(--bb-s5);
+}
+
+.ck-resumo-rotulo {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
+.ck-resumo h2 {
+  margin: 6px 0 8px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.ck-resumo p {
+  margin: 0 0 var(--bb-s3);
+  color: var(--bb-text-dim);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.ck-preco {
+  font-family: var(--bb-font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--bb-gold) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.ck-trocar {
+  padding: 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  color: var(--bb-text-dim);
+  font: inherit;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.ck-trocar:hover { color: var(--bb-gold); border-bottom-color: rgb(255 195 0 / 0.5); }
+
+.ck-garantias {
+  list-style: none;
+  margin: var(--bb-s5) 0 0;
+  padding: var(--bb-s4) 0 0;
+  border-top: 1px solid var(--bb-border);
+  display: grid;
+  gap: var(--bb-s2);
+}
+
+.ck-garantias li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-s2);
+  font-size: 0.85rem;
+  color: var(--bb-text-dim);
+  line-height: 1.5;
+}
+
+.ck-garantias svg { flex: none; margin-top: 3px; color: var(--bb-success); }
+
+/* ------------------------------------------------------------------ */
+/* Formulário                                                           */
+/* ------------------------------------------------------------------ */
+
+.ck-campo { margin-bottom: var(--bb-s4); }
+
+.ck-campo label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
+.ck-campo input {
+  width: 100%;
+  background: var(--bb-bg);
+  border: 1px solid var(--bb-border);
+  border-radius: 11px;
+  color: var(--bb-text);
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 12px 13px;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.ck-campo input:focus {
+  outline: none;
+  border-color: var(--bb-gold);
+  box-shadow: 0 0 0 3px rgb(255 195 0 / 0.16);
+}
+
+.ck-dica {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.79rem;
+  color: var(--bb-text-dim);
+}
+
+.ck-erro-campo {
+  display: block;
+  min-height: 1.05em;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--bb-danger);
+}
+
+.ck-erro {
+  margin: 0 0 var(--bb-s3);
+  padding: var(--bb-s3) var(--bb-s4);
+  border-radius: 10px;
+  border: 1px solid rgb(229 72 77 / 0.4);
+  background: rgb(229 72 77 / 0.1);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.ck-botao {
+  width: 100%;
+  padding: 14px;
+  font-size: 0.98rem;
+  border-radius: 12px;
+}
+
+.ck-legal {
+  margin: var(--bb-s5) 0 0;
+  font-size: 0.84rem;
+  color: var(--bb-text-dim);
+  text-align: center;
+}
+
+.ck-legal a { color: var(--bb-gold); }

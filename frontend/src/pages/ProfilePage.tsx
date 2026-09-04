@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { api, ApiError } from '../api/http'
+import { Link } from 'react-router-dom'
 import { useSession } from '../auth/session'
 import {
   IconeCamera,
@@ -120,6 +121,10 @@ function Cartao({ perfil }: { perfil: StudentResponse }) {
         <p className="pf-nome">{perfil.fullName}</p>
         <p className="pf-email-secundario">{perfil.email}</p>
         <span className="pf-pilula">Nível: {nivel.nivel}</span>
+
+        <p className="pf-atalho-privacidade">
+          <Link to="/privacidade">Privacidade e meus dados</Link>
+        </p>
 
         <div>
           <button

@@ -295,6 +295,13 @@ avisa no boot em vez de falhar na primeira venda.
 
 | Seção | Situação | Ordem de grandeza |
 |---|---|---|
+> **04/09/2026 — a Fase 1 do roteiro foi entregue.** As telas que faltavam para
+> as funcionalidades já prontas existem: catálogo e ficha de concurso (públicos),
+> busca unificada, fila de revisão de 60 dias, CRM de leads, materiais de
+> captação, redações do aluno, fila do corretor, concessão de cota, portal do
+> titular, textos legais, checkout e "continue assistindo"/favoritos. O que
+> segue abaixo continua valendo para o que ainda não foi construído.
+
 | §11 Sistema de concursos | **Feito.** Carreira/órgão/cargo, ficha indexável, junção com carreiras, fila de revisão de 60 dias. Falta a importação automática de edital. | — |
 | §07 Busca unificada | **Feito** para concursos e cursos, com `tsvector` + `pg_trgm`. | — |
 | §15 Blog e SEO | **Não iniciado.** Nenhum post, autor ou fluxo de revisão humana. Inclui a política de fontes reescrita e os sinais de E-E-A-T. | Comparável ao módulo `courses` |

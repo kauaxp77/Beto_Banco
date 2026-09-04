@@ -465,8 +465,11 @@ INSERT INTO essay_corrections (essay_id, corrector_id, rubric_id, scores, total_
 SELECT e.id,
        (SELECT id FROM users WHERE email = 'corretora@betobanco.local'),
        r.id,
-       '{"Apresentacao":180,"Estrutura":170,"Argumentacao":160,"Norma culta":175}'::jsonb,
-       685,
+       -- As chaves sao os CODIGOS dos criterios da rubrica (AB/AR/CG). A
+       -- validacao do servico recusa qualquer outra coisa; por SQL passaria, e
+       -- a tela mostraria criterio sem nome.
+       '{"AB": 8.5, "AR": 7.5, "CG": 9.0}'::jsonb,
+       25,
        'Boa tese e repertório pertinente. Perde pontos na conclusão, que só repete a introdução em vez de propor intervenção. Atenção também à regência em "implicar em".',
        '[]'::jsonb,
        'Rascunho gerado por IA e revisado pela corretora antes de publicar.',

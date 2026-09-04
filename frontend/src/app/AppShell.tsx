@@ -53,6 +53,8 @@ export function AppShell() {
   }
 
   const ehAdmin = user?.roles.includes('ROLE_ADMIN') ?? false
+  // Admin tambem corrige: o backend aceita CORRECTOR ou ADMIN na fila.
+  const ehCorretor = ehAdmin || (user?.roles.includes('ROLE_CORRECTOR') ?? false)
 
   return (
     <div className="shell">
@@ -65,6 +67,9 @@ export function AppShell() {
           <>
             <nav className="shell-nav" aria-label="Principal">
               <NavLink to="/dashboard">Meus cursos</NavLink>
+              <NavLink to="/concursos">Concursos</NavLink>
+              <NavLink to="/redacoes">Redações</NavLink>
+              {ehCorretor && <NavLink to="/correcoes">Correções</NavLink>}
               <NavLink to="/perfil">Perfil</NavLink>
               {ehAdmin && <NavLink to="/admin/dashboard">Admin</NavLink>}
             </nav>

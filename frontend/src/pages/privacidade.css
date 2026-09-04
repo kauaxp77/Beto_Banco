@@ -1,0 +1,235 @@
+/* Portal do titular e textos legais (seção 22). */
+
+.pv-cabecalho h1 {
+  font-family: var(--bb-font-display);
+  font-size: clamp(1.6rem, 3.8vw, 2.15rem);
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.pv-cabecalho p {
+  margin: 0 0 var(--bb-s6);
+  color: var(--bb-text-dim);
+  max-width: 62ch;
+}
+
+.pv-secao {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: var(--bb-s6) 0 var(--bb-s3);
+}
+
+.pv-secao--perigo { color: var(--bb-danger); }
+
+/* ------------------------------------------------------------------ */
+/* Finalidades                                                          */
+/* ------------------------------------------------------------------ */
+
+.pv-finalidades {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--bb-s4);
+}
+
+.pv-finalidades li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--bb-s4);
+  align-items: center;
+  padding-bottom: var(--bb-s4);
+  border-bottom: 1px solid var(--bb-border);
+}
+
+.pv-finalidades li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.pv-finalidades b {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 3px;
+}
+
+.pv-finalidades span {
+  color: var(--bb-text-dim);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+/* Interruptor: a caixa nativa fica acessível ao teclado e ao leitor de tela,
+   e o desenho por cima é só aparência. */
+.pv-interruptor {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-s2);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pv-interruptor input {
+  position: absolute;
+  opacity: 0;
+  width: 44px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.pv-interruptor input + span {
+  display: block;
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--bb-surface-2);
+  border: 1px solid var(--bb-border);
+  position: relative;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+.pv-interruptor input + span::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bb-text-dim);
+  transition: transform 140ms ease, background 140ms ease;
+}
+
+.pv-interruptor input:checked + span {
+  background: rgb(255 195 0 / 0.22);
+  border-color: var(--bb-gold);
+}
+
+.pv-interruptor input:checked + span::after {
+  transform: translateX(20px);
+  background: var(--bb-gold);
+}
+
+.pv-interruptor input:focus-visible + span {
+  box-shadow: 0 0 0 3px rgb(255 195 0 / 0.3);
+}
+
+.pv-interruptor-rotulo {
+  font-size: 0.82rem;
+  color: var(--bb-text-dim);
+}
+
+.pv-acoes {
+  display: flex;
+  gap: var(--bb-s2);
+  flex-wrap: wrap;
+  margin-top: var(--bb-s4);
+  padding-top: var(--bb-s4);
+  border-top: 1px solid var(--bb-border);
+}
+
+.pv-nota {
+  margin: var(--bb-s4) 0 var(--bb-s3);
+  font-size: 0.84rem;
+  color: var(--bb-text-dim);
+  line-height: 1.55;
+}
+
+.pv-historico {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.pv-historico li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--bb-s2);
+  flex-wrap: wrap;
+  font-size: 0.86rem;
+}
+
+.pv-sim { color: var(--bb-success); font-weight: 600; }
+.pv-nao { color: var(--bb-danger); font-weight: 600; }
+.pv-quando { color: var(--bb-text-dim); margin-left: auto; font-size: 0.8rem; }
+
+/* ------------------------------------------------------------------ */
+/* Pedidos, links e área de risco                                       */
+/* ------------------------------------------------------------------ */
+
+.pv-vazio {
+  color: var(--bb-text-dim);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.pv-pedidos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--bb-s2);
+}
+
+.pv-pedidos li {
+  display: flex;
+  gap: var(--bb-s4);
+  flex-wrap: wrap;
+  align-items: baseline;
+  padding: var(--bb-s3) var(--bb-s4);
+  border-radius: 10px;
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  font-size: 0.88rem;
+}
+
+.pv-pedidos li span:last-child { margin-left: auto; color: var(--bb-text-dim); }
+
+.pv-links {
+  display: flex;
+  gap: var(--bb-s5);
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.pv-links a { color: var(--bb-gold); font-size: 0.92rem; }
+
+.pv-perigo { border-color: rgb(229 72 77 / 0.4); }
+
+.pv-botao-perigo {
+  background: var(--bb-danger);
+  color: #fff;
+}
+
+.pv-botao-perigo:hover:not(:disabled) { background: #c93b40; }
+
+/* ------------------------------------------------------------------ */
+/* Texto legal                                                          */
+/* ------------------------------------------------------------------ */
+
+.lg {
+  max-width: 74ch;
+  margin: 0 auto;
+}
+
+.lg h1 {
+  font-family: var(--bb-font-display);
+  font-size: clamp(1.6rem, 3.6vw, 2.1rem);
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.lg-versao {
+  color: var(--bb-text-dim);
+  font-size: 0.86rem;
+  margin: 0 0 var(--bb-s5);
+}
+
+.lg-corpo {
+  white-space: pre-wrap;
+  line-height: 1.75;
+  font-size: 0.96rem;
+}

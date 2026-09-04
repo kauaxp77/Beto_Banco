@@ -1,0 +1,333 @@
+/* Catálogo de concursos e busca unificada (seções 07 e 11). */
+
+.cc-cabecalho h1 {
+  font-family: var(--bb-font-display);
+  font-size: clamp(1.7rem, 4vw, 2.3rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+
+.cc-cabecalho p {
+  margin: 0 0 var(--bb-s5);
+  color: var(--bb-text-dim);
+  max-width: 62ch;
+}
+
+/* ------------------------------------------------------------------ */
+/* Busca e filtros                                                      */
+/* ------------------------------------------------------------------ */
+
+.cc-busca {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-s3);
+  padding: 0 var(--bb-s4);
+  border-radius: 13px;
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.cc-busca:focus-within {
+  border-color: var(--bb-gold);
+  box-shadow: 0 0 0 3px rgb(255 195 0 / 0.15);
+}
+
+.cc-busca svg { flex: none; color: var(--bb-text-dim); }
+.cc-busca:focus-within svg { color: var(--bb-gold); }
+
+.cc-busca input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 0;
+  background: none;
+  border: none;
+  color: var(--bb-text);
+  font: inherit;
+  font-size: 0.98rem;
+}
+
+.cc-busca input:focus { outline: none; }
+.cc-busca input::placeholder { color: rgb(232 230 225 / 0.34); }
+
+.cc-limpar {
+  flex: none;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--bb-border);
+  background: transparent;
+  color: var(--bb-text-dim);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.cc-limpar:hover { color: var(--bb-gold); border-color: var(--bb-gold); }
+
+.cc-filtros {
+  display: flex;
+  gap: var(--bb-s3);
+  flex-wrap: wrap;
+  margin: var(--bb-s4) 0 var(--bb-s5);
+}
+
+.cc-filtro {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 152px;
+}
+
+.cc-filtro label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
+.cc-filtro select,
+.cc-filtro input {
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  border-radius: 10px;
+  color: var(--bb-text);
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 9px 11px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Lista                                                                */
+/* ------------------------------------------------------------------ */
+
+.cc-resumo {
+  color: var(--bb-text-dim);
+  font-size: 0.87rem;
+  margin: 0 0 var(--bb-s3);
+}
+
+.cc-lista {
+  display: grid;
+  gap: var(--bb-s3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cc-item {
+  display: block;
+  padding: var(--bb-s4) var(--bb-s5);
+  border-radius: 14px;
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 140ms ease, transform 140ms ease;
+}
+
+.cc-item:hover {
+  border-color: var(--bb-gold);
+  transform: translateY(-1px);
+}
+
+.cc-item-topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bb-s4);
+  flex-wrap: wrap;
+}
+
+.cc-item h2 {
+  margin: 0;
+  font-size: 1.04rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.cc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px var(--bb-s4);
+  margin-top: 10px;
+  color: var(--bb-text-dim);
+  font-size: 0.85rem;
+}
+
+.cc-meta b {
+  color: var(--bb-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ */
+/* Etiquetas de estado                                                  */
+/* ------------------------------------------------------------------ */
+
+.cc-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border: 1px solid;
+}
+
+.cc-etiqueta--aberta  { color: var(--bb-success); background: rgb(70 167 88 / 0.13); border-color: rgb(70 167 88 / 0.4); }
+.cc-etiqueta--fechada { color: var(--bb-text-dim); background: rgb(255 255 255 / 0.05); border-color: var(--bb-border); }
+
+/*
+ * Seção 11: a ficha diz "verificado em DD/MM/AAAA". O selo tem duas caras
+ * porque a diferença decide se o aluno pode confiar no salário escrito ali.
+ */
+.cc-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  color: var(--bb-success);
+}
+
+.cc-selo--defasado { color: var(--bb-danger); }
+
+/* ------------------------------------------------------------------ */
+/* Resultados da busca                                                  */
+/* ------------------------------------------------------------------ */
+
+.cc-tipo {
+  flex: none;
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bb-gold);
+  background: rgb(255 195 0 / 0.12);
+  border: 1px solid rgb(255 195 0 / 0.35);
+}
+
+/* ------------------------------------------------------------------ */
+/* Ficha                                                                */
+/* ------------------------------------------------------------------ */
+
+.cc-voltar {
+  display: inline-block;
+  margin-bottom: var(--bb-s4);
+  color: var(--bb-text-dim);
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.cc-voltar:hover { color: var(--bb-gold); }
+
+.cc-ficha {
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  border-radius: 18px;
+  padding: var(--bb-s5) clamp(var(--bb-s4), 4vw, var(--bb-s6));
+}
+
+.cc-ficha h1 {
+  font-family: var(--bb-font-display);
+  font-size: clamp(1.5rem, 3.6vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 var(--bb-s3);
+  text-wrap: balance;
+}
+
+.cc-carreiras {
+  display: flex;
+  gap: var(--bb-s2);
+  flex-wrap: wrap;
+  margin-bottom: var(--bb-s4);
+}
+
+.cc-carreira {
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: var(--bb-gold);
+  background: rgb(255 195 0 / 0.1);
+  border: 1px solid rgb(255 195 0 / 0.35);
+}
+
+/* Aviso de ficha defasada: não é enfeite, é a informação que muda a decisão. */
+.cc-aviso {
+  display: flex;
+  gap: var(--bb-s3);
+  padding: var(--bb-s3) var(--bb-s4);
+  margin-bottom: var(--bb-s5);
+  border-radius: 11px;
+  border: 1px solid rgb(229 72 77 / 0.4);
+  background: rgb(229 72 77 / 0.1);
+  color: var(--bb-text);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.cc-dados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+  gap: 1px;
+  margin: var(--bb-s5) 0;
+  background: var(--bb-border);
+  border: 1px solid var(--bb-border);
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.cc-dado {
+  background: var(--bb-bg);
+  padding: var(--bb-s3) var(--bb-s4);
+}
+
+.cc-dado .rotulo {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
+.cc-dado .valor {
+  display: block;
+  margin-top: 3px;
+  font-size: 1.02rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cc-beneficios {
+  margin: 0 0 var(--bb-s5);
+  color: var(--bb-text-dim);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.cc-fonte {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-s3) var(--bb-s5);
+  padding-top: var(--bb-s4);
+  border-top: 1px solid var(--bb-border);
+  color: var(--bb-text-dim);
+  font-size: 0.86rem;
+}
+
+.cc-fonte a {
+  color: var(--bb-gold);
+  font-weight: 600;
+}
+
+@media (max-width: 620px) {
+  .cc-filtro { min-width: calc(50% - var(--bb-s3)); flex: 1; }
+}

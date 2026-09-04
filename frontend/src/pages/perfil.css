@@ -204,6 +204,17 @@
   border: 1px solid rgb(255 195 0 / 0.42);
 }
 
+.pf-atalho-privacidade {
+  margin: var(--bb-s4) 0 0;
+  font-size: 0.84rem;
+}
+
+.pf-atalho-privacidade a {
+  color: var(--bb-gold);
+  text-decoration: none;
+  border-bottom: 1px solid rgb(255 195 0 / 0.35);
+}
+
 .pf-trocar-avatar {
   display: inline-flex;
   align-items: center;

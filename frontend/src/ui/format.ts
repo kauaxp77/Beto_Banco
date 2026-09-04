@@ -33,3 +33,30 @@ export function nomeAmigavel(bruto: string | null | undefined): string {
     })
     .join(' ')
 }
+
+/**
+ * Dinheiro. A API trafega centavos em inteiro (secao 18), e a divisao por 100
+ * acontece so aqui, na borda de exibicao — nunca em calculo.
+ */
+const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+
+export function moeda(centavos: number | null | undefined): string {
+  if (centavos === null || centavos === undefined) return '—'
+  return BRL.format(centavos / 100)
+}
+
+/** Data curta em pt-BR. Nulo vira travessao, nao "Invalid Date". */
+export function dataBR(iso: string | null | undefined): string {
+  if (!iso) return '—'
+  const d = new Date(iso)
+  return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString('pt-BR')
+}
+
+/** Data e hora, para listas administrativas. */
+export function dataHoraBR(iso: string | null | undefined): string {
+  if (!iso) return '—'
+  const d = new Date(iso)
+  return Number.isNaN(d.getTime())
+    ? '—'
+    : d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
+}

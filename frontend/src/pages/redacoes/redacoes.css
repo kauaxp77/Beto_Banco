@@ -1,0 +1,249 @@
+/* Redações: envio do aluno e fila do corretor (seção 14). */
+
+.rd-cabecalho h1 {
+  font-family: var(--bb-font-display);
+  font-size: clamp(1.6rem, 3.8vw, 2.15rem);
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.rd-cabecalho p {
+  margin: 0 0 var(--bb-s5);
+  color: var(--bb-text-dim);
+  max-width: 64ch;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cota                                                                 */
+/* ------------------------------------------------------------------ */
+
+.rd-cota {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-s5);
+  flex-wrap: wrap;
+  padding: var(--bb-s4) var(--bb-s5);
+  border-radius: 14px;
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  margin-bottom: var(--bb-s5);
+}
+
+.rd-cota-numero {
+  font-family: var(--bb-font-display);
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--bb-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.rd-cota-texto {
+  flex: 1;
+  min-width: 210px;
+  font-size: 0.9rem;
+  color: var(--bb-text-dim);
+  line-height: 1.55;
+}
+
+.rd-cota-texto b { color: var(--bb-text); }
+
+.rd-cota--vazia { border-color: rgb(229 72 77 / 0.4); }
+.rd-cota--vazia .rd-cota-numero { color: var(--bb-danger); }
+
+/* ------------------------------------------------------------------ */
+/* Lista de redações                                                    */
+/* ------------------------------------------------------------------ */
+
+.rd-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--bb-s3);
+}
+
+.rd-item {
+  padding: var(--bb-s4) var(--bb-s5);
+  border-radius: 13px;
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+}
+
+.rd-item-topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bb-s4);
+  flex-wrap: wrap;
+}
+
+.rd-item h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.rd-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px var(--bb-s4);
+  margin-top: 9px;
+  color: var(--bb-text-dim);
+  font-size: 0.85rem;
+}
+
+.rd-prazo--vencido { color: var(--bb-danger); font-weight: 600; }
+.rd-prazo--perto { color: var(--bb-gold); font-weight: 600; }
+
+.rd-etiqueta {
+  white-space: nowrap;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.rd-etiqueta--enviada  { color: var(--bb-text-dim); background: rgb(255 255 255 / 0.05); border-color: var(--bb-border); }
+.rd-etiqueta--corrigindo { color: var(--bb-gold); background: rgb(255 195 0 / 0.1); border-color: rgb(255 195 0 / 0.4); }
+.rd-etiqueta--pronta   { color: var(--bb-success); background: rgb(70 167 88 / 0.13); border-color: rgb(70 167 88 / 0.4); }
+
+/* ------------------------------------------------------------------ */
+/* Devolutiva                                                           */
+/* ------------------------------------------------------------------ */
+
+.rd-devolutiva {
+  margin-top: var(--bb-s4);
+  padding-top: var(--bb-s4);
+  border-top: 1px solid var(--bb-border);
+}
+
+.rd-nota-total {
+  display: flex;
+  align-items: baseline;
+  gap: var(--bb-s2);
+  margin-bottom: var(--bb-s3);
+}
+
+.rd-nota-total strong {
+  font-family: var(--bb-font-display);
+  font-size: 1.9rem;
+  color: var(--bb-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.rd-criterios {
+  display: grid;
+  gap: var(--bb-s2);
+  margin: 0 0 var(--bb-s4);
+  padding: 0;
+  list-style: none;
+}
+
+.rd-criterio {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--bb-s3);
+  align-items: center;
+  font-size: 0.88rem;
+}
+
+.rd-barra {
+  grid-column: 1 / -1;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--bb-surface-2);
+  overflow: hidden;
+}
+
+.rd-barra span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--bb-gold), var(--bb-gold-strong));
+}
+
+.rd-comentario {
+  margin: 0;
+  padding: var(--bb-s3) var(--bb-s4);
+  border-left: 3px solid var(--bb-gold);
+  border-radius: 0 10px 10px 0;
+  background: rgb(255 195 0 / 0.07);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+/* ------------------------------------------------------------------ */
+/* Formulários                                                          */
+/* ------------------------------------------------------------------ */
+
+.rd-form {
+  display: grid;
+  gap: var(--bb-s3);
+  padding: var(--bb-s5);
+  border-radius: 14px;
+  background: var(--bb-surface);
+  border: 1px solid var(--bb-border);
+  margin-bottom: var(--bb-s5);
+}
+
+.rd-form h2 {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.rd-form textarea,
+.rd-form select,
+.rd-form input {
+  width: 100%;
+  background: var(--bb-bg);
+  border: 1px solid var(--bb-border);
+  border-radius: 10px;
+  color: var(--bb-text);
+  font: inherit;
+  font-size: 0.92rem;
+  padding: 10px 12px;
+}
+
+.rd-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
+.rd-dica {
+  margin: 4px 0 0;
+  font-size: 0.79rem;
+  color: var(--bb-text-dim);
+  line-height: 1.5;
+}
+
+/* Grade de notas por critério, na correção. */
+.rd-notas {
+  display: grid;
+  gap: var(--bb-s3);
+}
+
+.rd-nota-campo {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  gap: var(--bb-s3);
+  align-items: center;
+}
+
+.rd-nota-campo span {
+  font-size: 0.89rem;
+}
+
+.rd-nota-campo small {
+  display: block;
+  color: var(--bb-text-dim);
+  font-size: 0.78rem;
+}

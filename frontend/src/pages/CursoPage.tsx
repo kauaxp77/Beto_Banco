@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { api } from '../api/http'
 import { Button } from '../ui/basics'
 import { nomeAmigavel } from '../ui/format'
@@ -411,7 +411,11 @@ export function CursoPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const [aulaAtualId, setAulaAtualId] = useState<string | null>(null)
+  // ?aula=<id> abre direto naquela aula. E o que faz "continue assistindo" e
+  // "favoritos" levarem ao ponto certo em vez de ao topo do curso — sem isso o
+  // aluno teria de procurar de novo onde parou.
+  const [params] = useSearchParams()
+  const [aulaAtualId, setAulaAtualId] = useState<string | null>(params.get('aula'))
   const [busca, setBusca] = useState('')
 
   const query = useQuery({
