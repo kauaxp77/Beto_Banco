@@ -20,7 +20,7 @@
   border-radius: 4px;
   background:
     radial-gradient(circle at 50% -20%, rgb(196 161 90 / 0.12), transparent 60%),
-    linear-gradient(160deg, #22252b, #1a1c20);
+    linear-gradient(160deg, #001d3d, #000814);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -164,14 +164,14 @@
     border-radius: 0;
     outline-offset: -14px;
     background: #fff;
-    border-color: #a8853f;
-    outline-color: #a8853f;
+    border-color: #003566;
+    outline-color: #003566;
   }
 
   .cert-marca,
   .cert-texto,
   .cert-assinatura {
-    color: #1a1c20;
+    color: var(--bb-on-gold);
   }
 
   .cert-rotulo,
@@ -185,6 +185,6 @@
   .cert-texto strong,
   .cert-marca em,
   .cert-codigo strong {
-    color: #a8853f;
+    color: #003566;
   }
 }

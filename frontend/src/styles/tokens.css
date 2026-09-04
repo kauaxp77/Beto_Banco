@@ -1,21 +1,38 @@
 /*
- * Tokens do tema escuro premium (spec 9.6). Grafite e dourado extraidos da
- * identidade existente: fundo #1A1C20, destaque #C4A15A. Contraste verificado
- * sobre o fundo escuro — e onde a maioria das paletas falha.
+ * Paleta oficial da plataforma — azul-marinho profundo com âmbar.
+ *
+ * Os cinco valores de marca vêm definidos pelo Product Owner e não são
+ * derivados de nada: #000814, #001D3D, #003566, #FFC300 e #FFD60A. Substituem
+ * a paleta grafite/dourado da spec 9.6 e a "Crepúsculo Dourado" dos documentos
+ * mestres — as três descreviam a mesma superfície, e esta é a que vale.
+ *
+ * O que NÃO é um sexto tom: `--bb-text-dim` é o próprio `--bb-text` com opacidade,
+ * e `--bb-glass` / `--bb-gold-glow` são translucidez sobre os tons acima. Nenhuma
+ * cor nova foi inventada — o que existe são versões dos cinco.
+ *
+ * `--bb-danger` e `--bb-success` ficam fora da paleta de propósito: vermelho e
+ * verde não são identidade visual, são convenção de leitura. Trocá-los por
+ * âmbar faria "erro" e "chamada para ação" terem a mesma cor.
  */
 :root {
   color-scheme: dark;
 
-  --bb-bg: #1a1c20;
-  --bb-surface: #22252b;
-  --bb-surface-2: #2b2f36;
-  --bb-border: #3a3f47;
-  --bb-gold: #c4a15a;
-  --bb-gold-strong: #d9b96f;
+  --bb-bg: #000814;
+  --bb-surface: #001d3d;
+  --bb-surface-2: #003566;
+  --bb-border: #003566;
+  --bb-gold: #ffc300;
+  --bb-gold-strong: #ffd60a;
   --bb-text: #e8e6e1;
-  --bb-text-dim: #9a9789;
+  /* Opacidade do próprio texto, e não um cinza: assim o tom secundário
+     acompanha qualquer um dos três fundos sem precisar de variante por tela. */
+  --bb-text-dim: rgb(232 230 225 / 0.64);
   --bb-danger: #e5484d;
   --bb-success: #46a758;
+
+  /* Contraste do texto sobre o âmbar. Preto puro fica duro; o azul mais escuro
+     da paleta mantém a leitura e amarra o botão ao resto da tela. */
+  --bb-on-gold: #000814;
 
   --bb-s1: 4px;
   --bb-s2: 8px;
@@ -32,7 +49,7 @@
   --bb-font-display: 'Fraunces', 'Georgia', serif;
 
   /* Superficies translucidas e brilhos do visual premium. */
-  --bb-glass: rgb(34 37 43 / 0.55);
-  --bb-glass-border: rgb(196 161 90 / 0.25);
-  --bb-gold-glow: rgb(196 161 90 / 0.35);
+  --bb-glass: rgb(0 29 61 / 0.55);
+  --bb-glass-border: rgb(255 195 0 / 0.25);
+  --bb-gold-glow: rgb(255 195 0 / 0.35);
 }

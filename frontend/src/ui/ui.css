@@ -1,4 +1,4 @@
-/* Componentes do design system minimo (spec 9.6). */
+/* Componentes do design system minimo. Cores so por token: ver styles/tokens.css. */
 
 .bb-button {
   display: inline-flex;
@@ -9,7 +9,7 @@
   border-radius: var(--bb-r1);
   border: 1px solid transparent;
   background: var(--bb-gold);
-  color: #16130c;
+  color: var(--bb-on-gold);
   font-weight: 600;
   cursor: pointer;
 }
@@ -42,7 +42,7 @@
 }
 
 .bb-field input {
-  background: var(--bb-surface-2);
+  background: var(--bb-surface);
   border: 1px solid var(--bb-border);
   border-radius: var(--bb-r1);
   color: var(--bb-text);

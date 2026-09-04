@@ -58,8 +58,8 @@ export function GraficoArea({
     <svg viewBox={`0 0 ${L} ${A}`} role="img" aria-label={descricao} className="bb-grafico">
       <defs>
         <linearGradient id="bb-area-ouro" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#c4a15a" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#c4a15a" stopOpacity="0.02" />
+          <stop offset="0%" stopColor="#ffc300" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#ffc300" stopOpacity="0.02" />
         </linearGradient>
       </defs>
       <line

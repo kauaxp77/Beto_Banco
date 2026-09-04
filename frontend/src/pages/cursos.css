@@ -25,7 +25,7 @@
 
 .curso-capa {
   aspect-ratio: 16 / 9;
-  background: linear-gradient(135deg, #2b2f36, #17191d);
+  background: linear-gradient(135deg, #003566, #000814);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -443,7 +443,7 @@
 
 .busca-aulas input {
   width: 100%;
-  background: var(--bb-surface-2);
+  background: var(--bb-surface);
   border: 1px solid var(--bb-border);
   border-radius: var(--bb-r1);
   color: var(--bb-text);
@@ -612,7 +612,7 @@
 .alternativa.marcada .letra {
   background: var(--bb-gold);
   border-color: var(--bb-gold);
-  color: #1a1c20;
+  color: var(--bb-on-gold);
 }
 
 .alternativa.certa {
@@ -731,7 +731,7 @@
 
 .tag-professor {
   background: var(--bb-gold);
-  color: #1a1c20;
+  color: var(--bb-on-gold);
   border-radius: 999px;
   padding: 1px 9px;
   font-size: 0.7rem;
@@ -768,7 +768,7 @@
 
 .comentario-form textarea {
   width: 100%;
-  background: var(--bb-surface-2);
+  background: var(--bb-surface);
   border: 1px solid var(--bb-border);
   border-radius: var(--bb-r1);
   color: var(--bb-text);

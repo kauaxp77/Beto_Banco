@@ -17,7 +17,7 @@
 
 .adm-side {
   border-right: 1px solid rgb(196 161 90 / 0.14);
-  background: linear-gradient(180deg, #1d1f24, #17191d);
+  background: linear-gradient(180deg, #001d3d, #000814);
   padding: var(--bb-s5) var(--bb-s4);
   display: flex;
   flex-direction: column;
@@ -266,7 +266,7 @@
 }
 
 .adm-filtros select {
-  background: var(--bb-surface-2);
+  background: var(--bb-surface);
   border: 1px solid var(--bb-border);
   border-radius: var(--bb-r1);
   color: var(--bb-text);

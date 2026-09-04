@@ -119,8 +119,8 @@
 }
 
 .lp-btn--gold {
-  background: linear-gradient(135deg, #d9b96f, var(--bb-gold) 55%, #a98743);
-  color: #191408;
+  background: linear-gradient(135deg, #ffd60a, var(--bb-gold) 55%, #ffc300);
+  color: var(--bb-on-gold);
   box-shadow: 0 8px 30px var(--bb-gold-glow);
 }
 
@@ -254,7 +254,7 @@ section.lp-section {
 
 .lp-hero-title em {
   font-style: italic;
-  background: linear-gradient(120deg, #e6cd8f, var(--bb-gold), #b08c48);
+  background: linear-gradient(120deg, #ffd60a, var(--bb-gold), #ffc300);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -312,7 +312,7 @@ section.lp-section {
   display: block;
   border-radius: var(--bb-r2);
   border: 1px solid rgb(196 161 90 / 0.25);
-  background: linear-gradient(180deg, #23262c, #1a1c20);
+  background: linear-gradient(180deg, #001d3d, #000814);
 }
 
 .lp-float {
@@ -634,8 +634,8 @@ section.lp-section {
   top: -12px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #d9b96f, var(--bb-gold));
-  color: #191408;
+  background: linear-gradient(135deg, #ffd60a, var(--bb-gold));
+  color: var(--bb-on-gold);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -705,7 +705,7 @@ section.lp-section {
   border-radius: 22px;
   background:
     radial-gradient(700px 300px at 50% -40%, rgb(196 161 90 / 0.14), transparent 70%),
-    #1d1f24;
+    #001d3d;
   text-align: center;
   padding: clamp(48px, 7vw, 88px) var(--bb-s5);
 }
