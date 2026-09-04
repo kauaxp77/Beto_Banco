@@ -98,6 +98,14 @@ leu.
 
 **Status:** bloqueado por contratação do Panda Vídeo.
 
+**Achado durante os testes com dados de demonstração:** o conversor de URL do
+frontend (`ui/video.ts`) reconhece **YouTube, Vimeo e MP4 direto** — e não
+reconhece Panda Vídeo. Uma aula com URL do Panda cai em "esta aula ainda não tem
+vídeo publicado", com o player vazio. Como a §31 fixa o Panda como decisão
+permanente e o V3.0 §6 proíbe o YouTube, hoje **o único formato que funciona é o
+que nenhum dos dois documentos escolheu**. Entra junto com a contratação: é o
+mesmo trabalho de integrar o player.
+
 ---
 
 ## 5. §27 — Multi-tenant estrutural, isolamento ainda inerte
