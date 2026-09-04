@@ -34,12 +34,12 @@ SELECT v.email, (SELECT password_hash FROM users WHERE email = 'admin@betobanco.
 INSERT INTO students (id, phone)
 SELECT u.id, v.fone
   FROM (VALUES
-        ('ana.souza@exemplo.com',     '(61) 99911-0001'),
-        ('bruno.lima@exemplo.com',    '(11) 98822-0002'),
-        ('carla.dias@exemplo.com',    '(85) 99733-0003'),
-        ('diego.rocha@exemplo.com',   '(51) 99644-0004'),
-        ('elisa.martins@exemplo.com', '(21) 98555-0005'),
-        ('aluno@betobanco.local',     '(61) 99400-0006')
+        ('ana.souza@exemplo.com',     '61999110001'),
+        ('bruno.lima@exemplo.com',    '11988220002'),
+        ('carla.dias@exemplo.com',    '85997330003'),
+        ('diego.rocha@exemplo.com',   '51996440004'),
+        ('elisa.martins@exemplo.com', '21985550005'),
+        ('aluno@betobanco.local',     '61994000006')
        ) AS v(email, fone)
   JOIN users u ON u.email = v.email
     ON CONFLICT (id) DO NOTHING;
@@ -367,10 +367,10 @@ SELECT p.id, v.email, v.nome, v.fone, p.price_cents, v.situacao,
        CASE WHEN v.situacao = 'PAID' THEN now() - (v.dias || ' days')::interval END,
        now() - (v.dias || ' days')::interval
   FROM (VALUES
-        ('demo-pedido-1', 'MENTORIA-BB-2027',              'ana.souza@exemplo.com',     'Ana Souza',       '(61) 99911-0001', 'PAID',       62),
-        ('demo-pedido-2', 'CURSO-CONHECIMENTOS-BANCARIOS', 'bruno.lima@exemplo.com',    'Bruno Lima',      '(11) 98822-0002', 'PAID',       48),
-        ('demo-pedido-3', 'COMBO-BANCARIO-2027',           'helena.prado@exemplo.com',  'Helena Prado',    '(31) 99400-0007', 'CREATED',     1),
-        ('demo-pedido-4', 'MENTORIA-BB-2027',              'igor.santana@exemplo.com',  'Igor Santana',    '(71) 99300-0008', 'CANCELLED',   4)
+        ('demo-pedido-1', 'MENTORIA-BB-2027',              'ana.souza@exemplo.com',     'Ana Souza',       '61999110001', 'PAID',       62),
+        ('demo-pedido-2', 'CURSO-CONHECIMENTOS-BANCARIOS', 'bruno.lima@exemplo.com',    'Bruno Lima',      '11988220002', 'PAID',       48),
+        ('demo-pedido-3', 'COMBO-BANCARIO-2027',           'helena.prado@exemplo.com',  'Helena Prado',    '31994000007', 'CREATED',     1),
+        ('demo-pedido-4', 'MENTORIA-BB-2027',              'igor.santana@exemplo.com',  'Igor Santana',    '71993000008', 'CANCELLED',   4)
        ) AS v(slug, sku, email, nome, fone, situacao, dias)
   JOIN products p ON p.sku = v.sku
  WHERE NOT EXISTS (
@@ -391,12 +391,12 @@ SELECT v.nome, v.email, v.fone, v.situacao, v.nota,
        now() - (v.dias_primeiro || ' days')::interval,
        now() - (v.dias_ultimo || ' days')::interval
   FROM (VALUES
-        ('Helena Prado',   'helena.prado@exemplo.com',  '(31) 99400-0007', 'NEGOTIATING', 'Pediu desconto para pagamento à vista. Retornar quinta.', 12, 1),
-        ('Igor Santana',   'igor.santana@exemplo.com',  '(71) 99300-0008', 'CONTACTED',   'Cartão recusado duas vezes. Sugerido Pix.',                 9, 4),
-        ('Júlia Ferreira', 'julia.ferreira@exemplo.com','(19) 99200-0009', 'NEW',         NULL,                                                        2, 2),
+        ('Helena Prado',   'helena.prado@exemplo.com',  '31994000007', 'NEGOTIATING', 'Pediu desconto para pagamento à vista. Retornar quinta.', 12, 1),
+        ('Igor Santana',   'igor.santana@exemplo.com',  '71993000008', 'CONTACTED',   'Cartão recusado duas vezes. Sugerido Pix.',                 9, 4),
+        ('Júlia Ferreira', 'julia.ferreira@exemplo.com','19992000009', 'NEW',         NULL,                                                        2, 2),
         ('Fábio Alves',    'fabio.alves@exemplo.com',   NULL,              'LOST',        'Optou por outro cursinho.',                                30, 3),
-        ('Gisele Nunes',   'gisele.nunes@exemplo.com',  '(41) 99100-0010', 'NEW',         NULL,                                                        1, 1),
-        ('Ana Souza',      'ana.souza@exemplo.com',     '(61) 99911-0001', 'WON',         'Comprou a mentoria.',                                      70, 62)
+        ('Gisele Nunes',   'gisele.nunes@exemplo.com',  '41991000010', 'NEW',         NULL,                                                        1, 1),
+        ('Ana Souza',      'ana.souza@exemplo.com',     '61999110001', 'WON',         'Comprou a mentoria.',                                      70, 62)
        ) AS v(nome, email, fone, situacao, nota, dias_primeiro, dias_ultimo)
  WHERE NOT EXISTS (SELECT 1 FROM leads l WHERE lower(l.email) = lower(v.email));
 

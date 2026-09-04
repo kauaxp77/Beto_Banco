@@ -1,0 +1,195 @@
+/* Moldura da área logada: barra superior e conteúdo. */
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ------------------------------------------------------------------ */
+/* Barra superior                                                       */
+/* ------------------------------------------------------------------ */
+
+.shell-topo {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: var(--bb-s5);
+  padding: var(--bb-s3) var(--bb-s5);
+  /* Translúcida com desfoque: o conteúdo passa por baixo em vez de sumir
+     atrás de uma faixa opaca. O fundo sólido é o fallback. */
+  background: rgb(0 29 61 / 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.shell-logo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--bb-font-display);
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--bb-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.shell-logo em {
+  font-style: italic;
+  color: var(--bb-gold);
+}
+
+.shell-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-s1);
+  flex: 1;
+}
+
+.shell-nav a {
+  position: relative;
+  padding: 7px 13px;
+  border-radius: 9px;
+  color: var(--bb-text-dim);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 130ms ease, background 130ms ease;
+}
+
+.shell-nav a:hover {
+  color: var(--bb-text);
+  background: rgb(255 255 255 / 0.06);
+}
+
+.shell-nav a.active {
+  color: var(--bb-gold);
+  background: rgb(255 195 0 / 0.1);
+}
+
+/* O sublinhado marca a rota atual sem depender só de cor: quem não
+   distingue o âmbar do cinza ainda enxerga onde está. */
+.shell-nav a.active::after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--bb-gold);
+}
+
+.shell-acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-s2);
+}
+
+/* ------------------------------------------------------------------ */
+/* Sino de avisos                                                       */
+/* ------------------------------------------------------------------ */
+
+.shell-sino {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background: transparent;
+  color: var(--bb-text-dim);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 130ms ease, border-color 130ms ease, background 130ms ease;
+}
+
+.shell-sino:hover {
+  color: var(--bb-gold);
+  border-color: rgb(255 195 0 / 0.45);
+  background: rgb(255 195 0 / 0.08);
+}
+
+.shell-sino-contador {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--bb-on-gold);
+  background: var(--bb-gold);
+  border: 2px solid var(--bb-surface);
+}
+
+.shell-sair {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  background: transparent;
+  color: var(--bb-text-dim);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 130ms ease, border-color 130ms ease, background 130ms ease;
+}
+
+.shell-sair:hover {
+  color: var(--bb-danger);
+  border-color: rgb(229 72 77 / 0.45);
+  background: rgb(229 72 77 / 0.08);
+}
+
+.shell-entrar {
+  margin-left: auto;
+  padding: 8px 18px;
+  border-radius: 10px;
+  color: var(--bb-on-gold);
+  background: var(--bb-gold);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.shell-entrar:hover {
+  background: var(--bb-gold-strong);
+}
+
+.shell-conteudo {
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: var(--bb-s5);
+}
+
+@media (max-width: 640px) {
+  .shell-topo {
+    gap: var(--bb-s3);
+    padding: var(--bb-s3);
+  }
+
+  .shell-nav a {
+    padding: 7px 9px;
+    font-size: 0.84rem;
+  }
+
+  .shell-sair span {
+    display: none;
+  }
+}

@@ -1,5 +1,46 @@
+import { useQuery } from '@tanstack/react-query'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { api } from '../api/http'
 import { useSession } from '../auth/session'
+import { IconeSair, IconeSino } from '../ui/icons'
+import './shell.css'
+
+interface AnnouncementItem {
+  id: string
+}
+
+/**
+ * Sino de avisos.
+ *
+ * Mostra a contagem real de anúncios do professor, e não um enfeite: um sino
+ * que nunca acende ensina a pessoa a ignorá-lo, e aí ele deixa de servir no dia
+ * em que houver algo importante.
+ *
+ * Reaproveita a chave de cache do dashboard, então a barra não gera uma
+ * segunda requisição em cima da que a tela já faz.
+ */
+function SinoDeAvisos() {
+  const query = useQuery({
+    queryKey: ['meus-anuncios'],
+    queryFn: () => api<AnnouncementItem[]>('/courses/announcements'),
+  })
+
+  const quantos = query.data?.length ?? 0
+  const rotulo = quantos === 0
+    ? 'Avisos — nenhum no momento'
+    : `Avisos — ${quantos} ${quantos === 1 ? 'novo' : 'novos'}`
+
+  return (
+    <Link to="/dashboard" className="shell-sino" aria-label={rotulo} title={rotulo}>
+      <IconeSino size={19} />
+      {quantos > 0 && (
+        <span className="shell-sino-contador" aria-hidden="true">
+          {quantos > 9 ? '9+' : quantos}
+        </span>
+      )}
+    </Link>
+  )
+}
 
 export function AppShell() {
   const { status, user, logout } = useSession()
@@ -13,63 +54,38 @@ export function AppShell() {
   const ehAdmin = user?.roles.includes('ROLE_ADMIN') ?? false
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--bb-s5)',
-          padding: 'var(--bb-s4) var(--bb-s5)',
-          background: 'var(--bb-surface)',
-          borderBottom: '1px solid var(--bb-border)',
-        }}
-      >
-        <Link
-          to="/"
-          style={{ color: 'var(--bb-gold)', fontWeight: 700, textDecoration: 'none' }}
-        >
-          Beto Banco
+    <div className="shell">
+      <header className="shell-topo">
+        <Link to="/" className="shell-logo">
+          Beto <em>Banco</em>
         </Link>
 
         {status === 'in' && (
-          <nav style={{ display: 'flex', gap: 'var(--bb-s4)', flex: 1 }} aria-label="Principal">
-            <NavLink to="/dashboard" style={{ color: 'var(--bb-text)' }}>
-              Meus cursos
-            </NavLink>
-            <NavLink to="/perfil" style={{ color: 'var(--bb-text)' }}>
-              Perfil
-            </NavLink>
-            {ehAdmin && (
-              <NavLink to="/admin/dashboard" style={{ color: 'var(--bb-text)' }}>
-                Admin
-              </NavLink>
-            )}
-          </nav>
+          <>
+            <nav className="shell-nav" aria-label="Principal">
+              <NavLink to="/dashboard">Meus cursos</NavLink>
+              <NavLink to="/perfil">Perfil</NavLink>
+              {ehAdmin && <NavLink to="/admin/dashboard">Admin</NavLink>}
+            </nav>
+
+            <div className="shell-acoes">
+              <SinoDeAvisos />
+              <button type="button" className="shell-sair" onClick={sair}>
+                <IconeSair size={17} />
+                <span>Sair</span>
+              </button>
+            </div>
+          </>
         )}
 
-        {status === 'in' ? (
-          <button
-            type="button"
-            onClick={sair}
-            style={{
-              background: 'transparent',
-              color: 'var(--bb-text-dim)',
-              border: '1px solid var(--bb-border)',
-              borderRadius: 'var(--bb-r1)',
-              padding: 'var(--bb-s1) var(--bb-s3)',
-              cursor: 'pointer',
-            }}
-          >
-            Sair
-          </button>
-        ) : (
-          <Link to="/login" style={{ marginLeft: 'auto' }}>
+        {status !== 'in' && (
+          <Link to="/login" className="shell-entrar">
             Entrar
           </Link>
         )}
       </header>
 
-      <main style={{ flex: 1, padding: 'var(--bb-s5)', maxWidth: 960, width: '100%', margin: '0 auto' }}>
+      <main className="shell-conteudo">
         <Outlet />
       </main>
     </div>
