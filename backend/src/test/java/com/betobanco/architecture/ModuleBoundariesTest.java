@@ -27,10 +27,12 @@ class ModuleBoundariesTest {
 
     @Test
     void nenhumModuloAcessaEntityOuRepositoryDeOutro() {
+        // Modulo novo que fica de fora desta lista nasce sem a regra, e a
+        // primeira violacao dele so aparece quando ja custa caro desfazer.
         for (String modulo : new String[]{
                 "users", "auth", "students", "catalog", "entitlements",
                 "payments", "webhooks", "email", "audit", "dashboard", "courses",
-                "invites"}) {
+                "invites", "contests", "essays", "privacy"}) {
             ArchRule regra = noClasses()
                     .that().resideOutsideOfPackage("com.betobanco." + modulo + "..")
                     .should().dependOnClassesThat()

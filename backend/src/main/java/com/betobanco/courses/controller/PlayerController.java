@@ -1,6 +1,6 @@
 package com.betobanco.courses.controller;
 
-import com.betobanco.auth.repository.RefreshTokenRepository;
+import com.betobanco.auth.api.ActiveSessions;
 import com.betobanco.security.AuthenticatedUser;
 import com.betobanco.shared.exception.NotFoundException;
 import com.betobanco.shared.response.ApiResponse;
@@ -35,9 +35,9 @@ import java.util.List;
 public class PlayerController {
 
     private final UserDirectory usuarios;
-    private final RefreshTokenRepository sessoes;
+    private final ActiveSessions sessoes;
 
-    public PlayerController(UserDirectory usuarios, RefreshTokenRepository sessoes) {
+    public PlayerController(UserDirectory usuarios, ActiveSessions sessoes) {
         this.usuarios = usuarios;
         this.sessoes = sessoes;
     }
@@ -79,8 +79,8 @@ public class PlayerController {
             @AuthenticationPrincipal AuthenticatedUser atual) {
 
         List<SessaoResponse> ativas = sessoes.vigentesDe(atual.id()).stream()
-                .map(t -> new SessaoResponse(t.getIp(), t.getUserAgent(),
-                        t.getIssuedAt(), t.getExpiresAt()))
+                .map(s -> new SessaoResponse(s.ip(), s.userAgent(),
+                        s.issuedAt(), s.expiresAt()))
                 .toList();
         return ResponseEntity.ok(ApiResponse.ok(ativas));
     }

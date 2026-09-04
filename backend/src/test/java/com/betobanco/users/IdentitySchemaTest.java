@@ -23,11 +23,19 @@ class IdentitySchemaTest extends PostgresTestBase {
         assertThat(tabelas).contains("users", "roles", "user_roles", "students");
     }
 
+    /**
+     * A lista e exata de proposito. Papel a mais nao e detalhe: cada um abre uma
+     * porta no {@code @PreAuthorize}, e um papel que aparece sem ninguem decidir
+     * so seria notado quando alguem ja estivesse usando.
+     *
+     * <p>ROLE_CORRECTOR entrou na V14 com a correcao de redacoes (secao 14).
+     */
     @Test
-    void asTresRolesObrigatoriasEstaoSemeadas() {
+    void asRolesDoSistemaEstaoSemeadas() {
         List<String> roles = jdbc.queryForList("SELECT name FROM roles ORDER BY name", String.class);
 
-        assertThat(roles).containsExactly("ROLE_ADMIN", "ROLE_INSTRUCTOR", "ROLE_STUDENT");
+        assertThat(roles).containsExactly(
+                "ROLE_ADMIN", "ROLE_CORRECTOR", "ROLE_INSTRUCTOR", "ROLE_STUDENT");
     }
 
     @Test

@@ -25,13 +25,20 @@ public interface ContestRepository extends JpaRepository<Contest, UUID> {
      * <p>O DISTINCT existe por causa da juncao com carreiras: um concurso em
      * duas carreiras apareceria duas vezes sem ele — e a secao 07 garante que
      * isso acontece, nao e hipotese.
+     *
+     * <p>O CAST em :board nao e decoracao. Sem tipo declarado, o driver manda o
+     * nulo como parametro sem tipo e o Postgres resolve upper(?) para
+     * upper(bytea), funcao que nao existe: a listagem inteira quebra com 500
+     * justamente no caso comum, o de nao filtrar por banca. Os outros filtros
+     * escapam porque comparam direto com uma coluna, de onde o tipo se infere.
      */
     @Query("""
            SELECT DISTINCT c FROM Contest c
             WHERE c.tenantId = :tenantId
               AND c.publishedAt IS NOT NULL
               AND (:agencyId IS NULL OR c.agencyId = :agencyId)
-              AND (:board IS NULL OR upper(c.board) = upper(:board))
+              AND (CAST(:board AS String) IS NULL
+                   OR upper(c.board) = upper(CAST(:board AS String)))
               AND (:status IS NULL OR c.status = :status)
               AND (:educationLevel IS NULL OR c.educationLevel = :educationLevel)
               AND (:salaryMin IS NULL OR c.salaryCents >= :salaryMin)

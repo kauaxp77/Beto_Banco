@@ -158,7 +158,21 @@ Continuam abertas e travando trabalho real:
 
 ## Verificação
 
-Os testes de integração (Testcontainers) não rodaram: o engine do Docker Desktop
-estava fora do ar na máquina de desenvolvimento. Toda validação de banco foi
-feita contra um PostgreSQL 17 local, com as 16 migrações aplicadas em base limpa.
-53 testes unitários passam.
+A suíte completa roda: **209 testes, 0 falhas**, incluindo os de integração com
+Testcontainers, que até então nunca tinham sido executados por indisponibilidade
+do engine do Docker na máquina de desenvolvimento.
+
+A primeira execução com o Docker no ar encontrou três defeitos que a validação
+por SQL não pegaria, todos corrigidos:
+
+| Defeito | Por que só apareceu agora |
+|---|---|
+| `agencies.state CHAR(2)` contra a entidade mapeada como `varchar` | Falha na validação de schema do Hibernate, no boot — a migração aplicava sem erro. Corrigido pela V17, que também troca `CHAR` por `TEXT` com `CHECK`: `CHAR` completa com espaço à direita e faria `'S'` virar `'S '` em silêncio. |
+| `GET /contests` respondia 500 sem filtro de banca | O parâmetro nulo ia sem tipo declarado e o Postgres resolvia `upper(?)` para `upper(bytea)`, função que não existe. Quebrava justamente o caso comum, o de não filtrar. |
+| `PlayerController` alcançava `RefreshTokenRepository` direto | Violação da regra de fronteira entre módulos. O token de renovação é credencial: quem alcança o repositório dele alcança hash, revogação e rotação. Agora passa pela porta `auth.api.ActiveSessions`, que expõe só o que a tela mostra. |
+
+A regra de fronteira do ArchUnit também passou a cobrir `contests`, `essays` e
+`privacy` — módulo fora da lista nasce sem a regra, e a primeira violação dele só
+apareceria quando já custasse caro desfazer.
+
+Validação de banco: as 17 migrações aplicadas em PostgreSQL 17 em base limpa.
