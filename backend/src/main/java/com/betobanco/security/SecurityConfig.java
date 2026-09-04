@@ -75,6 +75,11 @@ public class SecurityConfig {
                         // por IP no RateLimitFilter.
                         .requestMatchers(HttpMethod.GET, "/leads/magnets").permitAll()
                         .requestMatchers(HttpMethod.POST, "/leads/capture").permitAll()
+                        // V3.0 secao 8 -- quem compra ainda nao tem conta: ela
+                        // nasce quando o pagamento e aprovado. Exigir login aqui
+                        // inverteria o funil. A rota so ABRE o pedido; acesso so
+                        // vem do webhook, com o pagamento confirmado.
+                        .requestMatchers(HttpMethod.POST, "/checkout").permitAll()
                         .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                             .permitAll()

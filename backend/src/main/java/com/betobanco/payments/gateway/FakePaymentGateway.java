@@ -108,7 +108,11 @@ public class FakePaymentGateway implements PaymentGateway {
                     splits,
                     // O formato de referencia nao declara momento; a fila entao
                     // trata estes eventos na ordem em que chegaram.
-                    null));
+                    null,
+                    // O gateway de referencia manda sku e e-mail direto, entao
+                    // nao precisa do pedido para saber quem comprou o que.
+                    texto(raiz, "order_nsu"),
+                    texto(raiz, "invoice_slug")));
         } catch (Exception e) {
             return Optional.empty();
         }

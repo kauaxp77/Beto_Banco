@@ -129,6 +129,27 @@ public class InfinityPayGateway implements PaymentGateway {
         }
     }
 
+    /**
+     * Traduz o webhook do Checkout Integrado.
+     *
+     * <p>O corpo documentado pela InfinitePay e este, e ele nao tem campo de
+     * evento nem identificador de evento:
+     *
+     * <pre>
+     * {"invoice_slug":"abc123","amount":1000,"paid_amount":1010,"installments":1,
+     *  "capture_method":"credit_card","transaction_nsu":"UUID",
+     *  "order_nsu":"UUID-do-pedido","receipt_url":"...","items":[...]}
+     * </pre>
+     *
+     * <p>Por isso a identidade do evento sai do {@code transaction_nsu} e o tipo
+     * e inferido: a notificacao existe quando a fatura foi paga. Exigir
+     * {@code event_id} e {@code event}, como uma versao anterior desta classe
+     * fazia, descartava em silencio todo webhook real do provedor — e o aluno
+     * pagava sem receber acesso.
+     *
+     * <p>Os nomes antigos continuam sendo aceitos primeiro: se a conta estiver
+     * num formato mais completo, ele prevalece sobre a inferencia.
+     */
     @Override
     public Optional<PaymentNotification> interpretar(byte[] corpoCru) {
         try {
@@ -136,24 +157,43 @@ public class InfinityPayGateway implements PaymentGateway {
             // A InfinityPay aninha os dados em "data"; alguns eventos vem planos.
             JsonNode dados = raiz.hasNonNull("data") ? raiz.get("data") : raiz;
 
+            String transacao = primeiro(raiz, dados,
+                    "transaction_nsu", "transaction_id", "charge_id");
+            String pedido = primeiro(raiz, dados, "order_nsu", "external_reference");
+            String fatura = primeiro(raiz, dados, "invoice_slug", "slug");
+
             String eventId = primeiro(raiz, dados, "event_id", "id");
+            if (eventId == null) {
+                eventId = transacao;
+            }
+
             String eventType = primeiro(raiz, dados, "event", "type", "status");
+            boolean inferido = false;
+            if (eventType == null && transacao != null) {
+                // Corpo sem tipo, com transacao: e a notificacao de aprovacao.
+                eventType = "payment.approved";
+                inferido = true;
+            }
+
             if (eventId == null || eventType == null) {
+                log.warn("Webhook da InfinityPay sem transacao nem evento; descartado.");
                 return Optional.empty();
             }
 
             return Optional.of(new PaymentNotification(
                     eventId,
                     eventType,
-                    tipoDe(eventType),
-                    primeiro(raiz, dados, "transaction_id", "charge_id", "order_nsu", "id"),
-                    primeiro(raiz, dados, "sku", "reference", "external_reference"),
+                    inferido ? PaymentNotification.Tipo.APROVADO : tipoDe(eventType),
+                    transacao != null ? transacao : primeiro(raiz, dados, "id"),
+                    primeiro(raiz, dados, "sku", "reference"),
                     primeiro(raiz, dados, "buyer_email", "customer_email", "email"),
                     primeiro(raiz, dados, "buyer_name", "customer_name", "name"),
                     centavos(dados),
                     dados.hasNonNull("currency") ? dados.get("currency").asText() : "BRL",
                     splits(dados),
-                    momento(primeiro(raiz, dados, "occurred_at", "created_at", "timestamp"))));
+                    momento(primeiro(raiz, dados, "occurred_at", "created_at", "timestamp")),
+                    pedido,
+                    fatura));
         } catch (Exception e) {
             log.warn("Payload da InfinityPay ilegivel: {}", e.getMessage());
             return Optional.empty();
@@ -172,7 +212,17 @@ public class InfinityPayGateway implements PaymentGateway {
             return dados.get("amount_cents").asLong(0);
         }
         if (dados.hasNonNull("amount")) {
-            return new BigDecimal(dados.get("amount").asText())
+            JsonNode valor = dados.get("amount");
+            // No Checkout Integrado "amount" JA vem em centavos e inteiro: o
+            // exemplo da propria documentacao mostra 1500 para R$ 15,00. Tratar
+            // como reais multiplicaria a venda por cem.
+            if (valor.isIntegralNumber()) {
+                return valor.asLong(0);
+            }
+            // Texto ou decimal: e reais. A conversao passa por BigDecimal
+            // porque (long)(29.90 * 100) devolve 2989 em ponto flutuante — um
+            // centavo a menos, em toda venda.
+            return new BigDecimal(valor.asText())
                     .movePointRight(2)
                     .setScale(0, java.math.RoundingMode.HALF_UP)
                     .longValueExact();

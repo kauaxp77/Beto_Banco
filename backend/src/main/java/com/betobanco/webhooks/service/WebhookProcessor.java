@@ -5,6 +5,7 @@ import com.betobanco.auth.api.FirstAccessTokens;
 import com.betobanco.catalog.api.ProductCatalog;
 import com.betobanco.email.api.EmailService;
 import com.betobanco.entitlements.api.EntitlementService;
+import com.betobanco.payments.api.CheckoutOrders;
 import com.betobanco.payments.api.PaymentGateway;
 import com.betobanco.payments.api.PaymentLedger;
 import com.betobanco.payments.api.PaymentNotification;
@@ -52,6 +53,7 @@ public class WebhookProcessor {
     private final EmailService emails;
     private final FirstAccessTokens primeiroAcesso;
     private final AuditLogger auditoria;
+    private final CheckoutOrders pedidos;
     private final boolean habilitado;
 
     public WebhookProcessor(WebhookEventRepository eventos, WebhookQueue fila,
@@ -60,6 +62,7 @@ public class WebhookProcessor {
                             EntitlementService entitlements, EmailService emails,
                             FirstAccessTokens primeiroAcesso,
                             AuditLogger auditoria,
+                            CheckoutOrders pedidos,
                             @Value("${betobanco.webhooks.processor-enabled:true}")
                             boolean habilitado) {
         this.eventos = eventos;
@@ -73,6 +76,7 @@ public class WebhookProcessor {
         this.emails = emails;
         this.primeiroAcesso = primeiroAcesso;
         this.auditoria = auditoria;
+        this.pedidos = pedidos;
         this.habilitado = habilitado;
     }
 
@@ -166,16 +170,32 @@ public class WebhookProcessor {
         evento.marcarProcessado();
     }
 
+    /**
+     * A unica porta por onde acesso e concedido, e ela exige pagamento.
+     *
+     * <p>Duas formas de saber o que liberar, nesta ordem:
+     *
+     * <ol>
+     *   <li>o provedor mandou SKU e e-mail do comprador no proprio evento; ou
+     *   <li>o evento traz {@code order_nsu} — o caso do Checkout Integrado da
+     *       InfinitePay, cujo webhook nao diz quem comprou nem o que. Ai o
+     *       pedido e reencontrado e o pagamento e <b>confirmado na API do
+     *       provedor</b> antes de qualquer liberacao.
+     * </ol>
+     *
+     * <p>Sem uma das duas, nada e liberado e o evento vai para a fila do
+     * administrador. Adivinhar produto ou comprador seria dar curso de graca
+     * para quem mandasse o JSON certo.
+     */
     private void liberarAcesso(PaymentNotification n, PaymentLedger.Registro registro) {
-        // SKU desconhecido nao e adivinhado: chutar qual produto liberar e
-        // pior do que nao liberar. O evento vai para a fila do administrador.
-        var produto = catalogo.buscarPorSku(n.sku()).orElseThrow(
-                () -> new IllegalStateException("SKU desconhecido: " + n.sku()));
+        Compra compra = resolverCompra(n);
 
-        boolean contaNova = usuarios.buscarPorEmail(n.buyerEmail()).isEmpty();
-        UserAccount aluno = usuarios.buscarPorEmail(n.buyerEmail())
-                .orElseGet(() -> usuarios.criarSemSenha(n.buyerEmail(),
-                        n.buyerName() == null ? n.buyerEmail() : n.buyerName()));
+        boolean contaNova = usuarios.buscarPorEmail(compra.email()).isEmpty();
+        UserAccount aluno = usuarios.buscarPorEmail(compra.email())
+                .orElseGet(() -> usuarios.criarSemSenha(compra.email(),
+                        compra.nome() == null ? compra.email() : compra.nome()));
+
+        var produto = compra.produto();
 
         ledger.marcarAprovado(registro.paymentId(), aluno.id(), produto.id());
 
@@ -183,7 +203,7 @@ public class WebhookProcessor {
                 "PAYMENT", registro.paymentId().toString());
 
         auditoria.registrar("PAYMENT_APPROVED", "Payment", registro.paymentId().toString(),
-                Map.of("transactionId", n.transactionId(), "sku", n.sku()));
+                Map.of("transactionId", n.transactionId(), "sku", produto.sku()));
 
         if (concessao.criadoAgora()) {
             auditoria.registrar("ACCESS_GRANTED", "Entitlement",
@@ -206,6 +226,38 @@ public class WebhookProcessor {
                     Map.of("nome", aluno.fullName(), "produto", produto.name()),
                     "acesso-liberado:" + concessao.entitlementId());
         }
+    }
+
+    /** O produto e o comprador de um evento aprovado, ja verificados. */
+    private record Compra(ProductCatalog.ProductSummary produto, String email, String nome) {
+    }
+
+    private Compra resolverCompra(PaymentNotification n) {
+        if (n.sku() != null && n.buyerEmail() != null) {
+            // SKU desconhecido nao e adivinhado: chutar qual produto liberar e
+            // pior do que nao liberar. O evento vai para a fila do administrador.
+            var produto = catalogo.buscarPorSku(n.sku()).orElseThrow(
+                    () -> new IllegalStateException("SKU desconhecido: " + n.sku()));
+            return new Compra(produto, n.buyerEmail(), n.buyerName());
+        }
+
+        if (n.orderNsu() == null && n.invoiceSlug() == null) {
+            throw new IllegalStateException(
+                    "Evento aprovado sem SKU/e-mail e sem referencia de pedido: "
+                            + "nao ha como saber quem comprou o que.");
+        }
+
+        var confirmada = pedidos
+                .confirmarPagamento(n.orderNsu(), n.invoiceSlug(), n.transactionId())
+                .orElseThrow(() -> new IllegalStateException(
+                        "Pedido nao encontrado ou pagamento nao confirmado pelo provedor "
+                                + "(order_nsu=" + n.orderNsu() + "). Acesso NAO liberado."));
+
+        var produto = catalogo.buscarPorId(confirmada.productId()).orElseThrow(
+                () -> new IllegalStateException(
+                        "Pedido " + confirmada.orderId() + " aponta para produto inexistente."));
+
+        return new Compra(produto, confirmada.buyerEmail(), confirmada.buyerName());
     }
 
     private void revogarAcesso(PaymentNotification n, PaymentLedger.Registro registro) {

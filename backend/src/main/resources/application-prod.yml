@@ -67,6 +67,17 @@ betobanco:
     # Secao 12 -- gateway oficial. Sem valor padrao de proposito: um segredo
     # embutido aqui seria publico e aceitaria webhook forjado.
     infinitypay-webhook-secret: ${INFINITYPAY_WEBHOOK_SECRET:}
+    infinitypay:
+      # Enderecos NOVOS do Checkout Integrado; os antigos foram desativados
+      # pelo provedor.
+      base-url: ${INFINITYPAY_CHECKOUT_URL:https://api.checkout.infinitepay.io}
+      handle: ${INFINITYPAY_HANDLE:}
+      redirect-url: ${INFINITYPAY_REDIRECT_URL:}
+      webhook-url: ${INFINITYPAY_WEBHOOK_URL:}
+      # NAO desligue em producao. E o que garante que so recebe o curso quem
+      # pagou: sem esta confirmacao, quem descobrir a URL do webhook libera
+      # acesso mandando um JSON com um order_nsu valido.
+      confirmar-antes-de-liberar: ${INFINITYPAY_CONFIRMAR:true}
   essays:
     # Secao 14 -- a cota e o que mantem a margem da secao 04 de pe:
     # 4 correcoes mensais por 12 meses custam R$ 864 por aluno de mentoria,

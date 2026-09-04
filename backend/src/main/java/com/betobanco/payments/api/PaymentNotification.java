@@ -27,7 +27,20 @@ public record PaymentNotification(
          * das retentativas do gateway, nao de quando o fato aconteceu.
          * Nulo quando o provedor nao informa.
          */
-        Instant occurredAt) {
+        Instant occurredAt,
+
+        /**
+         * Referencia do nosso pedido no provedor.
+         *
+         * <p>O webhook do Checkout Integrado da InfinitePay nao traz e-mail do
+         * comprador nem SKU: traz {@code order_nsu}. Sem ele, o pagamento
+         * aprovado chega sem dizer quem pagou nem pelo que, e nao ha como
+         * liberar acesso. Nulo em provedores que mandam esses dados direto.
+         */
+        String orderNsu,
+
+        /** Identificador da fatura no provedor; entra na confirmacao via API. */
+        String invoiceSlug) {
 
     /**
      * As acoes que o RF-01 define por status. Cancelado e reembolso sao

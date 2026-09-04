@@ -48,7 +48,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
      */
     private static final Set<String> PROTEGIDOS =
             Set.of("/auth/login", "/auth/forgot-password", "/auth/reset-password",
-                    "/leads/capture");
+                    "/leads/capture", "/checkout");
 
     private final Map<String, Bucket> baldes = new ConcurrentHashMap<>();
     private final ObjectMapper mapper;

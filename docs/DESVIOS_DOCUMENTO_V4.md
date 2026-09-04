@@ -30,7 +30,7 @@ negociação de conteúdo (`Accept: application/problem+json`) em vez de troca.
 
 ---
 
-## 2. §05 — Paleta: a de produção, não a "Crepúsculo Dourado"
+## 2. §05 — Paleta: resolvida, e não é nenhuma das duas do documento
 
 **O documento pede:** paleta Crepúsculo Dourado — fundo `#030712`, dourado
 `#D4AF37`, tipografia Spectral + IBM Plex. A §31 registra isso como **decisão
@@ -46,11 +46,23 @@ e painel administrativo. Repintar um produto publicado é decisão de produto e 
 marca, não de engenharia — e a §31 do próprio Documento Mestre diz que decisão
 permanente só muda "por nova versão MAJOR, com justificativa registrada".
 
-**O que precisa acontecer:** o PO decide qual das duas prevalece. Se for a do
-Documento Mestre, é uma nova versão MAJOR dele *ou* uma revisão da spec 9.6, e o
-trabalho é uma repintura completa do frontend — não um ajuste de tokens.
+**Resolvido em 04/09/2026.** O Product Owner definiu uma terceira paleta, que
+não é nenhuma das duas: azul-marinho profundo com âmbar — `#000814`, `#001D3D`,
+`#003566`, `#FFC300`, `#FFD60A`. Ela está aplicada e é a que vale.
 
-**Status:** aguardando decisão do PO. Nada foi alterado.
+A troca não ficou só nos tokens: havia valores fixos em landing, auth, cursos,
+certificado, admin, componentes e gráficos. Duas consequências que a paleta nova
+obrigou:
+
+- **Campo de texto** passou a usar `--bb-surface` como preenchimento. Antes usava
+  `--bb-surface-2`, que na paleta nova é a **mesma cor da borda** (`#003566`): o
+  contorno sumia e o campo virava um bloco sólido.
+- **`--bb-text-dim`** virou opacidade do próprio `--bb-text`. O cinza quente
+  anterior (`#9a9789`) puxa para cáqui sobre azul-marinho.
+
+`--bb-danger` e `--bb-success` ficaram de fora: vermelho e verde são convenção de
+leitura, não identidade. Em âmbar, "erro" e "chamada para ação" teriam a mesma
+cor.
 
 ---
 
@@ -143,7 +155,7 @@ segue é só o que **não** aparecia no V4.0 e por isso não tinha sido constru�
 | §8 Recuperação de vendas | Pagamento não concluído vira lead automaticamente, com curso, valor e motivo. |
 | §5 Continue assistindo / Histórico / Favoritos | `lesson_playback` e `lesson_favorites`, com `/courses/me/continue`, `/courses/me/history` e `/courses/me/favorites`. |
 
-### Bloqueado — §9, Cupons
+### §9, Cupons — estava bloqueado, agora não está
 
 **O documento pede:** "Cupons. CRUD." no dashboard administrativo.
 
@@ -155,9 +167,11 @@ nem qual. Um CRUD de cupons aqui geraria códigos que a plataforma não consegue
 aplicar nem validar no momento da compra: o admin criaria "BLACKFRIDAY30", o
 aluno digitaria no checkout e nada aconteceria.
 
-**O que destrava:** ou a InfinityPay expõe uma API de cupons que possamos
-espelhar, ou o checkout passa a ser nosso. É decisão de produto, ligada à
-**pendência 02** (tabela de preços).
+**Destravado em 04/09/2026, mas ainda não construído.** Com a criação do link de
+pagamento agora sob nosso controle (seção 8 abaixo), o desconto passa a ser
+aplicável: quem monta o `items` enviado à InfinitePay somos nós, então um cupom
+válido simplesmente reduz o `price` que vai no pedido. O que falta é o CRUD e as
+regras de validade, uso e acumulação — não há mais impedimento técnico.
 
 ### Divergência de contrato — §8, "Recusado" e "Cancelado"
 
@@ -195,6 +209,80 @@ Nada foi alterado.
 
 ---
 
+## 8. §12 e V3.0 §8 — Checkout da InfinitePay: endereços novos e um defeito grave
+
+**O aviso do provedor.** A InfinitePay migrou o Checkout Integrado. Os endereços
+antigos param de responder:
+
+| | Antigo | Novo |
+|---|---|---|
+| Criar link | `POST https://api.infinitepay.io/invoices/public/checkout/links` | `POST https://api.checkout.infinitepay.io/links` |
+| Conferir pagamento | `POST .../checkout/payment_check` | `POST https://api.checkout.infinitepay.io/payment_check` |
+
+**Primeira constatação: os endereços antigos não existiam neste código.** Uma
+busca por eles no repositório inteiro não retorna nada. A integração era só de
+entrada (webhook); nunca houve chamada de saída. Ou seja, o alerta diário da
+InfinitePay vem de outro lugar — não deste sistema, que não corria risco de
+"parar de funcionar" porque nunca chamou aquelas URLs.
+
+**Segunda constatação, essa séria: o webhook real era descartado em silêncio.**
+O corpo que a InfinitePay documenta é este:
+
+```json
+{"invoice_slug":"abc123","amount":1000,"paid_amount":1010,"installments":1,
+ "capture_method":"credit_card","transaction_nsu":"UUID",
+ "order_nsu":"UUID-do-pedido","receipt_url":"...","items":[]}
+```
+
+Não tem `event`, não tem `event_id`, não tem e-mail do comprador e não tem SKU.
+O parser exigia os dois primeiros e devolvia vazio sem eles. O sintoma em
+produção seria o pior possível: **o aluno paga e não recebe acesso.**
+
+Corrigido: a identidade do evento sai do `transaction_nsu` e o tipo é inferido
+(a notificação existe porque a fatura foi paga). Também estava errada a leitura
+do valor — `amount` já vem em centavos, e o código tratava como reais, o que
+multiplicaria toda venda por cem.
+
+**O que foi construído.** Sem e-mail nem SKU no webhook, ele sozinho não diz
+quem comprou o quê. Por isso o pedido passa a existir do nosso lado
+(`checkout_orders`): `POST /checkout` abre o pedido, manda o id como `order_nsu`
+e devolve a URL de pagamento; o webhook volta com esse `order_nsu` e é por ele
+que o pagamento reencontra o comprador e o produto.
+
+**A regra de que só recebe o curso quem pagou** está em dois pontos, não em um:
+
+1. O preço vem do catálogo, nunca do corpo da requisição. Aceitá-lo do cliente
+   deixaria qualquer pessoa comprar a mentoria de R$ 3.564 por um real.
+2. Antes de liberar, o pagamento é **confirmado na API do provedor**
+   (`payment_check`), e o valor confirmado é comparado com o que o pedido
+   cobrava. Se o provedor não confirma, ou confirma um valor menor, nada é
+   liberado e o evento vai para a fila do administrador.
+
+O item 2 existe porque o Checkout Integrado **não documenta assinatura** no
+corpo que envia. Sem perguntar ao provedor "este pedido foi mesmo pago?",
+bastaria descobrir a URL do webhook e mandar um JSON com um `order_nsu` válido
+para receber um curso de graça.
+
+**Desvio consciente:** essa confirmação é uma chamada de rede dentro da transação
+de processamento, e o `WebhookProcessor` documenta que não haveria nenhuma. Fica
+assim porque a alternativa é liberar acesso sem verificar. Os tempos limite são
+curtos (5 s e 10 s) e a transação é uma por evento. Em produção o parâmetro
+`betobanco.payments.infinitypay.confirmar-antes-de-liberar` fica `true`; em
+desenvolvimento vem `false`, porque não há conta real para consultar.
+
+**Ressalva que precisa de você.** O contrato acima foi escrito a partir da
+documentação pública do Checkout Integrado, não de uma chamada real. Antes de
+vender de verdade, uma requisição de homologação precisa confirmar os nomes dos
+campos — em especial o que a criação de link devolve além de `url`. A base fica
+em configuração (`betobanco.payments.infinitypay.base-url`) para que a próxima
+migração de endereço seja variável de ambiente, não deploy.
+
+**Falta configurar:** `INFINITYPAY_HANDLE` (a InfiniteTag da conta que recebe) e
+`INFINITYPAY_WEBHOOK_URL`. Sem a primeira, o checkout recusa toda compra — e
+avisa no boot em vez de falhar na primeira venda.
+
+---
+
 ## Seções não iniciadas, e o tamanho real delas
 
 | Seção | Situação | Ordem de grandeza |
@@ -224,7 +312,7 @@ Continuam abertas e travando trabalho real:
 
 ## Verificação
 
-A suíte completa roda: **227 testes, 0 falhas**, incluindo os de integração com
+A suíte completa roda: **238 testes, 0 falhas**, incluindo os de integração com
 Testcontainers, que até então nunca tinham sido executados por indisponibilidade
 do engine do Docker na máquina de desenvolvimento.
 
@@ -241,4 +329,4 @@ A regra de fronteira do ArchUnit também passou a cobrir `contests`, `essays` e
 `privacy` — módulo fora da lista nasce sem a regra, e a primeira violação dele só
 apareceria quando já custasse caro desfazer.
 
-Validação de banco: as 18 migrações aplicadas em PostgreSQL 17 em base limpa.
+Validação de banco: as 19 migrações aplicadas em PostgreSQL 17 em base limpa.
