@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 100" role="img" aria-label="Beto Banco">
+  <title>Beto Banco</title>
+  <defs>
+    <!-- Dourado com viragem: claro no topo à esquerda, âmbar fechado embaixo.
+         É o que dá o efeito metálico sem precisar de imagem raster. -->
+    <linearGradient id="ouro" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0%" stop-color="#ffd873" />
+      <stop offset="28%" stop-color="#ffc300" />
+      <stop offset="62%" stop-color="#e0a300" />
+      <stop offset="100%" stop-color="#c98f05" />
+    </linearGradient>
+  </defs>
+
+  <!--
+    Fundo transparente de propósito: o símbolo assenta tanto sobre o
+    azul-marinho da plataforma quanto sobre papel branco no certificado.
+    Quem precisa de fundo próprio é o favicon, que tem arquivo separado.
+
+    `fill-rule="evenodd"` recorta os contornos internos: o contorno de fora é
+    o B, e os dois de dentro são o vazado — inclusive a cunha diagonal, que é
+    o traço que distingue esta marca de um B qualquer.
+  -->
+  <path fill="url(#ouro)" fill-rule="evenodd" d="
+    M20 8 H63
+    C81 8 92 17.5 92 29.5
+    C92 39 86.5 46.2 77.5 49.4
+    C88.5 52.4 96.5 61 96.5 72
+    C96.5 85 84.5 92 65 92
+    H20 Z
+
+    M31 22 H62
+    C70.5 22 75.5 25.8 75.5 31.5
+    C75.5 37.2 70.5 41 62 41
+    H45 L31 79 Z
+
+    M49 52 H64
+    C74.5 52 80.5 58 80.5 66.5
+    C80.5 75 74.5 80 64 80
+    H37 Z
+  " />
+</svg>

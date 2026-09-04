@@ -44,6 +44,17 @@
   white-space: nowrap;
 }
 
+.adm-logo-sufixo {
+  padding-left: 10px;
+  margin-left: 2px;
+  border-left: 1px solid var(--bb-border);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bb-text-dim);
+}
+
 .adm-logo em {
   font-style: italic;
   color: var(--bb-gold);

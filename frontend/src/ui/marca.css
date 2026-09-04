@@ -1,0 +1,84 @@
+/*
+ * A marca. Uma altura manda em tudo: `--bb-marca-h` é a altura do monograma, e o
+ * lettering deriva dela — assim a assinatura nunca sai de proporção quando a
+ * marca muda de tamanho entre a barra, o login e o certificado.
+ */
+
+.bb-marca {
+  --bb-marca-h: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--bb-marca-h) * 0.28);
+  color: inherit;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.bb-marca-simbolo {
+  height: var(--bb-marca-h);
+  width: auto;
+  flex: none;
+  display: block;
+}
+
+.bb-marca-texto {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--bb-marca-h) * 0.07);
+  min-width: 0;
+}
+
+.bb-marca-nome {
+  display: flex;
+  align-items: center;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: calc(var(--bb-marca-h) * 0.52);
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/*
+ * O visto ocupa o lugar do V. A margem negativa encaixa o traçado entre as
+ * letras: sem ela o espaço em volta do SVG abriria um buraco no meio da
+ * palavra, e "APRO ✓ AÇÃO" deixaria de se ler como uma palavra só.
+ */
+.bb-marca-visto {
+  height: calc(var(--bb-marca-h) * 0.72);
+  width: auto;
+  margin: calc(var(--bb-marca-h) * -0.16) calc(var(--bb-marca-h) * -0.055) 0;
+  flex: none;
+}
+
+.bb-marca-assinatura {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: calc(var(--bb-marca-h) * 0.235);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: lowercase;
+  color: var(--bb-gold);
+  white-space: nowrap;
+}
+
+/* Nome para leitor de tela. Fora da tela, mas não `display:none` — isso o
+   tiraria também da árvore de acessibilidade, que é o oposto do objetivo. */
+.bb-marca-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Em telas estreitas a assinatura sai antes do nome: ela é o que menos
+   informa quando só cabe uma linha. */
+@media (max-width: 520px) {
+  .bb-marca--completa .bb-marca-assinatura {
+    display: none;
+  }
+}

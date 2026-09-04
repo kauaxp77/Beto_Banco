@@ -1,4 +1,5 @@
 import { Link, Outlet } from 'react-router-dom'
+import { Marca } from '../../ui/Marca'
 import './auth.css'
 
 /** Moldura premium comum a login, esqueci-senha e definir-senha. */
@@ -6,8 +7,8 @@ export function AuthLayout() {
   return (
     <div className="auth">
       <aside className="auth-panel">
-        <Link to="/" className="auth-logo">
-          Beto <em>Banco</em>
+        <Link to="/" className="auth-logo" aria-label="Aprovação passo a passo">
+          <Marca variante="completa" tamanho={46} />
         </Link>
 
         <blockquote className="auth-quote">

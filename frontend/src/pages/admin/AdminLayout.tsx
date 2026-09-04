@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
+import { Marca } from '../../ui/Marca'
 import './admin.css'
 
 const LINKS = [
@@ -20,8 +21,9 @@ export function AdminLayout() {
   return (
     <div className="adm">
       <aside className="adm-side">
-        <Link to="/admin/dashboard" className="adm-logo">
-          Beto <em>Banco</em> · Admin
+        <Link to="/admin/dashboard" className="adm-logo" aria-label="Aprovação passo a passo — administração">
+          <Marca variante="compacta" tamanho={28} />
+          <span className="adm-logo-sufixo">Admin</span>
         </Link>
         <nav className="adm-nav" aria-label="Administração">
           {LINKS.map((l) => (

@@ -4,6 +4,7 @@ import { api } from '../api/http'
 import { Button } from '../ui/basics'
 import { nomeAmigavel } from '../ui/format'
 import { QueryBoundary } from '../ui/QueryBoundary'
+import { Marca } from '../ui/Marca'
 import './certificado.css'
 
 interface CertificateData {
@@ -35,7 +36,7 @@ export function CertificadoPage() {
           <>
             <article className="cert-folha" aria-label="Certificado de conclusão">
               <header className="cert-marca">
-                Beto <em>Banco</em>
+                <Marca variante="completa" tamanho={54} />
               </header>
               <p className="cert-rotulo">Certificado de conclusão</p>
               <h1 className="cert-nome">{c.studentName}</h1>

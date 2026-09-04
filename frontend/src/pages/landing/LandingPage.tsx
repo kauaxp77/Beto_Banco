@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../api/http'
+import { Marca } from '../../ui/Marca'
 import './landing.css'
 
 /* ------------------------------------------------------------------ */
@@ -148,8 +149,8 @@ export function LandingPage() {
     <div className="lp">
       <header className="lp-header">
         <div className="lp-header-inner">
-          <a className="lp-logo" href="#inicio">
-            Beto <em>Banco</em>
+          <a className="lp-logo" href="#inicio" aria-label="Aprovação passo a passo">
+            <Marca variante="completa" tamanho={38} />
           </a>
           <nav className="lp-nav" aria-label="Seções">
             <a href="#metodo">Método</a>
@@ -399,8 +400,8 @@ export function LandingPage() {
 
       <footer className="lp-footer">
         <div className="lp-container lp-footer-grid">
-          <a className="lp-logo" href="#inicio">
-            Beto <em>Banco</em>
+          <a className="lp-logo" href="#inicio" aria-label="Aprovação passo a passo">
+            <Marca variante="completa" tamanho={38} />
           </a>
           <img className="assinatura" src="/images/professor/prof-betao-signature-white.png" alt="Assinatura do Prof. Beto Fernandes" />
           <p className="copy">

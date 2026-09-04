@@ -1,0 +1,830 @@
+<title>Roteiro Beto Banco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+
+<style>
+/*
+ * Paleta do próprio produto (frontend/src/styles/tokens.css): azul-marinho
+ * profundo com âmbar. O documento é escuro por padrão porque a plataforma
+ * decidiu "dark mode permanente" — mas o tema claro existe e é completo, já
+ * que um plano se lê em sala iluminada e em reunião.
+ */
+:root {
+  --ground:      #000814;
+  --surface:     #001d3d;
+  --surface-2:   #002a52;
+  --line:        rgb(255 255 255 / 0.10);
+  --line-strong: rgb(255 255 255 / 0.18);
+  --ink:         #eaf1f8;
+  --ink-dim:     rgb(234 241 248 / 0.66);
+  --ink-faint:   rgb(234 241 248 / 0.40);
+  --gold:        #ffc300;
+  --gold-bright: #ffd60a;
+  --gold-soft:   rgb(255 195 0 / 0.12);
+  --on-gold:     #000814;
+  --ok:          #4ec27a;
+  --ok-soft:     rgb(78 194 122 / 0.14);
+  --warn:        #ffc300;
+  --stop:        #ff6b70;
+  --stop-soft:   rgb(255 107 112 / 0.14);
+  --shadow:      0 18px 44px rgb(0 6 16 / 0.5);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ground:      #f2f6fb;
+    --surface:     #ffffff;
+    --surface-2:   #e7eef7;
+    --line:        rgb(0 29 61 / 0.12);
+    --line-strong: rgb(0 29 61 / 0.24);
+    --ink:         #06182e;
+    --ink-dim:     rgb(6 24 46 / 0.70);
+    --ink-faint:   rgb(6 24 46 / 0.48);
+    --gold:        #9a6f00;
+    --gold-bright: #7d5a00;
+    --gold-soft:   rgb(154 111 0 / 0.10);
+    --on-gold:     #ffffff;
+    --ok:          #1e7a45;
+    --ok-soft:     rgb(30 122 69 / 0.10);
+    --warn:        #9a6f00;
+    --stop:        #b3272d;
+    --stop-soft:   rgb(179 39 45 / 0.09);
+    --shadow:      0 14px 34px rgb(0 29 61 / 0.10);
+  }
+}
+
+:root[data-theme="light"] {
+  --ground:      #f2f6fb;
+  --surface:     #ffffff;
+  --surface-2:   #e7eef7;
+  --line:        rgb(0 29 61 / 0.12);
+  --line-strong: rgb(0 29 61 / 0.24);
+  --ink:         #06182e;
+  --ink-dim:     rgb(6 24 46 / 0.70);
+  --ink-faint:   rgb(6 24 46 / 0.48);
+  --gold:        #9a6f00;
+  --gold-bright: #7d5a00;
+  --gold-soft:   rgb(154 111 0 / 0.10);
+  --on-gold:     #ffffff;
+  --ok:          #1e7a45;
+  --ok-soft:     rgb(30 122 69 / 0.10);
+  --warn:        #9a6f00;
+  --stop:        #b3272d;
+  --stop-soft:   rgb(179 39 45 / 0.09);
+  --shadow:      0 14px 34px rgb(0 29 61 / 0.10);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 40px) 90px;
+}
+
+/* ---------------------------------------------------------------- */
+/* Abertura                                                          */
+/* ---------------------------------------------------------------- */
+
+.marca-doc {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.marca-doc svg { height: 38px; width: auto; flex: none; }
+
+.marca-doc-nome {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1;
+}
+
+.marca-doc-nome b {
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.marca-doc-nome span {
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 14px;
+}
+
+h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(2.1rem, 5.4vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: 0 0 18px;
+}
+
+.lede {
+  max-width: 62ch;
+  font-size: 1.06rem;
+  color: var(--ink-dim);
+  margin: 0 0 8px;
+}
+
+.lede strong { color: var(--ink); font-weight: 600; }
+
+/* ---------------------------------------------------------------- */
+/* Onde estamos                                                      */
+/* ---------------------------------------------------------------- */
+
+.estado {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 1px;
+  margin: 40px 0 12px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.estado div {
+  background: var(--surface);
+  padding: 16px 18px;
+}
+
+.estado .n {
+  display: block;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 1.55rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--gold);
+  line-height: 1.15;
+}
+
+.estado .r {
+  display: block;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 4px;
+}
+
+.nota-estado {
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+  margin: 0 0 52px;
+}
+
+/* ---------------------------------------------------------------- */
+/* Espinha das fases                                                 */
+/* ---------------------------------------------------------------- */
+
+h2.secao {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+
+.secao-sub {
+  color: var(--ink-dim);
+  font-size: 0.95rem;
+  max-width: 64ch;
+  margin: 0 0 30px;
+}
+
+.fases {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  position: relative;
+}
+
+/* A ordem das fases é dependência, não gosto: cada uma destrava a seguinte.
+   Por isso a espinha numerada — aqui a numeração carrega informação. */
+.fase {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.marca {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.fase:not(:last-child) .marca::after {
+  content: '';
+  position: absolute;
+  top: 66px;
+  bottom: -32px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--line-strong), transparent);
+}
+
+.corpo {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 22px 24px 24px;
+  box-shadow: var(--shadow);
+}
+
+/* Só a fase 1 é levantada: é a que carrega o argumento da página. */
+.fase--destaque .corpo {
+  border-color: rgb(255 195 0 / 0.42);
+  background: linear-gradient(180deg, var(--gold-soft), transparent 58%), var(--surface);
+}
+
+.fase h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.32rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+  text-wrap: balance;
+}
+
+.porque {
+  color: var(--ink-dim);
+  font-size: 0.95rem;
+  margin: 0 0 18px;
+  max-width: 66ch;
+}
+
+.porque strong { color: var(--ink); font-weight: 600; }
+
+/* Lista de entregas: cada linha é um item com estado próprio. */
+.itens {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.itens li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: baseline;
+  background: var(--surface);
+  padding: 11px 15px;
+  font-size: 0.93rem;
+}
+
+.itens li b {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.itens li span.det {
+  display: block;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.chip {
+  justify-self: end;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.chip--pronto { color: var(--ok);   background: var(--ok-soft);   border-color: rgb(78 194 122 / 0.4); }
+.chip--falta  { color: var(--gold); background: var(--gold-soft); border-color: rgb(255 195 0 / 0.4); }
+.chip--trava  { color: var(--stop); background: var(--stop-soft); border-color: rgb(255 107 112 / 0.4); }
+
+.depende {
+  margin: 16px 0 0;
+  padding: 11px 14px;
+  border-left: 3px solid var(--gold);
+  background: var(--gold-soft);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+}
+
+.depende b { color: var(--ink); font-weight: 600; }
+
+.medida {
+  margin: 14px 0 0;
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+}
+
+.medida b {
+  color: var(--ink-dim);
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------- */
+/* Transversal e pendências                                          */
+/* ---------------------------------------------------------------- */
+
+.bloco {
+  margin-top: 58px;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  gap: 14px;
+}
+
+.item-plano {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line-strong);
+  border-radius: 0 12px 12px 0;
+  background: var(--surface);
+  padding: 15px 17px;
+}
+
+.item-plano h4 {
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin: 0 0 5px;
+}
+
+.item-plano p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+}
+
+.tabela-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  min-width: 540px;
+}
+
+th {
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 0 14px 9px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  color: var(--ink-dim);
+}
+
+td:first-child {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold);
+  font-weight: 600;
+  width: 3.2em;
+}
+
+td b { color: var(--ink); font-weight: 600; }
+
+.rodape {
+  margin-top: 58px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  font-size: 0.87rem;
+  color: var(--ink-faint);
+  max-width: 70ch;
+}
+
+.rodape strong { color: var(--ink-dim); font-weight: 600; }
+
+/* ---------------------------------------------------------------- */
+/* Impressão / PDF                                                   */
+/* ---------------------------------------------------------------- */
+
+@page {
+  size: A4;
+  margin: 15mm 14mm 16mm;
+}
+
+@media print {
+  /*
+   * No papel o documento vira claro. Imprimir o tema escuro gastaria uma
+   * página inteira de toner por página e ainda sairia com o dourado ilegível
+   * sobre o preto da impressora.
+   */
+  :root {
+    --ground:      #ffffff;
+    --surface:     #ffffff;
+    --surface-2:   #f1f5fa;
+    --line:        rgb(0 29 61 / 0.16);
+    --line-strong: rgb(0 29 61 / 0.32);
+    --ink:         #06182e;
+    --ink-dim:     #2b3f57;
+    --ink-faint:   #5a6b7f;
+    --gold:        #8a6300;
+    --gold-bright: #6f4f00;
+    --gold-soft:   rgb(138 99 0 / 0.09);
+    --on-gold:     #ffffff;
+    --ok:          #17693b;
+    --ok-soft:     rgb(23 105 59 / 0.10);
+    --stop:        #a52128;
+    --stop-soft:   rgb(165 33 40 / 0.09);
+    --shadow:      none;
+  }
+
+  /* Sem isto o navegador descarta os fundos das etiquetas de estado, e as
+     três viram todas brancas — que é justamente a informação da coluna. */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body { font-size: 10.5pt; line-height: 1.5; }
+  .wrap { max-width: none; padding: 0; }
+
+  /* Fase partida ao meio entre páginas perde a relação entre o título e a
+     lista de entregas, que é onde está o conteúdo. */
+  .fase, .item-plano, .itens li, tr { break-inside: avoid; }
+  h1, h2.secao, .fase h3 { break-after: avoid; }
+
+  .corpo, .item-plano, .estado div, .itens li { box-shadow: none; }
+  .estado { margin-top: 22px; }
+  .bloco { break-before: page; }
+
+  /* A espinha vertical entre as marcas some: ela liga fases que a paginação
+     pode separar, e uma linha que continua no vazio confunde. */
+  .fase:not(:last-child) .marca::after { display: none; }
+}
+
+@media (max-width: 620px) {
+  .fase { grid-template-columns: 46px 1fr; gap: 14px; }
+  .marca { width: 46px; height: 46px; border-radius: 12px; font-size: 0.95rem; }
+  .fase:not(:last-child) .marca::after { top: 50px; }
+  .itens li { grid-template-columns: 1fr; }
+  .chip { justify-self: start; }
+}
+</style>
+
+<div class="wrap">
+
+  <div class="marca-doc">
+    <svg viewBox="0 0 110 100" aria-hidden="true">
+      <defs>
+        <linearGradient id="doc-ouro" x1="0" y1="0" x2="0.35" y2="1">
+          <stop offset="0%" stop-color="#ffd873" />
+          <stop offset="28%" stop-color="#ffc300" />
+          <stop offset="62%" stop-color="#e0a300" />
+          <stop offset="100%" stop-color="#c98f05" />
+        </linearGradient>
+      </defs>
+      <path fill="url(#doc-ouro)" fill-rule="evenodd" d="M20 8 H63 C81 8 92 17.5 92 29.5 C92 39 86.5 46.2 77.5 49.4 C88.5 52.4 96.5 61 96.5 72 C96.5 85 84.5 92 65 92 H20 Z M31 22 H62 C70.5 22 75.5 25.8 75.5 31.5 C75.5 37.2 70.5 41 62 41 H45 L31 79 Z M49 52 H64 C74.5 52 80.5 58 80.5 66.5 C80.5 75 74.5 80 64 80 H37 Z" />
+    </svg>
+    <span class="marca-doc-nome">
+      <b>APROVAÇÃO</b>
+      <span>passo a passo</span>
+    </span>
+  </div>
+
+  <p class="eyebrow">Plataforma de concursos · setembro de 2026</p>
+  <h1>O caminho até primeira linha</h1>
+  <p class="lede">
+    A plataforma tem um backend maduro e uma vitrine pequena. Quase tudo o que foi
+    construído nos últimos meses — concursos, busca, checkout, CRM, redações — <strong>funciona
+    e não tem tela</strong>. Esse descompasso é o assunto deste roteiro: a ordem abaixo é de
+    dependência, não de preferência.
+  </p>
+
+  <div class="estado">
+    <div><span class="n">19</span><span class="r">migrações</span></div>
+    <div><span class="n">238</span><span class="r">testes verdes</span></div>
+    <div><span class="n">12</span><span class="r">módulos</span></div>
+    <div><span class="n">5</span><span class="r">telas do aluno</span></div>
+    <div><span class="n">13</span><span class="r">telas do admin</span></div>
+    <div><span class="n">6</span><span class="r">decisões travando</span></div>
+  </div>
+  <p class="nota-estado">
+    Estado do branch <code>feat/documento-mestre-v4</code>. A <code>main</code> segue intacta em <code>27ead81</code>.
+  </p>
+
+  <h2 class="secao">Cinco fases</h2>
+  <p class="secao-sub">
+    Cada fase existe porque destrava a próxima. Pular a primeira não adianta: as fases 2 e 3
+    vendem e atraem para dentro de telas que ainda não existem.
+  </p>
+
+  <div class="fases">
+
+    <!-- FASE 1 -->
+    <section class="fase fase--destaque">
+      <div class="marca">01</div>
+      <div class="corpo">
+        <h3>Dar rosto ao que já existe</h3>
+        <p class="porque">
+          É o único trabalho da lista cujo <strong>risco técnico já foi pago</strong>. O domínio está
+          escrito, testado e rodando; falta a interface. Cada tela aqui liga um canal de
+          receita ou de tráfego que hoje está desligado por falta de front, não de lógica.
+        </p>
+        <ul class="itens">
+          <li>
+            <span><b>Catálogo e ficha de concurso</b>
+              <span class="det">A ficha é a página indexável do plano de SEO. Já exibe “verificado em” e o link da fonte oficial — atrás de login, nada disso vale.</span></span>
+            <span class="chip chip--falta">só front</span>
+          </li>
+          <li>
+            <span><b>Busca unificada</b>
+              <span class="det">Tolerante a acento e a erro de digitação: “caixa economca” encontra Caixa Econômica. Sem caixa de busca, ninguém usa.</span></span>
+            <span class="chip chip--falta">só front</span>
+          </li>
+          <li>
+            <span><b>Página de produto e checkout</b>
+              <span class="det">Abre o pedido, manda para a InfinitePay e libera acesso pelo webhook confirmado. O caminho inteiro está testado.</span></span>
+            <span class="chip chip--falta">só front</span>
+          </li>
+          <li>
+            <span><b>CRM de leads no admin</b>
+              <span class="det">Funil, histórico por pessoa e a fila de quem ligar primeiro. Os leads já estão entrando pela captação e pelas vendas perdidas.</span></span>
+            <span class="chip chip--falta">só front</span>
+          </li>
+          <li>
+            <span><b>Redações: envio e correção</b>
+              <span class="det">Cota mensal, prazo de sete dias e devolutiva por critério da banca. É o entregável da mentoria.</span></span>
+            <span class="chip chip--falta">só front</span>
+          </li>
+          <li>
+            <span><b>Portal do titular (LGPD)</b>
+              <span class="det">Exportar dados, revogar consentimento, excluir conta. A lei pede autoatendimento, não pedido por e-mail.</span></span>
+            <span class="chip chip--falta">só front</span>
+          </li>
+          <li>
+            <span><b>Fila de revisão de 60 dias</b>
+              <span class="det">Ficha sem conferência há mais de 60 dias sobe para o topo. É o que impede o catálogo de envelhecer em silêncio.</span></span>
+            <span class="chip chip--falta">só front</span>
+          </li>
+        </ul>
+        <p class="medida"><b>Como saber que deu certo:</b> uma ficha de concurso aberta sem login, um pedido de checkout criado pela tela, e um lead atendido pelo CRM em vez de por planilha.</p>
+      </div>
+    </section>
+
+    <!-- FASE 2 -->
+    <section class="fase">
+      <div class="marca">02</div>
+      <div class="corpo">
+        <h3>Fechar a venda</h3>
+        <p class="porque">
+          O fluxo de pagamento está pronto e desligado por uma configuração. Ligá-lo é o
+          menor esforço com o maior efeito direto no caixa.
+        </p>
+        <ul class="itens">
+          <li>
+            <span><b>InfiniteTag e homologação</b>
+              <span class="det">Falta a tag da conta que recebe. O contrato foi escrito pela documentação pública; uma chamada de homologação confirma os nomes dos campos.</span></span>
+            <span class="chip chip--trava">config</span>
+          </li>
+          <li>
+            <span><b>Cupons</b>
+              <span class="det">Deixou de estar bloqueado: como agora somos nós que montamos o pedido enviado ao gateway, o desconto é só reduzir o preço do item.</span></span>
+            <span class="chip chip--falta">a fazer</span>
+          </li>
+          <li>
+            <span><b>Recuperação de carrinho</b>
+              <span class="det">A venda perdida já vira lead com curso, valor e motivo. Falta a régua sair — e-mail e WhatsApp — em vez de esperar alguém olhar a lista.</span></span>
+            <span class="chip chip--falta">meio caminho</span>
+          </li>
+          <li>
+            <span><b>Prova social no ponto da decisão</b>
+              <span class="det">Depoimentos e certificados já existem e são públicos; hoje não aparecem onde a compra acontece.</span></span>
+            <span class="chip chip--pronto">dados prontos</span>
+          </li>
+        </ul>
+        <p class="depende"><b>Depende de você:</b> pendência 01 (marca, domínio, conta do gateway) e pendência 02 (tabela de preços definitiva).</p>
+      </div>
+    </section>
+
+    <!-- FASE 3 -->
+    <section class="fase">
+      <div class="marca">03</div>
+      <div class="corpo">
+        <h3>Trazer gente sem pagar por clique</h3>
+        <p class="porque">
+          O plano conta com tráfego orgânico diário. A ficha de concurso já é conteúdo
+          indexável de verdade; falta o resto do aparato e o blog que o documento pede.
+        </p>
+        <ul class="itens">
+          <li>
+            <span><b>Blog com revisão humana</b>
+              <span class="det">Post, autor, fluxo de aprovação e política de fontes. Resumir notícia de terceiro sem reescrever é problema jurídico, não atalho.</span></span>
+            <span class="chip chip--falta">não iniciado</span>
+          </li>
+          <li>
+            <span><b>Posts entram na busca</b>
+              <span class="det">A view de busca já é um UNION ALL: posts entram como mais um ramo, sem tocar no que existe.</span></span>
+            <span class="chip chip--pronto">base pronta</span>
+          </li>
+          <li>
+            <span><b>Sitemap, schema.org, breadcrumb, meta</b>
+              <span class="det">Sem isso a ficha existe e o buscador não a entende como ficha de concurso.</span></span>
+            <span class="chip chip--falta">não iniciado</span>
+          </li>
+          <li>
+            <span><b>Renderização no servidor das páginas públicas</b>
+              <span class="det">Hoje o front é uma SPA: o robô recebe uma casca vazia. Sem isso, o SEO da fase inteira não acontece.</span></span>
+            <span class="chip chip--falta">decisão técnica</span>
+          </li>
+        </ul>
+        <p class="medida"><b>Como saber que deu certo:</b> sessões orgânicas por ficha de concurso, e leads capturados por material a partir dessas sessões.</p>
+      </div>
+    </section>
+
+    <!-- FASE 4 -->
+    <section class="fase">
+      <div class="marca">04</div>
+      <div class="corpo">
+        <h3>Segurar quem já entrou</h3>
+        <p class="porque">
+          Aluno que compra e some custa a mesma aquisição de quem fica. Aqui está o que
+          transforma acesso em uso.
+        </p>
+        <ul class="itens">
+          <li>
+            <span><b>Simulados de verdade</b>
+              <span class="det">O quiz de hoje é por aula. Simulado pede cronômetro, peso por questão, gabarito comentado e ranking — é um domínio novo, não um ajuste.</span></span>
+            <span class="chip chip--falta">domínio novo</span>
+          </li>
+          <li>
+            <span><b>Banco de questões</b>
+              <span class="det">O schema existe. O conteúdo não pode ser copiado de terceiros, e a origem nunca foi decidida.</span></span>
+            <span class="chip chip--trava">pendência 03</span>
+          </li>
+          <li>
+            <span><b>Player Panda Vídeo</b>
+              <span class="det">O conversor de URL reconhece YouTube, Vimeo e MP4 — e não reconhece Panda. Hoje o único formato que funciona é o que nenhum documento escolheu.</span></span>
+            <span class="chip chip--trava">contratação</span>
+          </li>
+          <li>
+            <span><b>Link de vídeo expirável</b>
+              <span class="det">A marca d’água com identificação do aluno já existe. O link assinado depende da API do host.</span></span>
+            <span class="chip chip--trava">contratação</span>
+          </li>
+          <li>
+            <span><b>Constância e trilhas</b>
+              <span class="det">Sequência de estudo, progresso por trilha e certificado já rodam. Falta usá-los para trazer o aluno de volta.</span></span>
+            <span class="chip chip--pronto">a explorar</span>
+          </li>
+        </ul>
+        <p class="depende"><b>Depende de você:</b> pendência 03 (origem das questões) e a contratação do Panda Vídeo.</p>
+      </div>
+    </section>
+
+    <!-- FASE 5 -->
+    <section class="fase">
+      <div class="marca">05</div>
+      <div class="corpo">
+        <h3>Escalar para outros professores</h3>
+        <p class="porque">
+          A parte cara e irreversível do multi-tenant já foi paga: coluna, chave estrangeira,
+          índice único por tenant e políticas de isolamento. Falta ligar.
+        </p>
+        <ul class="itens">
+          <li>
+            <span><b>Isolamento por tenant ativo</b>
+              <span class="det">A política já está no banco, em modo permissivo. Ligar é definir o tenant na sessão — e qualquer caminho esquecido devolve tela vazia, então entra com cobertura antes.</span></span>
+            <span class="chip chip--pronto">base pronta</span>
+          </li>
+          <li>
+            <span><b>Cobrança do white label</b>
+              <span class="det">Mensalidade e valor por aluno ativo, com medição confiável de quem é “ativo”.</span></span>
+            <span class="chip chip--falta">não iniciado</span>
+          </li>
+          <li>
+            <span><b>IA com teto de gasto</b>
+              <span class="det">Resumo de edital e plano de estudo, com cache por hash, limite por aluno, rótulo de “gerado por IA” e revisão humana antes de publicar.</span></span>
+            <span class="chip chip--falta">não iniciado</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- TRANSVERSAL -->
+  <div class="bloco">
+    <h2 class="secao">O que roda junto, não depois</h2>
+    <p class="secao-sub">
+      Nenhum destes é uma fase. São os itens que, faltando, transformam um bom produto em um
+      incidente na primeira segunda-feira movimentada.
+    </p>
+    <div class="grade">
+      <div class="item-plano">
+        <h4>Limite de requisições fora da memória</h4>
+        <p>O contador vive no processo: com duas instâncias, o limite dobra. Vira Redis no dia em que houver a segunda.</p>
+      </div>
+      <div class="item-plano">
+        <h4>Backup restaurado, não só agendado</h4>
+        <p>Backup que nunca foi restaurado é uma suposição. Um ensaio trimestral transforma em fato.</p>
+      </div>
+      <div class="item-plano">
+        <h4>Métrica e alerta</h4>
+        <p>Já existem trace por requisição e trilha de auditoria. Falta alguém ser avisado quando a fila de webhooks para.</p>
+      </div>
+      <div class="item-plano">
+        <h4>Conciliação diária visível</h4>
+        <p>O cruzamento pago‑sem‑acesso já roda de madrugada e corrige sozinho. O que ele encontra precisa chegar a alguém.</p>
+      </div>
+      <div class="item-plano">
+        <h4>Acessibilidade</h4>
+        <p>Contraste, foco visível e navegação por teclado nas telas novas — mais barato agora do que como correção depois.</p>
+      </div>
+      <div class="item-plano">
+        <h4>Desempenho das páginas públicas</h4>
+        <p>A ficha de concurso é a porta de entrada do tráfego orgânico. Página lenta perde posição por si só.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PENDÊNCIAS -->
+  <div class="bloco">
+    <h2 class="secao">As seis decisões que só você toma</h2>
+    <p class="secao-sub">
+      Não são preferências de engenharia. Cada uma trava um trecho concreto do roteiro acima,
+      e nenhuma delas se resolve escrevendo mais código.
+    </p>
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Decisão</th><th>O que ela trava</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>01</td><td><b>Marca, domínio e conta do gateway</b></td><td>Fase 2 inteira: o checkout precisa da InfiniteTag, e o e-mail transacional precisa de domínio verificado.</td></tr>
+          <tr><td>02</td><td><b>Tabela de preços definitiva</b></td><td>Cupons, projeção de receita e a cobrança do white label da fase 5.</td></tr>
+          <tr><td>03</td><td><b>Origem do banco de questões</b></td><td>Simulados com conteúdo próprio. Copiar comentário de terceiro é infração, não atalho.</td></tr>
+          <tr><td>04</td><td><b>Garantia de 8 ou 30 dias</b></td><td>O texto dos termos de uso, hoje um rascunho no banco — e a regra de estorno.</td></tr>
+          <tr><td>05</td><td><b>Quem desenvolve daqui para frente</b></td><td>Todas as datas. Sem isso o roteiro tem ordem, mas não tem calendário.</td></tr>
+          <tr><td>09</td><td><b>Aceitar aluno menor de 18</b></td><td>Consentimento de responsável no cadastro e no aceite dos termos.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="rodape">
+    <strong>Sobre a ordem.</strong> A fase 1 vem primeiro porque é a única em que o trabalho
+    restante é conhecido: o backend já respondeu as perguntas difíceis, e o que sobra é
+    interface. As fases 2 e 3 dependem dela para ter onde aterrissar — vender e atrair para
+    dentro de telas que não existem é gastar duas vezes. As fases 4 e 5 só valem depois que
+    entrar gente suficiente para que retê-la e multiplicá-la importem.
+  </p>
+
+</div>

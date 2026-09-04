@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { api } from '../api/http'
 import { useSession } from '../auth/session'
+import { Marca } from '../ui/Marca'
 import { IconeSair, IconeSino } from '../ui/icons'
 import './shell.css'
 
@@ -56,8 +57,8 @@ export function AppShell() {
   return (
     <div className="shell">
       <header className="shell-topo">
-        <Link to="/" className="shell-logo">
-          Beto <em>Banco</em>
+        <Link to="/" className="shell-logo" aria-label="Aprovação passo a passo">
+          <Marca variante="compacta" tamanho={32} />
         </Link>
 
         {status === 'in' && (
