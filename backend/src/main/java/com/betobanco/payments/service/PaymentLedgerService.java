@@ -1,5 +1,6 @@
 package com.betobanco.payments.service;
 
+import com.betobanco.leads.api.LeadCapture;
 import com.betobanco.payments.api.PaymentLedger;
 import com.betobanco.payments.api.PaymentNotification;
 import com.betobanco.payments.entity.Payment;
@@ -17,10 +18,13 @@ public class PaymentLedgerService implements PaymentLedger {
 
     private final PaymentRepository pagamentos;
     private final PaymentSplitRepository splits;
+    private final LeadCapture leads;
 
-    public PaymentLedgerService(PaymentRepository pagamentos, PaymentSplitRepository splits) {
+    public PaymentLedgerService(PaymentRepository pagamentos, PaymentSplitRepository splits,
+                                LeadCapture leads) {
         this.pagamentos = pagamentos;
         this.splits = splits;
+        this.leads = leads;
     }
 
     @Override
@@ -63,10 +67,28 @@ public class PaymentLedgerService implements PaymentLedger {
         mudarStatus(paymentId, Payment.PENDING);
     }
 
+    /**
+     * Documento Mestre Premium V3.0, secao 8: venda que nao se concretiza vira
+     * lead de recuperacao, com nome, e-mail, curso, valor e motivo.
+     *
+     * <p>O motivo sai como CANCELADO, e nao RECUSADO, porque o contrato atual
+     * de {@link PaymentNotification.Tipo} nao distingue os dois: o gateway
+     * manda um unico evento de nao-conclusao. A distincao existe na porta e no
+     * banco e entra sozinha quando a InfinityPay expuser qual foi o caso.
+     */
     @Override
     @Transactional
     public void marcarCancelado(UUID paymentId) {
         mudarStatus(paymentId, Payment.CANCELLED);
+
+        Payment pagamento = exigir(paymentId);
+        leads.registrarVendaPerdida(new LeadCapture.VendaPerdida(
+                pagamento.getBuyerName(),
+                pagamento.getBuyerEmail(),
+                pagamento.getProductId(),
+                pagamento.getAmountCents(),
+                LeadCapture.Motivo.CANCELADO,
+                "Pagamento não concluído no gateway " + pagamento.getProvider()));
     }
 
     @Override

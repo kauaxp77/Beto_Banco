@@ -69,6 +69,12 @@ public class SecurityConfig {
                         // e indexavel" e e a fonte de trafego organico do plano.
                         // Atras de login ela nao e indexavel por ninguem.
                         .requestMatchers(HttpMethod.GET, "/contests/**").permitAll()
+                        // V3.0 secao 11 -- o material existe para trocar conteudo
+                        // pelo contato de quem ainda NAO tem conta. Atras de
+                        // login ele nao captaria ninguem. A escrita e limitada
+                        // por IP no RateLimitFilter.
+                        .requestMatchers(HttpMethod.GET, "/leads/magnets").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/leads/capture").permitAll()
                         .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                             .permitAll()

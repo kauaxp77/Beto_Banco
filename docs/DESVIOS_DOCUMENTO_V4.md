@@ -129,6 +129,72 @@ tocar em nada do que já está lá.
 
 ---
 
+## 7. Documento Mestre Premium V3.0 — o que ele pede além do V4.0
+
+O V3.0 é a versão anterior deste mesmo documento, não um documento novo. A
+maior parte do que ele descreve já está no V4.0 com outro número de seção. O que
+segue é só o que **não** aparecia no V4.0 e por isso não tinha sido construído.
+
+### Entregue
+
+| V3.0 | O que entrou |
+|---|---|
+| §11 Leads + CRM | `lead_magnets`, `leads`, `lead_events`. Captação pública (`POST /leads/capture`), CRM em `/admin/leads` com funil, histórico e atribuição. |
+| §8 Recuperação de vendas | Pagamento não concluído vira lead automaticamente, com curso, valor e motivo. |
+| §5 Continue assistindo / Histórico / Favoritos | `lesson_playback` e `lesson_favorites`, com `/courses/me/continue`, `/courses/me/history` e `/courses/me/favorites`. |
+
+### Bloqueado — §9, Cupons
+
+**O documento pede:** "Cupons. CRUD." no dashboard administrativo.
+
+**O código faz:** nada.
+
+**Por quê:** o checkout é da InfinityPay, não nosso. O desconto é aplicado lá, e
+o webhook nos entrega apenas o `amount_cents` final — sem dizer se houve cupom
+nem qual. Um CRUD de cupons aqui geraria códigos que a plataforma não consegue
+aplicar nem validar no momento da compra: o admin criaria "BLACKFRIDAY30", o
+aluno digitaria no checkout e nada aconteceria.
+
+**O que destrava:** ou a InfinityPay expõe uma API de cupons que possamos
+espelhar, ou o checkout passa a ser nosso. É decisão de produto, ligada à
+**pendência 02** (tabela de preços).
+
+### Divergência de contrato — §8, "Recusado" e "Cancelado"
+
+O V3.0 separa os dois estados: recusado cria lead, cancelado encerra acesso. O
+`PaymentNotification.Tipo` atual tem só `CANCELADO` — o gateway manda um único
+evento de não-conclusão. O lead é criado com motivo `PAGAMENTO_CANCELADO`.
+
+A distinção já existe no banco (`lead_events.source` aceita
+`PAGAMENTO_RECUSADO`) e na porta `LeadCapture.Motivo`. Ela passa a valer sozinha
+no dia em que o gateway disser qual dos dois foi — e a diferença importa para
+quem liga: cartão recusado costuma converter numa segunda tentativa,
+cancelamento foi uma decisão e exige outro argumento.
+
+### Reforça uma pendência que já existia — §2 e §18, a paleta
+
+O V3.0 fixa a Crepúsculo Dourado com os valores exatos (`#030712`, `#0F172A`,
+`#111827`, `#1E293B`, `#1E3A8A`, `#2563EB`, `#D4AF37`, `#F5C542`) e a repete em
+"Decisões Permanentes". São agora **dois** documentos mandando a mesma coisa, e
+o que está no ar continua sendo a spec 9.6.
+
+Isso não muda a natureza da decisão, que segue sendo do PO (item 2 acima): a
+troca é uma repintura completa do frontend em produção, não um ajuste de tokens.
+Nada foi alterado.
+
+### Não iniciado
+
+| V3.0 | Observação |
+|---|---|
+| §12 Simulados | O schema de quiz é **por aula** (`quiz_questions.lesson_id`), não um simulado avulso. Faltam cronômetro, peso por questão e ranking — a estrutura é construível; o conteúdo esbarra na **pendência 03**. |
+| §10 Blog + SEO | Mesmo item do §15 do V4.0. |
+| §13 IA | Mesmo item do §17 do V4.0. |
+| §14 SaaS White Label — cobrança | A base multi-tenant existe (item 5 acima). Falta a cobrança por mensalidade e por aluno ativo, que depende da **pendência 02**. |
+| §9 Professores CRUD | `ROLE_INSTRUCTOR` existe desde a V2; não há tela nem rota de gestão. |
+| §6 Vimeo como backup | Só faz sentido depois de o Panda Vídeo estar contratado (item 4 acima). |
+
+---
+
 ## Seções não iniciadas, e o tamanho real delas
 
 | Seção | Situação | Ordem de grandeza |
@@ -158,7 +224,7 @@ Continuam abertas e travando trabalho real:
 
 ## Verificação
 
-A suíte completa roda: **209 testes, 0 falhas**, incluindo os de integração com
+A suíte completa roda: **227 testes, 0 falhas**, incluindo os de integração com
 Testcontainers, que até então nunca tinham sido executados por indisponibilidade
 do engine do Docker na máquina de desenvolvimento.
 
@@ -175,4 +241,4 @@ A regra de fronteira do ArchUnit também passou a cobrir `contests`, `essays` e
 `privacy` — módulo fora da lista nasce sem a regra, e a primeira violação dele só
 apareceria quando já custasse caro desfazer.
 
-Validação de banco: as 17 migrações aplicadas em PostgreSQL 17 em base limpa.
+Validação de banco: as 18 migrações aplicadas em PostgreSQL 17 em base limpa.

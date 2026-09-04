@@ -39,8 +39,16 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private static final Duration JANELA = Duration.ofMinutes(1);
 
+    /**
+     * {@code /leads/capture} entra aqui por ser publica e de escrita: sem
+     * limite, um script encheria o CRM de contatos falsos e a lista de quem
+     * ligar deixaria de valer alguma coisa. O caminho e especifico de proposito
+     * — o casamento abaixo e por sufixo, e "/leads" pegaria "/admin/leads"
+     * junto.
+     */
     private static final Set<String> PROTEGIDOS =
-            Set.of("/auth/login", "/auth/forgot-password", "/auth/reset-password");
+            Set.of("/auth/login", "/auth/forgot-password", "/auth/reset-password",
+                    "/leads/capture");
 
     private final Map<String, Bucket> baldes = new ConcurrentHashMap<>();
     private final ObjectMapper mapper;

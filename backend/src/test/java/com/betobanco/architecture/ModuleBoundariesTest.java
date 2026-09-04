@@ -32,7 +32,7 @@ class ModuleBoundariesTest {
         for (String modulo : new String[]{
                 "users", "auth", "students", "catalog", "entitlements",
                 "payments", "webhooks", "email", "audit", "dashboard", "courses",
-                "invites", "contests", "essays", "privacy"}) {
+                "invites", "contests", "essays", "privacy", "leads"}) {
             ArchRule regra = noClasses()
                     .that().resideOutsideOfPackage("com.betobanco." + modulo + "..")
                     .should().dependOnClassesThat()
